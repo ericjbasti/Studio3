@@ -1,3 +1,5 @@
+// @codekit-prepend "requirements.js"
+
 // @codekit-append "display/displayObject.js"
 // @codekit-append "display/LinkedList.js"
 // @codekit-append "display/DisplayList.js"
@@ -17,69 +19,6 @@
 // @codekit-append "input/touch.js"
 
 'use strict';
-
-// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
-if (!Object.keys) {
-  Object.keys = (function () {
-    var hasOwnProperty = Object.prototype.hasOwnProperty,
-        hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
-        dontEnums = [
-          'toString',
-          'toLocaleString',
-          'valueOf',
-          'hasOwnProperty',
-          'isPrototypeOf',
-          'propertyIsEnumerable',
-          'constructor'
-        ],
-        dontEnumsLength = dontEnums.length;
-
-    return function (obj) {
-      if (typeof obj !== 'object' && (typeof obj !== 'function' || obj === null)) {
-        throw new TypeError('Object.keys called on non-object');
-      }
-
-      var result = [], prop, i;
-
-      for (prop in obj) {
-        if (hasOwnProperty.call(obj, prop)) {
-          result.push(prop);
-        }
-      }
-
-      if (hasDontEnumBug) {
-        for (i = 0; i < dontEnumsLength; i++) {
-          if (hasOwnProperty.call(obj, dontEnums[i])) {
-            result.push(dontEnums[i]);
-          }
-        }
-      }
-      return result;
-    };
-  }());
-}
-
-(function(){
-		// var lastTime = 0;
-		var vendors = ['ms', 'moz', 'webkit', 'o'];
-		for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
-			window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
-			window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
-		}
-		if (!window.requestAnimationFrame) {
-			window.requestAnimationFrame = function(callback) {
-				var id = window.setTimeout(function() {
-					callback(Date.now());
-				}, 4);
-				return id;
-			};
-		}
-		if (!window.cancelAnimationFrame) {
-			window.cancelAnimationFrame = function(id) {
-				clearTimeout(id);
-			};
-		}
-	}());
 
 	// Copyright  Vincent Piel 2013.
 	// https://github.com/gamealchemist/Javascript-Pooling
@@ -117,11 +56,11 @@ if (!Object.keys) {
 	function  pnew (){
 		var pnewObj  = null     ;
 		if (this.poolSize !== 0 ){              // the pool contains objects : grab one
-			   this.poolSize--  ;
-			   pnewObj = this.pool[this.poolSize];
-			   this.pool[this.poolSize] = null   ;
+				 this.poolSize--  ;
+				 pnewObj = this.pool[this.poolSize];
+				 this.pool[this.poolSize] = null   ;
 		} else {
-			   pnewObj = new this() ;             // the pool is empty : create new object
+				 pnewObj = new this() ;             // the pool is empty : create new object
 		}
 		this.apply(pnewObj, arguments);           // initialize object
 		return pnewObj;
@@ -161,6 +100,8 @@ if (!window.Studio){
 		active : true,
 		cap: 34,
 		draws: 0,
+		loaded: true,
+		version: '0.5.1',
 	};
 	Studio.time = 1;
 	Studio.interval = null;
@@ -188,12 +129,12 @@ Studio.loop = function(time_stamp){
 	Studio.tick(time_stamp);
 	Studio.draws = 0;
 
-//	for(var m = 0; m!== Studio.stages.length; m++){
-	//	Studio.stage = Studio.stages[m];
-		// if(Studio.stage.active){
+	for(var m = 0; m!== Studio.stages.length; m++){
+		Studio.stage = Studio.stages[m];
+		if(Studio.stage.active){
 			Studio.stage.loop(Studio.frameRatio,Studio.delta);
-		// }
-	// }
+		}
+	}
 
 	requestAnimationFrame(Studio.loop);
 };
@@ -259,13 +200,16 @@ Studio.apply = function (obj){ // Display Object and a few others share this fun
 // addTo()
 
 Studio.addTo = function(a,b){
-    for (var attr in b){
-        if(b.hasOwnProperty(attr) && !a.hasOwnProperty(attr)){
-            a[attr]=b[attr];
-        }
-    }
+	for (var attr in b){
+		if(b.hasOwnProperty(attr) && !a.hasOwnProperty(attr)){
+			a[attr]=b[attr];
+		}
+	}
 }
 
-
+Studio.infoStyle = 'background-color: #3af; padding: 2px 4px; color: #fff';
+Studio.errorStyle = 'background-color: #c01; padding: 2px 4px;';
+Studio.warningStyle = 'background-color: #fd2; padding: 2px 4px;';
+Studio.engineStyle = 'background-color: #eee; color: #3af; padding: 1px 4px; border: 1px solid #3af';
 
 

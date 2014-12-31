@@ -4,7 +4,6 @@ Studio.Stage.prototype.update_tweens = function(){
 	for (i in this.tweens){
 		tween = this.tweens[i];
 		tween.cur+=(Studio.delta)*(tween.actor._speed);
-		console.log('11')
 		if(!tween.dir) {
 			delta = tween.cur/tween.duration;
 		}else{
@@ -48,7 +47,6 @@ Studio.Stage.prototype.update_tweens = function(){
 };
 
 Studio.Stage.prototype.update_property = function(tween,key,delta){
-	console.log(key)
 	tween.actor[key] = tween.original[key] + (Studio.Ease[tween.ease](delta) * (tween.to[key]-tween.original[key]));
 }
 

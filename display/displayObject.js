@@ -43,7 +43,7 @@ Studio.Box.prototype = {
 Studio.Color = function(r,g,b,a){
 	this.r = r/255 || 0;
 	this.g = g/255 || 0;
-	this.b = b/255 || 1;
+	this.b = b/255 || 0;
 	this.a = a || 1;
 	this.style = "rgba(255,255,255,1)";
 
@@ -229,6 +229,13 @@ Studio.DisplayObject.prototype = {
 			return (true);
 		}
 		return (false);
+	},
+	vertex_children: function(stage){
+		if(this.hasChildren){
+			for (var i = 0; i!==this.hasChildren; i++){
+				this.children[i].buildVerts(stage);
+			}
+		}
 	},
 	render_children: function(stage){
 		if(this.hasChildren){
