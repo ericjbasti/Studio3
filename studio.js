@@ -11,7 +11,7 @@
 // @codekit-append "display/camera.js"
 // @codekit-append "display/scene.js"
 // @codekit-append "display/stage.js"
-
+// @codekit-append "engines/webgl.js"
 // @codekit-append "display/tween.js"
 // @codekit-append "display/font.js"
 // @codekit-append "display/textbox.js"
@@ -124,19 +124,17 @@ Studio.start = function(time_stamp){
 };
 
 Studio.loop = function(time_stamp){
-	
+	requestAnimationFrame(Studio.loop);
 
 	Studio.tick(time_stamp);
 	Studio.draws = 0;
 
-	for(var m = 0; m!== Studio.stages.length; m++){
-		Studio.stage = Studio.stages[m];
-		if(Studio.stage.active){
+	// for(var m = 0; m!== Studio.stages.length; m++){
+	// 	Studio.stage = Studio.stages[m];
+	// 	if(Studio.stage.active){
 			Studio.stage.loop(Studio.frameRatio,Studio.delta);
-		}
-	}
-
-	requestAnimationFrame(Studio.loop);
+		// }
+	// }
 };
 
 Studio.capped = function(time_stamp){

@@ -62,7 +62,7 @@ Studio.Color.prototype = {
 		this.build_style();
 	},
 	build_style : function(){
-		this.style = "rgba("+this.r*255+","+this.g*255+","+this.b*255+","+this.a+")";
+		this.style = "rgba("+parseInt(this.r*255)+","+parseInt(this.g*255)+","+parseInt(this.b*255)+","+this.a+")";
 	},
 	hex: function(hex){
 
@@ -233,7 +233,7 @@ Studio.DisplayObject.prototype = {
 	vertex_children: function(stage){
 		if(this.hasChildren){
 			for (var i = 0; i!==this.hasChildren; i++){
-				this.children[i].buildVerts(stage);
+				this.children[i].buildElement(stage);
 			}
 		}
 	},

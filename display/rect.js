@@ -31,7 +31,7 @@ Studio.Rect.prototype.addVert = function(gl,x,y,z,tx,ty){
 	gl._count +=8;
 }
 
-Studio.Rect.prototype.buildVerts = function(gl){
+Studio.Rect.prototype.buildElement = function(gl){
 	this._boundingBox.get_bounds(this);
 	this.addVert(gl,this._boundingBox.left,this._boundingBox.top, this._z, this.slice.left,this.slice.top);
 	this.addVert(gl,this._boundingBox.right,this._boundingBox.top, this._z, this.slice.right,this.slice.top);
@@ -39,6 +39,15 @@ Studio.Rect.prototype.buildVerts = function(gl){
 	this.addVert(gl,this._boundingBox.right,this._boundingBox.bottom, this._z, this.slice.right,this.slice.bottom);
 };
 
+Studio.Rect.prototype.buildTriangles = function(gl){
+	this._boundingBox.get_bounds(this);
+	this.addVert(gl,this._boundingBox.left,this._boundingBox.top, this._z, this.slice.left,this.slice.top);
+	this.addVert(gl,this._boundingBox.right,this._boundingBox.top, this._z, this.slice.right,this.slice.top);
+	this.addVert(gl,this._boundingBox.left,this._boundingBox.bottom, this._z, this.slice.left,this.slice.bottom);
+	this.addVert(gl,this._boundingBox.right,this._boundingBox.top, this._z, this.slice.right,this.slice.top);
+	this.addVert(gl,this._boundingBox.left,this._boundingBox.bottom, this._z, this.slice.left,this.slice.bottom);
+	this.addVert(gl,this._boundingBox.right,this._boundingBox.bottom, this._z, this.slice.right,this.slice.bottom);
+};
 
 Studio.Rect.prototype.setStyle = function(ctx){
 	if(this.color!==ctx.fillStyle){
