@@ -63,7 +63,7 @@ Studio.DisplayList.prototype.deactivateCache = function(){
 	this.cached = false;
 }
 
-Studio.DisplayList.prototype.update = function(e){
+Studio.DisplayList.prototype.update = function(e,f){
 	if(this.marked.length){
 		this.removeMarked();
 	}
@@ -77,7 +77,7 @@ Studio.DisplayList.prototype.update = function(e){
 	var listItem = this.first;
 	while(listItem){
 		this.next = listItem.next;
-		listItem.update();
+		listItem.update(e,f);
 		listItem = listItem.next || this.next;
 	}
 	if(!this.cached && this.autoCache && this.ctx){
@@ -85,7 +85,7 @@ Studio.DisplayList.prototype.update = function(e){
 	}
 }
 
-Studio.DisplayList.prototype.render = function(e){
+Studio.DisplayList.prototype.render = function(e,f){
 	if(this.cached){
 		if(this._alpha!==e.ctx.globalAlpha){
 			e.ctx.globalAlpha=this._alpha;
@@ -96,7 +96,8 @@ Studio.DisplayList.prototype.render = function(e){
 		var listItem = this.first;
 		while(listItem){
 			this.next = listItem.next;
-			listItem.render(e);
+			listItem._delta(f);
+			listItem.render(e,f);
 			listItem = listItem.next || this.next;
 		}
 	}

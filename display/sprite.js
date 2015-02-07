@@ -22,7 +22,7 @@ Studio.Sprite.prototype.drawRotated = function(ctx){
 	ctx.restore();
 };
 
-Studio.Sprite.prototype.draw = function(ctx){
+Studio.Sprite.prototype.draw = function(ctx,ratio){
 	if(!this.image) {
 		return;
 	}
@@ -33,7 +33,8 @@ Studio.Sprite.prototype.draw = function(ctx){
 	if(this.angle){
 		this.drawRotated(ctx);
 	}else{
-		ctx.drawImage(this.image.image,0,0,this.image.width,this.image.height,this._x-(this._width*this.anchorX),this._y-(this._height*this.anchorY),this._width,this._height);
+		
+		ctx.drawImage(this.image.image,0,0,this.image.width,this.image.height,this._dx-(this._width*this.anchorX),this._dy-(this._height*this.anchorY),this._width,this._height);
 	}
 };
 
@@ -79,7 +80,7 @@ Studio.ImageSlice.prototype.draw = function(ctx){
 		return;
 	}
 	this.setAlpha(ctx);
-	ctx.drawImage(this.image.image,this.rect.x,this.rect.y,this.rect.width,this.rect.height,this._x-(this._width*this.anchorX),this._y-(this._height*this.anchorY),this._width,this._height);
+	ctx.drawImage(this.image.image,this.rect.x,this.rect.y,this.rect.width,this.rect.height,this._dx-(this._width*this.anchorX),this._dy-(this._height*this.anchorY),this._width,this._height);
 };
 
 
@@ -89,7 +90,7 @@ Studio.ImageSlice.prototype.draw = function(ctx){
 
 Studio.SpriteAnimation = function(attr){
 	this.sheet = new Studio.SpriteSheet();
-	this.loop = [];
+	this.loop = [[0,0]];
 	this.fps = 12;
 	this.frame = 0;
 	this.sliceX = 0;
@@ -111,7 +112,7 @@ Studio.SpriteAnimation.prototype.setStartingFrame = function(a) {
 	this.myTime = this.startTime + (a * (1000 / this.fps));
 };
 
-Studio.SpriteAnimation.prototype.draw = function(ctx){
+Studio.SpriteAnimation.prototype.draw = function(ctx,ratio){
 	if(!this.sheet) {
 		return;
 	}
@@ -119,7 +120,7 @@ Studio.SpriteAnimation.prototype.draw = function(ctx){
 		return;
 	}
 	this.setAlpha(ctx);
-	ctx.drawImage(this.sheet.image,this.sheet.rect.width*this.sliceX,this.sheet.rect.height*this.sliceY,this.sheet.rect.width,this.sheet.rect.height,this._x-(this._width*this.anchorX),this._y-(this._height*this.anchorX),this._width,this._height);
+	ctx.drawImage(this.sheet.image,this.sheet.rect.width*this.sliceX,this.sheet.rect.height*this.sliceY,this.sheet.rect.width,this.sheet.rect.height,this._dx-(this._width*this.anchorX),this._dy-(this._height*this.anchorX),this._width,this._height);
 	if(this.loop.length) {
 		this.updateFrame();
 	}

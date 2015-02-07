@@ -12,6 +12,7 @@
 // @codekit-append "display/scene.js"
 // @codekit-append "display/stage.js"
 // @codekit-append "engines/webgl.js"
+// @codekit-append "engines/canvas.js"
 // @codekit-append "display/tween.js"
 // @codekit-append "display/font.js"
 // @codekit-append "display/textbox.js"
@@ -132,7 +133,7 @@ Studio.loop = function(time_stamp){
 	// for(var m = 0; m!== Studio.stages.length; m++){
 	// 	Studio.stage = Studio.stages[m];
 	// 	if(Studio.stage.active){
-			Studio.stage.loop(Studio.frameRatio,Studio.delta);
+			Studio.stage.loop(Studio.delta);
 		// }
 	// }
 };
@@ -142,13 +143,13 @@ Studio.capped = function(time_stamp){
 	this.delta      = time_stamp - this.time;
 	this.time       = time_stamp;
 	this.delta = this.cap > this.delta ? this.delta : this.cap;
-	this.frameRatio = this.delta/16.666666666666668; // vs 60fps
+	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
 Studio.uncapped = function(time_stamp){
 	this.delta      = time_stamp - this.time;
 	this.time       = time_stamp;
-	this.frameRatio = this.delta/16.666666666666668; // vs 60fps
+	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
 Studio.tick = Studio.capped;

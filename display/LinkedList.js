@@ -68,7 +68,7 @@ LinkedList.prototype = {
 		}
 		this.length--;
 	},
-	update : function(){
+	update : function(r,d){
 		var listItem = this.first;
 		while(listItem){
 			// while we still have a list item lets do some fun stuff.
@@ -80,7 +80,7 @@ LinkedList.prototype = {
 			// By saving this reference we can always continue on
 			// through the list.
 
-			listItem.update();
+			listItem.update(r,d);
 			// lets perform the objects update function.
 
 			listItem = listItem.next || this.next;
@@ -89,11 +89,12 @@ LinkedList.prototype = {
 			// we really are at the end of the list.
 		}
 	},
-	render : function(e){
+	render : function(e,f){
 		var listItem = this.first;
 		while(listItem){
 			this.next = listItem.next;
-			listItem.render(e);
+			listItem._delta(f);
+			listItem.render(e,f);
 			listItem = listItem.next || this.next;
 		}
 	},

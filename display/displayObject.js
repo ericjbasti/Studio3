@@ -144,6 +144,9 @@ Studio.DisplayObject = function(attr){
 	this.__update_SPEED = true;
 	this.__update_ALPHA = true;
 	this.__update_ROTATION = true;
+
+	this.__x = this._x;
+	this.__y = this._y;
 };
 
 Studio.DisplayObject.prototype = {
@@ -203,7 +206,7 @@ Studio.DisplayObject.prototype = {
 		this._orbitX = (x * cos) - (y * sin);
 		this._orbitY = (x * sin) + (y * cos);
 	},
-	draw : function(){
+	draw : function(ratio){
 	},
 	snapPixels : function(){
 		this._x = this._x + 0.5 | 0;
@@ -230,34 +233,35 @@ Studio.DisplayObject.prototype = {
 		}
 		return (false);
 	},
-	vertex_children: function(stage){
+	vertex_children: function(stage,ratio){
 		if(this.hasChildren){
 			for (var i = 0; i!==this.hasChildren; i++){
-				this.children[i].buildElement(stage);
+				this.children[i].buildElement(stage,ratio);
 			}
 		}
 	},
-	render_children: function(stage){
+	render_children: function(stage,ratio){
 		if(this.hasChildren){
 			for (var i = 0; i!==this.hasChildren; i++){
-				this.children[i].render(stage);
+				this.children[i].render(stage,ratio);
 			}
 		}
 	},
-	render : function(stage){
+	render : function(stage,ratio){
 		if(this._visible){
 			// Studio.objectDraw++;
 			if(stage.snapPixels){
 				this.snapPixels();
 			}
-			if((this._x + (this._width*this.anchorX) >= 0) || 
-				(this._x - (this._width*this.anchorX) <= stage.width) ||
-				(this._y + (this._height*this.anchorY) >= 0) ||
-				(this._y - (this._height*this.anchorY) <= stage.height)
-				){
+			// if((this._x + (this._width*this.anchorX) >= 0) || 
+			// 	(this._x - (this._width*this.anchorX) <= stage.width) ||
+			// 	(this._y + (this._height*this.anchorY) >= 0) ||
+			// 	(this._y - (this._height*this.anchorY) <= stage.height)
+			// 	){
+				this._delta(ratio);
 				this.draw(stage.ctx);
-			}
-			this.render_children(stage);
+			// }
+			this.render_children(stage,ratio);
 		}
 		if(this.onExitFrame){
 			this.onExitFrame();
@@ -324,6 +328,14 @@ Studio.DisplayObject.prototype = {
 			this._y  = (this.y * this.parent._scaleY) + this.parent._y;
 		}
 	},
+	snapshot : function(){
+		this.__x = this._x;
+		this.__y = this._y;
+	},
+	_delta : function(ratio){
+		this._dx = this.__x+((this._x-this.__x)*ratio);
+		this._dy = this.__y+((this._y-this.__y)*ratio);
+	},
 	force_update : function(){
 		this.update_visibility();
 		this.update_scale();
@@ -332,10 +344,12 @@ Studio.DisplayObject.prototype = {
 		this.update_rotation();
 		this.update_xy();
 	},
-	update : function(ratio,delta){
+	update : function(){
+		this.snapshot();
+
 		// lets apply any changes before we update the object.
 		if(this.onEnterFrame){
-			this.onEnterFrame(ratio,delta);
+			this.onEnterFrame();
 		}
 		// now that those changes have been applied lets update our stats.
 
@@ -358,7 +372,7 @@ Studio.DisplayObject.prototype = {
 			if(this.__update_XY){
 				this.update_xy();
 			}
-			this.update_children(ratio,delta);
+			this.update_children();
 		}
 	},
 };

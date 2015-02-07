@@ -22,7 +22,7 @@ Studio.Stage = function(domID, attr){
 
 
 	this._count = 0;
-	this._maxCount = 800;
+	this._maxCount = 16050;
 	if(attr){
 		this.apply(attr);
 	}
@@ -56,70 +56,6 @@ Studio.Stage = function(domID, attr){
 Studio.Stage.prototype = new Studio.Scene();
 Studio.Stage.prototype.constructor = Studio.Stage;
 
-Studio.Stage.prototype.CANVAS = {
-
-	type : '2dContext',
-
-	getContext : function(a){
-		this.ctx = this.canvas.getContext('2d');
-	},
-
-	init : function(ctx){
-
-	},
-
-	prep : function(ctx){
-
-	},
-
-	loop : function(ratio,delta){
-		this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
-		this.draw(this.ctx);
-		if(Studio.progress===2){
-			//this._d += delta;
-
-			this.render();
-
-			//if(this._d >= this.dur){
-			//	this._d -= this.dur;
-			//	Studio.frameRation = this.dur;
-				this.update(ratio,delta);
-			//}
-			
-
-			if (this.onExitFrame) {
-				this.onExitFrame();
-			}
-
-
-			if(this._effects){
-				this.runEffects(delta);
-			}
-			return;
-
-		}else{
-			this.drawProgress(this.ctx);
-			if(Studio.progress===1){
-				if(this.onReady){
-					this.onReady(ratio,delta);
-				}
-				Studio.progress = 2; // we set this to 2 so we can fire this event once.
-				if(!this.activeScene) {
-					return; // lets check to see if we have a scene to draw. otherwise lets just draw the stage.
-				}
-				if(this.activeScene.onActivate){
-					this.activeScene.onActivate();
-				}
-			}
-		}
-	}
-
-}
-
-
-
-
-Studio.Stage.prototype.engine = Studio.Stage.prototype.CANVAS;
 
 Studio.Stage.prototype._getCanvasElement = function(domElementID){
 	if(window.ejecta){
@@ -280,10 +216,10 @@ Studio.Stage.prototype.update_children = function(ratio,delta){
 		}
 	}
 };
-Studio.Stage.prototype.render_children = function(){
+Studio.Stage.prototype.render_children = function(lag){
 	for (this.i = 0; this.i!==this.hasChildren; this.i++){
 		if(this.children[this.i].active){
-			this.children[this.i].render(this);
+			this.children[this.i].render(this,lag);
 		}
 	}
 };
@@ -296,11 +232,10 @@ Studio.Stage.prototype.update_visibility = function(){
  * Yet it should still update its private variables.
  */
 
-Studio.Stage.prototype.update = function(ratio,delta){
+Studio.Stage.prototype.update = function(){
 	if (this.onEnterFrame){
-		this.onEnterFrame(ratio,delta);
+		this.onEnterFrame();
 	}
-
 	this._width = this.width;
 	this._height = this.height;
 	this._scaleX  = this.scaleX;
@@ -311,7 +246,6 @@ Studio.Stage.prototype.update = function(ratio,delta){
 		// if(this.camera.active){
 		// 	this.camera.update(this);
 		// }
-		this.update_tweens(ratio,delta);
 		if(this.activeScene){
 			this.activeScene.update(ratio,delta);
 		}
@@ -322,13 +256,13 @@ Studio.Stage.prototype.update = function(ratio,delta){
 		}
 		if (this.hasChildren || this._watching){
 			// if(!this._watching){
-				this.update_children(ratio,delta);
+				this.update_children();
 			// }else{
 			// 	this.hasChildren=this._watching.hasChildren;
 			// }
 		}
 		if (this.beforeDraw){
-			this.beforeDraw(ratio,delta);
+			this.beforeDraw();
 		}
 	}
 	// this.camera.update(this);
@@ -339,7 +273,7 @@ Studio.Stage.prototype.update = function(ratio,delta){
 // can worry about user input and tweens. This should help prevent certain
 // situation that could cause the frames to drop.
 
-Studio.Stage.prototype.render = function(ratio,delta){
+Studio.Stage.prototype.render = function(lag){
 	if(this.camera.active){
 		this.camera.update(this);
 		this.camera.render(this);
@@ -348,15 +282,15 @@ Studio.Stage.prototype.render = function(ratio,delta){
 		if (this.activeScene.beforeDraw) {
 			this.activeScene.beforeDraw();
 		}
-		this.activeScene.render(this);
+		this.activeScene.render( this , lag );
 	}
 	if(this.previousScene){
 		if(this.previousScene.active){
-			this.previousScene.render(this);
+			this.previousScene.render( this , lag );
 		}
 	}
 	if(this.hasChildren){
-		this.render_children();
+		this.render_children(lag);
 	}
 }
 

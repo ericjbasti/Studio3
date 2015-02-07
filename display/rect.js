@@ -31,7 +31,8 @@ Studio.Rect.prototype.addVert = function(gl,x,y,z,tx,ty){
 	gl._count +=8;
 }
 
-Studio.Rect.prototype.buildElement = function(gl){
+Studio.Rect.prototype.buildElement = function(gl,ratio){
+	this._delta(ratio);
 	this._boundingBox.get_bounds(this);
 	this.addVert(gl,this._boundingBox.left,this._boundingBox.top, this._z, this.slice.left,this.slice.top);
 	this.addVert(gl,this._boundingBox.right,this._boundingBox.top, this._z, this.slice.right,this.slice.top);
@@ -73,13 +74,14 @@ Studio.Rect.prototype.drawAngled = function(ctx){
 	ctx.restore();
 };
 
-Studio.Rect.prototype.draw = function(ctx){
+
+Studio.Rect.prototype.draw = function(ctx,ratio){
 	this.setStyle(ctx);
 	this.setAlpha(ctx);
 	if(this.angle){
 		this.drawAngled(ctx);
 	}else{
-		ctx.fillRect(this._x-(this._width*this.anchorX),this._y-(this._height*this.anchorY),this._width,this._height);
+		ctx.fillRect(this._dx-(this._width*this.anchorX),this._dy-(this._height*this.anchorY),this._width,this._height);
 	}
 };
 

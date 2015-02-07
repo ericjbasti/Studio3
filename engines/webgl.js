@@ -91,33 +91,23 @@ Studio.Stage.prototype.WEBGL = {
 	    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._rect_index, gl.STATIC_DRAW);
 		this._r_count = 0;
 	},
-	loop: function (ratio,delta){
-		this.renderGL(this.ctx);
-		this.updateGL(ratio,delta);
+
+	loop: function (delta){
+		this.step(delta);
+		this.fixedStep();
+		this.renderGL(this.ctx,this._lag);
 	}
 
 }
 
-Studio.Stage.prototype.updateGL = function(ratio,delta){
-	if (this.onEnterFrame){
-		this.onEnterFrame(ratio,delta);
-	}
-	// this.update_tweens(ratio,delta);
-	this.update_children(ratio,delta);
-
-	// this.camera.update(this);
-};
-
-Studio.Stage.prototype.renderGL = function(gl){
+Studio.Stage.prototype.renderGL = function(gl,lag){
 	gl._count = 0;
-	if(this.hasChildren){
-		this.vertex_children(gl);
-	}
+	this.vertex_children(gl,lag);
 
 	gl.bufferData(gl.ARRAY_BUFFER, gl._batch, gl.DYNAMIC_DRAW);
 	gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 	// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);
-	gl.drawElements(gl.TRIANGLES, this._maxCount*6, gl.UNSIGNED_SHORT, 0);  
+	gl.drawElements(gl.TRIANGLES, stage.hasChildren*6, gl.UNSIGNED_SHORT, 0);  
 
 }
 
