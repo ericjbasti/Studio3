@@ -5,46 +5,54 @@ Studio.Stage.prototype.CANVAS = {
 	getContext : function(a){
 		this.ctx = this.canvas.getContext('2d');
 	},
-
 	init : function(ctx){
-
 	},
-
 	prep : function(ctx){
-
 	},
-
-	loop : function(delta){
-		// this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
+	// our render function draws everything to the screen then updates them
+	// we want to draw everything to the screen as fast as possible. Then we
+	// can worry about user input and tweens. This should help prevent certain
+	// situation that could cause the frames to drop.
+	render : function(lag){
 		this.draw(this.ctx);
-		if(Studio.progress===2){
-			this.step(delta);
 
-			this.fixedStep();
-			this.render(this._lag);
-			if(this._effects){
-				this.runEffects(delta);
+		if(this.camera.active){
+			this.camera.update(this);
+			this.camera.render(this);
+		}
+		if(this.activeScene){
+			if (this.activeScene.beforeDraw) {
+				this.activeScene.beforeDraw();
 			}
-			return;
-
-		}else{
-			this.drawProgress(this.ctx);
-			if(Studio.progress===1){
-				if(this.onReady){
-					this.onReady(delta);
-				}
-				Studio.progress = 2; // we set this to 2 so we can fire this event once.
-				if(!this.activeScene) {
-					return; // lets check to see if we have a scene to draw. otherwise lets just draw the stage.
-				}
-				if(this.activeScene.onActivate){
-					this.activeScene.onActivate();
-				}
+			this.activeScene.render( this , lag );
+		}
+		if(this.previousScene){
+			if(this.previousScene.active){
+				this.previousScene.render( this , lag );
 			}
+		}
+		if(this.hasChildren){
+			this.render_children(lag);
 		}
 	},
 
 }
+
+
+Studio.fixedTimeStep = function(delta){
+	this.step(delta);
+	this.render(this._lag);
+	this.fixedStep();
+}
+
+Studio.simple = function(){
+	this.render(1);
+	this.update();
+}
+
+
+Studio.Stage.prototype.timeStep = Studio.simple;
+
 
 Studio.Stage.prototype.fixedStep = function(){
 	while(this._d>=this.dur){

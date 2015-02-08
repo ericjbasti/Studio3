@@ -91,23 +91,15 @@ Studio.Stage.prototype.WEBGL = {
 	    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._rect_index, gl.STATIC_DRAW);
 		this._r_count = 0;
 	},
+	render :  function(lag){
+		this.ctx._count = 0;
+		this.vertex_children(this.ctx,lag);
 
-	loop: function (delta){
-		this.step(delta);
-		this.fixedStep();
-		this.renderGL(this.ctx,this._lag);
+		this.ctx.bufferData(this.ctx.ARRAY_BUFFER, this.ctx._batch, this.ctx.DYNAMIC_DRAW);
+		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT|this.ctx.DEPTH_BUFFER_BIT);
+		// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);
+		this.ctx.drawElements(this.ctx.TRIANGLES, this.hasChildren*6, this.ctx.UNSIGNED_SHORT, 0);  
+
 	}
-
-}
-
-Studio.Stage.prototype.renderGL = function(gl,lag){
-	gl._count = 0;
-	this.vertex_children(gl,lag);
-
-	gl.bufferData(gl.ARRAY_BUFFER, gl._batch, gl.DYNAMIC_DRAW);
-	gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
-	// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);
-	gl.drawElements(gl.TRIANGLES, stage.hasChildren*6, gl.UNSIGNED_SHORT, 0);  
-
 }
 

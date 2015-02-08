@@ -46,6 +46,7 @@ Studio.Stage = function(domID, attr){
 	// a prep call. Again mainly used by webgl to create holders for buffers and such.
 	this.engine.prep.call(this, this.ctx);
 
+	this.render = this.engine.render;
 	// This is a universal init. These are items that need to be attached to the stage
 	// regardless of engine type. These include items like buttons, cameras, scenes etc...
 	this._init();
@@ -268,33 +269,6 @@ Studio.Stage.prototype.update = function(){
 	// this.camera.update(this);
 };
 
-// our render function draws everything to the screen then updates them
-// we want to draw everything to the screen as fast as possible. Then we
-// can worry about user input and tweens. This should help prevent certain
-// situation that could cause the frames to drop.
-
-Studio.Stage.prototype.render = function(lag){
-	if(this.camera.active){
-		this.camera.update(this);
-		this.camera.render(this);
-	}
-	if(this.activeScene){
-		if (this.activeScene.beforeDraw) {
-			this.activeScene.beforeDraw();
-		}
-		this.activeScene.render( this , lag );
-	}
-	if(this.previousScene){
-		if(this.previousScene.active){
-			this.previousScene.render( this , lag );
-		}
-	}
-	if(this.hasChildren){
-		this.render_children(lag);
-	}
-}
-
-
 
 Studio.Stage.prototype.runEffects = function(delta){
 	// this.setAlpha(this.ctx);
@@ -313,7 +287,33 @@ Studio.Stage.prototype.loading = function(ratio,delta){
 		if(this.onReady){
 			this.onReady(ratio,delta);
 		}
-		this.loop = this.engine.loop;
+		this.loop = this.activeloop;
+	}
+}
+
+Studio.Stage.prototype.activeloop = function(delta){
+	// this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
+	if(Studio.progress===2){
+		this.timeStep(delta);
+		if(this._effects){
+			this.runEffects(delta);
+		}
+		return;
+
+	}else{
+		// this.drawProgress(this.ctx);
+		if(Studio.progress===1){
+			if(this.onReady){
+				this.onReady(delta);
+			}
+			Studio.progress = 2; // we set this to 2 so we can fire this event once.
+			if(!this.activeScene) {
+				return; // lets check to see if we have a scene to draw. otherwise lets just draw the stage.
+			}
+			if(this.activeScene.onActivate){
+				this.activeScene.onActivate();
+			}
+		}
 	}
 }
 

@@ -152,7 +152,7 @@ Studio.uncapped = function(time_stamp){
 	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
-Studio.tick = Studio.capped;
+Studio.tick = Studio.uncapped;
 
 Studio.stopTime = function(){
 	//this.time = this.now();

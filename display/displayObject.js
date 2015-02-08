@@ -27,9 +27,9 @@ Studio.Box.prototype = {
 		// }
 	},
 	get_straight_bounds : function(who){
-		this.left = who._x-who._width*who.anchorX;
+		this.left = who._dx-who._width*who.anchorX;
 		this.right = this.left + who._width;
-		this.top = who._y-who._height*who.anchorY;
+		this.top = who._dy-who._height*who.anchorY;
 		this.bottom = this.top + who._height;
 	},
 	get_rotated_bounds : function(who){
@@ -346,7 +346,6 @@ Studio.DisplayObject.prototype = {
 	},
 	update : function(){
 		this.snapshot();
-
 		// lets apply any changes before we update the object.
 		if(this.onEnterFrame){
 			this.onEnterFrame();
