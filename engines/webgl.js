@@ -17,6 +17,7 @@ Studio.Stage.prototype.WEBGL = {
 	init : function(gl){
 		gl._count = 0;
 		gl._batch = new Float32Array(16355*32);
+		// gl._batch = new Float32Array(62000*32);
 		gl.clearColor(this.color.r, this.color.g, this.color.b, this.color.a);
 		gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
 		this.vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -53,16 +54,15 @@ Studio.Stage.prototype.WEBGL = {
 		gl.enableVertexAttribArray(0);
 
 		gl.positionLocation = gl.getAttribLocation(this.program, "a_position");
-		
+		gl.bindAttribLocation(this.program, 0, 'a_position');
 
 		gl.colorLocation = gl.getAttribLocation(this.program, "a_color");
+		// gl.bindAttribLocation(this.program, 2, 'a_color');
 
 		gl.textureLocation = gl.getAttribLocation(this.program, "a_texture");
+		// gl.bindAttribLocation(this.program, 6, 'a_texture');
 
 		gl.uniform2f(gl.resolutionLocation, this.width, this.height);
-		// gl.bindAttribLocation(this.program, 0, 'a_position');
-		// gl.bindAttribLocation(this.program, 8, 'a_color');
-		// gl.bindAttribLocation(this.program, 24, 'a_texture');
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 
@@ -102,4 +102,3 @@ Studio.Stage.prototype.WEBGL = {
 
 	}
 }
-

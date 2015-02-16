@@ -40,6 +40,26 @@ if (!Object.keys) {
 	}());
 }
 
+if (typeof Object.create != 'function') {
+	console.warn("This browser does not support Object.create() . Using polyfill instead.");
+	Object.create = (function() {
+		var Temp = function() {};
+		return function (prototype) {
+      if (arguments.length > 1) {
+        throw Error('Second argument not supported');
+      }
+      if (typeof prototype != 'object') {
+        throw TypeError('Argument must be an object');
+      }
+      Temp.prototype = prototype;
+      var result = new Temp();
+      Temp.prototype = null;
+      return result;
+    };
+  })();
+}
+
+
 (function(){
 	var vendors = ['ms', 'moz', 'webkit', 'o'];
 	for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
@@ -51,7 +71,7 @@ if (!Object.keys) {
 		window.requestAnimationFrame = function(callback) {
 			var id = window.setTimeout(function() {
 				callback(Date.now());
-			}, 4);
+			}, 1000/30);
 			return id;
 		};
 	}

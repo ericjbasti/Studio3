@@ -4,7 +4,7 @@
 */
 
 Studio.Camera = function(stage){
-	this.stage 		= stage || null;
+	this.stage 		= {width:stage.width, height: stage.height};
 	this.tracking 	= null ;
 	this.bound 		= null ;
 	this.active		= true ;

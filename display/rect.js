@@ -19,16 +19,16 @@ Studio.Rect.prototype.setTexture = function(tx,ty,tX,tY){
 }
 
 Studio.Rect.prototype.addVert = function(gl,x,y,z,tx,ty){
-	gl._batch[gl._count] = x;
-	gl._batch[gl._count+1] = y;
+	gl._batch[gl._count++] = x;
+	gl._batch[gl._count++] = y;
 	// gl._batch[gl._count+2] = 1;
-	gl._batch[gl._count+2] = this.color.r;
-	gl._batch[gl._count+3] = this.color.g;
-	gl._batch[gl._count+4] = this.color.b;
-	gl._batch[gl._count+5] = this.color.a;
-	gl._batch[gl._count+6] = (tx);
-	gl._batch[gl._count+7] = (ty);
-	gl._count +=8;
+	gl._batch[gl._count++] = this.color.r;
+	gl._batch[gl._count++] = this.color.g;
+	gl._batch[gl._count++] = this.color.b;
+	gl._batch[gl._count++] = this.color.a;
+	gl._batch[gl._count++] = (tx);
+	gl._batch[gl._count++] = (ty);
+	// gl._count +=8;
 }
 
 Studio.Rect.prototype.buildElement = function(gl,ratio){
@@ -40,7 +40,8 @@ Studio.Rect.prototype.buildElement = function(gl,ratio){
 	this.addVert(gl,this._boundingBox.right,this._boundingBox.bottom, this._z, this.slice.right,this.slice.bottom);
 };
 
-Studio.Rect.prototype.buildTriangles = function(gl){
+Studio.Rect.prototype.buildTriangles = function(gl, ratio){
+	this._delta(ratio);
 	this._boundingBox.get_bounds(this);
 	this.addVert(gl,this._boundingBox.left,this._boundingBox.top, this._z, this.slice.left,this.slice.top);
 	this.addVert(gl,this._boundingBox.right,this._boundingBox.top, this._z, this.slice.right,this.slice.top);

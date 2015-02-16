@@ -45,13 +45,15 @@ Studio.fixedTimeStep = function(delta){
 	this.fixedStep();
 }
 
-Studio.simple = function(){
+Studio.simple = function(delta){
 	this.render(1);
 	this.update();
 }
 
 
-Studio.Stage.prototype.timeStep = Studio.simple;
+
+
+Studio.Stage.prototype.timeStep = Studio.fixedTimeStep;
 
 
 Studio.Stage.prototype.fixedStep = function(){
@@ -66,9 +68,5 @@ Studio.Stage.prototype.step = function(delta){
 	this._lag = this._d/this.dur;
 }
 
-
-Studio.Stage.prototype._d = 0.01;
-Studio.Stage.prototype._lag = 0;
-Studio.Stage.prototype.dur = 1000/60;
 
 Studio.Stage.prototype.engine = Studio.Stage.prototype.CANVAS;

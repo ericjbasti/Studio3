@@ -23,6 +23,10 @@ Studio.Stage = function(domID, attr){
 
 	this._count = 0;
 	this._maxCount = 16050;
+
+	this.dur = 1000/60;
+	this._d = 0;
+
 	if(attr){
 		this.apply(attr);
 	}
@@ -51,6 +55,7 @@ Studio.Stage = function(domID, attr){
 	// regardless of engine type. These include items like buttons, cameras, scenes etc...
 	this._init();
 	console.log('%cStudio3 v'+Studio.version+'%c'+this.engine.type, Studio.infoStyle, Studio.engineStyle);
+	this.verts = 0;
 	return this;
 };
 
@@ -278,14 +283,13 @@ Studio.Stage.prototype.runEffects = function(delta){
 	}
 }
 
-// Studio.Stage.prototype.dur = 1000/60;
-// Studio.Stage.prototype._d = 0;
 
-Studio.Stage.prototype.loading = function(ratio,delta){
+
+Studio.Stage.prototype.loading = function(delta){
 	if(Studio.loaded==true){ // BAD DESIGN! This should be based on each stage. 
 							 // as it stands loading an image for one canvas will cause all to pause. oops.
 		if(this.onReady){
-			this.onReady(ratio,delta);
+			this.onReady(delta);
 		}
 		this.loop = this.activeloop;
 	}

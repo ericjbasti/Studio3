@@ -163,7 +163,6 @@ Studio.DisplayObject.prototype = {
 			this.children=[]; // if we didn't use 'hasOwnProperty', we would learn that JS treats [] like pointers and in this particular case will cause a crash.
 		}
 		child.parent = this;
-
 		this.children[this.hasChildren]=child;
 		this.hasChildren++;
 
@@ -237,6 +236,7 @@ Studio.DisplayObject.prototype = {
 		if(this.hasChildren){
 			for (var i = 0; i!==this.hasChildren; i++){
 				this.children[i].buildElement(stage,ratio);
+				// this.children[i].buildTriangles(stage,ratio);
 			}
 		}
 	},
