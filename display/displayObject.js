@@ -173,8 +173,8 @@ Studio.DisplayObject = function(attr) {
 	this.__update_ALPHA = true;
 	this.__update_ROTATION = true;
 
-	this.__x = this._x;
-	this.__y = this._y;
+	// this.__x = this._x;
+	// this.__y = this._y;
 };
 
 Studio.DisplayObject.prototype = {
@@ -225,14 +225,14 @@ Studio.DisplayObject.prototype = {
 	_order: function() {
 		this.children.sort(Studio.z_index);
 	},
-	orbitXY: function() {
-		var x = this.x;
-		var y = this.y;
-		var sin = Studio.sin(this.parent.angle * this.orbit_speed);
-		var cos = Studio.cos(this.parent.angle * this.orbit_speed);
-		this._orbitX = (x * cos) - (y * sin);
-		this._orbitY = (x * sin) + (y * cos);
-	},
+	// orbitXY: function() {
+	// 	var x = this.x;
+	// 	var y = this.y;
+	// 	var sin = Studio.sin(this.parent.angle * this.orbit_speed);
+	// 	var cos = Studio.cos(this.parent.angle * this.orbit_speed);
+	// 	this._orbitX = (x * cos) - (y * sin);
+	// 	this._orbitY = (x * sin) + (y * cos);
+	// },
 	draw: function(ratio) {
 	},
 	snapPixels: function() {
@@ -316,62 +316,62 @@ Studio.DisplayObject.prototype = {
 			ctx.globalAlpha = this._alpha;
 		}
 	},
-	update_scale: function() {
-		this._scaleX  = this.parent._scaleX * this.scaleX;
-		this._scaleY  = this.parent._scaleY * this.scaleY;
-	},
-	update_dimensions: function() {
-		this._width = this.width * this._scaleX;
-		this._height = this.height * this._scaleY;
-	},
-	update_angle: function() {
-		this.angle = (this._rotation / 180 * 3.14159265);
-	},
-	update_speed: function() {
-		this._speed = this.speed * this.parent._speed;
-	},
-	update_rotation: function() {
-		if (this.inheritRotation) {
-			this._rotation = this.parent._rotation + this.rotation;
-		}else {
-			this._rotation = this.rotation;
-		}
-		if (this._rotation) { // jsperf says not being strict about the type is fastest
-			// so this._rotation > this._rotation !=0 || this._rotation !== 0
-			this.update_angle();
-		}else {
-			this.angle = 0;
-		}
-	},
-	update_orbit_xy: function() {
-		this.orbitXY();
-		this._x = (this._orbitX * this.parent._scaleX) + this.parent._x;
-		this._y = (this._orbitY * this.parent._scaleY) + this.parent._y;
-	},
-	update_xy: function() {
-		if (this.orbits && this.parent.angle) {
-			this.update_orbit_xy();
-		}else {
-			this._x  = (this.x * this.parent._scaleX) + this.parent._x;
-			this._y  = (this.y * this.parent._scaleY) + this.parent._y;
-		}
-	},
+	// update_scale: function() {
+	// 	this._scaleX  = this.parent._scaleX * this.scaleX;
+	// 	this._scaleY  = this.parent._scaleY * this.scaleY;
+	// },
+	// update_dimensions: function() {
+	// 	this._width = this.width * this._scaleX;
+	// 	this._height = this.height * this._scaleY;
+	// },
+	// update_angle: function() {
+	// 	this.angle = (this._rotation / 180 * 3.14159265);
+	// },
+	// update_speed: function() {
+	// 	this._speed = this.speed * this.parent._speed;
+	// },
+	// update_rotation: function() {
+	// 	if (this.inheritRotation) {
+	// 		this._rotation = this.parent._rotation + this.rotation;
+	// 	}else {
+	// 		this._rotation = this.rotation;
+	// 	}
+	// 	if (this._rotation) { // jsperf says not being strict about the type is fastest
+	// 		// so this._rotation > this._rotation !=0 || this._rotation !== 0
+	// 		this.update_angle();
+	// 	}else {
+	// 		this.angle = 0;
+	// 	}
+	// },
+	// update_orbit_xy: function() {
+	// 	this.orbitXY();
+	// 	this._x = (this._orbitX * this.parent._scaleX) + this.parent._x;
+	// 	this._y = (this._orbitY * this.parent._scaleY) + this.parent._y;
+	// },
+	// update_xy: function() {
+	// 	if (this.orbits && this.parent.angle) {
+	// 		this.update_orbit_xy();
+	// 	}else {
+	// 		this._x  = (this.x * this.parent._scaleX) + this.parent._x;
+	// 		this._y  = (this.y * this.parent._scaleY) + this.parent._y;
+	// 	}
+	// },
 	snapshot: function() {
-		this.__x = this._x;
-		this.__y = this._y;
+		this._x = this.x;
+		this._y = this.y;
 	},
 	_delta: function(ratio) {
-		this._dx = this.__x + ((this._x - this.__x) * ratio);
-		this._dy = this.__y + ((this._y - this.__y) * ratio);
+		this._dx = this._x + ((this.x - this._x) * ratio);
+		this._dy = this._y + ((this.y - this._y) * ratio);
 	},
-	force_update: function() {
-		this.update_visibility();
-		this.update_scale();
-		this.update_speed();
-		this.update_dimensions();
-		this.update_rotation();
-		this.update_xy();
-	},
+	// force_update: function() {
+	// 	this.update_visibility();
+	// 	this.update_scale();
+	// 	this.update_speed();
+	// 	this.update_dimensions();
+	// 	this.update_rotation();
+	// 	this.update_xy();
+	// },
 	update: function() {
 		this.snapshot();
 		// lets apply any changes before we update the object.
@@ -384,21 +384,21 @@ Studio.DisplayObject.prototype = {
 			this.update_visibility();
 		}
 		if (this._visible) {
-			if (this.__update_SCALE) {
-				this.update_scale();
-			}
-			if (this.__update_SPEED) {
-				this.update_speed();
-			}
-			if (this.__update_DIMENSIONS) {
-				this.update_dimensions();
-			}
-			if (this.__update_ROTATION) {
-				this.update_rotation();
-			}
-			if (this.__update_XY) {
-				this.update_xy();
-			}
+			// if (this.__update_SCALE) {
+			// 	this.update_scale();
+			// }
+			// if (this.__update_SPEED) {
+			// 	this.update_speed();
+			// }
+			// if (this.__update_DIMENSIONS) {
+			// 	this.update_dimensions();
+			// }
+			// if (this.__update_ROTATION) {
+			// 	this.update_rotation();
+			// }
+			// if (this.__update_XY) {
+			// 	this.update_xy();
+			// }
 			this.update_children();
 		}
 	},
