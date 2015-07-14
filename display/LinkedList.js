@@ -1,15 +1,15 @@
-var LinkedList = function(){
+var LinkedList = function() {
 	this.first 	= 	null;
 	this.last	= 	null;
 	this.length = 	0;
 };
 
 LinkedList.prototype = {
-	add : function(who){
+	add: function(who) {
 		who.parent = this.parent;
 
 		this.length++; // add to our length so we can easily tell how big our list is.
-		if (this.length <= 1 && this.first === null && this.last === null){
+		if (this.length <= 1 && this.first === null && this.last === null) {
 			this.first = who;
 			this.last = who;
 			who.prev = null;
@@ -21,56 +21,56 @@ LinkedList.prototype = {
 		this.last = who; // we have a new last item now.
 		return who;
 	},
-	insert : function(a,b){
+	insert: function(a, b) {
 		this.length++;
 		a.prev = b;
-		if(b!=this.last){
+		if (b != this.last) {
 			b.next = a;
-		}else{
+		}else {
 			this.last = a;
 			a.next = this.first;
 		}
 	},
-	init : function(){
+	init: function() {
 		this.next	=	null;
 		this.prev	=	null;
 		this.first 	= 	null;
 		this.last	= 	null;
 		this.length = 	0;
 	},
-	remove : function(who){
-		if(this.length === 1){
+	remove: function(who) {
+		if (this.length === 1) {
 			this.init();
 			who.next = null;
 			who.prev = null;
 			return; // nothing to see here lets move on.
 		}
 		// check for the begining or the end of the list
-		if(this.first === who){
+		if (this.first === who) {
 			this.first = this.first.next;
-		}else if(this.last === who){
+		}else if (this.last === who) {
 			this.last = this.last.prev;
 		}
 
 		// debugger;
-		if(who.prev){
+		if (who.prev) {
 			who.prev.next = who.next;
 		}
-		if(who.next){
+		if (who.next) {
 			who.next.prev = who.prev;
 		}
 
 		who.next = null;
 		who.prev = null;
 
-		if(this.first === null){
+		if (this.first === null) {
 			this.last = null;
 		}
 		this.length--;
 	},
-	update : function(r,d){
+	update: function(r, d) {
 		var listItem = this.first;
-		while(listItem){
+		while (listItem) {
 			// while we still have a list item lets do some fun stuff.
 
 			this.next = listItem.next;
@@ -80,7 +80,7 @@ LinkedList.prototype = {
 			// By saving this reference we can always continue on
 			// through the list.
 
-			listItem.update(r,d);
+			listItem.update(r, d);
 			// lets perform the objects update function.
 
 			listItem = listItem.next || this.next;
@@ -89,46 +89,46 @@ LinkedList.prototype = {
 			// we really are at the end of the list.
 		}
 	},
-	render : function(e,f){
+	render: function(e, f) {
 		var listItem = this.first;
-		while(listItem){
+		while (listItem) {
 			this.next = listItem.next;
 			listItem._delta(f);
-			listItem.render(e,f);
+			listItem.render(e, f);
 			listItem = listItem.next || this.next;
 		}
 	},
-	action : function(what){
+	action: function(what) {
 		var listItem = this.first;
-		while(listItem){
+		while (listItem) {
 			this.next = listItem.next;
 			listItem[what]();
 			listItem = listItem.next || this.next;
 		}
 	},
-	removeAll : function(exception){
+	removeAll: function(exception) {
 		var listItem = this.first;
-		while(listItem){
+		while (listItem) {
 			this.next = listItem.next;
-			if(this.pdispose){
+			if (this.pdispose) {
 				this.pdispose();
 			}
 			this.remove(listItem);
 			listItem = listItem.next || this.next;
 		}
 		listItem = null;
-		if(exception){
+		if (exception) {
 			this.add(exception);
 		}
 	},
-	print_f : function(){
+	print_f: function() {
 		var listItem = this.first;
 		var toString = "linked list : [";
-		while(listItem){
-			toString+=listItem;
+		while (listItem) {
+			toString += listItem;
 			listItem = listItem.next;
 		}
-		toString+='];';
+		toString += '];';
 	}
 };
 

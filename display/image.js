@@ -2,13 +2,13 @@
  * Image
  */
 
-Studio.Image=function(path){
+Studio.Image = function(path) {
 	this.image = new Image();
 	this.path = path;
 	this.ready = false;
 	this.height = 1;
 	this.width = 1;
-	if(path){
+	if (path) {
 		this.loadImage(path);
 	}
 };
@@ -20,7 +20,7 @@ Studio.Image.prototype.loadImage = function(who) {
 		console.warn('Already loaded : ', who, Studio.assets[who])
 		this.image = Studio.assets[who];
 		this.ready = true;
-		if(this.onLoadComplete){
+		if (this.onLoadComplete) {
 			this.onLoadComplete();
 		}
 		return this;
@@ -36,10 +36,10 @@ Studio.Image.prototype.loadImage = function(who) {
 			newAsset.height = this.height;
 			newAsset.width = this.width;
 			
-			if(Studio.queue===Studio.assets.length){
-				Studio.loaded=true;
+			if (Studio.queue === Studio.assets.length) {
+				Studio.loaded = true;
 			}
-			if(newAsset.onLoadComplete){
+			if (newAsset.onLoadComplete) {
 				newAsset.onLoadComplete();
 			}
 			return newAsset;
@@ -48,9 +48,6 @@ Studio.Image.prototype.loadImage = function(who) {
 		this.image = Studio.assets[who];
 	}
 };
-
-
-
 
 // Studio.EmbededImage = function(data){
 // 	this.image.src = data;

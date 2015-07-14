@@ -1,7 +1,7 @@
-Studio.Stage.prototype.enableKeyboardInput = function(){
-	var me=this;
+Studio.Stage.prototype.enableKeyboardInput = function() {
+	var me = this;
 	
-	this.keys={};
+	this.keys = {};
 	
 	this.canvas.onkeydown = function(e) {
 		e.preventDefault();
