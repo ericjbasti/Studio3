@@ -7,7 +7,7 @@ Studio.Stage = function(domID, attr) {
 	// a very basic check for webgl support.
 	// this will probably change later.
 	this.webgl = false//!!window.WebGLRenderingContext;
-
+	this.fullscreen = false;
 	this.color = new Studio.Color(0, 0, 0, 1); // defaults to black
 
 	// Before we do anything we should apply any attached attributes.
@@ -28,7 +28,8 @@ Studio.Stage = function(domID, attr) {
 	if (attr) {
 		this.apply(attr);
 	}
-	this._sizeCanvas();
+	
+	this._sizeCanvas(this.fullscreen);
 	this.setPixelRatio(1);
 	if (this.webgl) {
 		this.engine = Studio.Stage.prototype.WEBGL;
@@ -118,17 +119,18 @@ Studio.Stage.prototype.allowPlugins = function(a) {
 }
 
 Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
+	console.log(fullscreen)
 	this.height = this.canvas.height;
 	this.width = this.canvas.width;
 	this.canvas.style.height = this.height + 'px';
 	this.canvas.style.width = this.width + 'px';
 	this._scaleRatio = 1;
-	// if(fullscreen){
-	// 	this.width = window.innerWidth;
-	// 	this.height = window.innerHeight;
-	// 	this.canvas.style.height= '100%';
-	// 	this.canvas.style.width= '100%';
-	// }
+	if(fullscreen){
+		this.width = window.innerWidth;
+		this.height = window.innerHeight;
+		this.canvas.style.height= '100%';
+		this.canvas.style.width= '100%';
+	}
 }
 
 Studio.Stage.prototype.pauseButtons = function(a) {
@@ -256,7 +258,7 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 
 Studio.Stage.prototype.runEffects = function(delta) {
 	// this.setAlpha(this.ctx);
-	// this.ctx.setTransform(this.ctx.resolution, 0, 0,this.ctx.resolution,0,0);
+	// this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
 	for (this.i = 0; this.i !== this._effects; this.i++) {
 		this.plugins.effect[this.i].action(this);
 	}
@@ -273,8 +275,9 @@ Studio.Stage.prototype.loading = function(delta) {
 }
 
 Studio.Stage.prototype.activeloop = function(delta) {
-	// this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
 	if (Studio.progress === 2) {
+		if(!this.webgl) this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
+		this.draw(this.ctx);
 		this.timeStep(delta);
 		if (this._effects) {
 			this.runEffects(delta);
@@ -301,7 +304,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 Studio.Stage.prototype.loop = Studio.Stage.prototype.loading;
 
 Studio.Stage.prototype.drawProgress = function(ctx) {
-	ctx.setTransform(ctx.resolution1, 0, 0, ctx.resolution, 0, 0);
+	ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
 	this.progressBar(ctx, Studio.progress);
 	ctx.restore();
 };

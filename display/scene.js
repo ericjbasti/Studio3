@@ -37,17 +37,18 @@ Studio.Scene.prototype.setStyle = function(ctx) {
 
 Studio.Scene.prototype.draw = function(ctx) {
 	this.setAlpha(ctx);
+	
 	if (this.image) {
 		ctx.drawImage(this.image.image, this._x, this._y, this.width, this.height);
 		return;
 	}
 	if (this.color) {
 		if (this.color.a === 0) {
-			ctx.clearRect(0, 0, this.width, this.height);
+			ctx.clearRect(this._x, this._y, this.width, this.height);
 			return;
 		}
 		this.setStyle(ctx);
-		ctx.fillRect(0, 0, this.width, this.height);
+		ctx.fillRect(this._x, this._y,  this.width, this.height);
 		return;
 	}
 };

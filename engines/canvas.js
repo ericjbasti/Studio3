@@ -14,13 +14,6 @@ Studio.Stage.prototype.CANVAS = {
 	// can worry about user input and tweens. This should help prevent certain
 	// situation that could cause the frames to drop.
 	render: function(lag) {
-		// this.ctx.setTransform(this.ctx.resolution, 0, 0,this.ctx.resolution,0,0);
-		this.draw(this.ctx);
-
-		if (this.camera.active) {
-			this.camera.update(this);
-			this.camera.render(this);
-		}
 		if (this.activeScene) {
 			if (this.activeScene.beforeDraw) {
 				this.activeScene.beforeDraw();
@@ -32,6 +25,7 @@ Studio.Stage.prototype.CANVAS = {
 				this.previousScene.render(this , lag);
 			}
 		}
+		this.camera.render(this);
 		if (this.hasChildren) {
 			this.render_children(lag);
 		}
@@ -43,11 +37,14 @@ Studio.fixedTimeStep = function(delta) {
 	this.step(delta);
 	this.render(this._lag);
 	this.fixedStep();
+	this.camera.update(this);
+
 }
 
 Studio.simple = function(delta) {
 	this.render(1);
 	this.update();
+	this.camera.update(this);
 }
 
 Studio.Stage.prototype.timeStep = Studio.fixedTimeStep;

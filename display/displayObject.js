@@ -236,8 +236,8 @@ Studio.DisplayObject.prototype = {
 	draw: function(ratio) {
 	},
 	snapPixels: function() {
-		this._x = this._x + 0.5 | 0;
-		this._y = this._y + 0.5 | 0;
+		this._dx = this._dx + 0.5 | 0;
+		this._dy = this._dy + 0.5 | 0;
 		this._height = this._height + 0.5 | 0;
 		this._width = this._width + 0.5 | 0;
 	},
@@ -278,15 +278,15 @@ Studio.DisplayObject.prototype = {
 	render: function(stage, ratio) {
 		if (this._visible) {
 			// Studio.objectDraw++;
-			if (stage.snapPixels) {
-				this.snapPixels();
-			}
 			// if((this._x + (this._width*this.anchorX) >= 0) || 
 			// 	(this._x - (this._width*this.anchorX) <= stage.width) ||
 			// 	(this._y + (this._height*this.anchorY) >= 0) ||
 			// 	(this._y - (this._height*this.anchorY) <= stage.height)
 			// 	){
 			this._delta(ratio);
+			if (stage.snap) {
+				this.snapPixels();
+			}
 			this.draw(stage.ctx);
 			// }
 			this.render_children(stage, ratio);
