@@ -112,7 +112,10 @@ if (!window.Studio) {
 }
 
 Studio.start = function(time_stamp) {
-	//Studio.stage=Studio.stages[0];
+	// Studio.stage=Studio.stages[0];
+	if(Studio.queue==Studio.assets.length){
+		Studio.progress = 1;
+	}
 	if (time_stamp) {
 		Studio.time = time_stamp;
 		requestAnimationFrame(Studio.loop);

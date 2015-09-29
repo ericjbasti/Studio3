@@ -200,7 +200,10 @@ if (!window.Studio) {
 }
 
 Studio.start = function(time_stamp) {
-	//Studio.stage=Studio.stages[0];
+	// Studio.stage=Studio.stages[0];
+	if(Studio.queue==Studio.assets.length){
+		Studio.progress = 1;
+	}
 	if (time_stamp) {
 		Studio.time = time_stamp;
 		requestAnimationFrame(Studio.loop);
@@ -1618,7 +1621,6 @@ Studio.Stage.prototype.allowPlugins = function(a) {
 }
 
 Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
-	console.log(fullscreen)
 	this.height = this.canvas.height;
 	this.width = this.canvas.width;
 	this.canvas.style.height = this.height + 'px';
@@ -1775,8 +1777,6 @@ Studio.Stage.prototype.loading = function(delta) {
 
 Studio.Stage.prototype.activeloop = function(delta) {
 	if (Studio.progress === 2) {
-		if(!this.webgl) this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
-		this.draw(this.ctx);
 		this.timeStep(delta);
 		if (this._effects) {
 			this.runEffects(delta);
@@ -1788,7 +1788,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 			this.draw(this.ctx);
 			this.timeStep(delta);
 		}
-		this.drawProgress(this.ctx,delta);
+		if(!this.webgl) this.drawProgress(this.ctx,delta);
 
 		if (Studio.progress === 1) {
 			if (this.onReady) {
@@ -1808,7 +1808,6 @@ Studio.Stage.prototype.activeloop = function(delta) {
 Studio.Stage.prototype.loop = Studio.Stage.prototype.loading;
 
 Studio.Stage.prototype.drawProgress = function(ctx) {
-	ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
 	this.progressBar(ctx, Studio.progress);
 	ctx.restore();
 };
@@ -1982,6 +1981,8 @@ Studio.Stage.prototype.CANVAS = {
 	// can worry about user input and tweens. This should help prevent certain
 	// situation that could cause the frames to drop.
 	render: function(lag) {
+		this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
+		this.draw(this.ctx);
 		this.camera.render(this);
 		if (this.hasChildren) {
 			this.render_children(lag);

@@ -14,6 +14,8 @@ Studio.Stage.prototype.CANVAS = {
 	// can worry about user input and tweens. This should help prevent certain
 	// situation that could cause the frames to drop.
 	render: function(lag) {
+		this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
+		this.draw(this.ctx);
 		this.camera.render(this);
 		if (this.hasChildren) {
 			this.render_children(lag);

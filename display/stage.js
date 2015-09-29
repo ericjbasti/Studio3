@@ -118,7 +118,6 @@ Studio.Stage.prototype.allowPlugins = function(a) {
 }
 
 Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
-	console.log(fullscreen)
 	this.height = this.canvas.height;
 	this.width = this.canvas.width;
 	this.canvas.style.height = this.height + 'px';
@@ -275,8 +274,6 @@ Studio.Stage.prototype.loading = function(delta) {
 
 Studio.Stage.prototype.activeloop = function(delta) {
 	if (Studio.progress === 2) {
-		if(!this.webgl) this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
-		this.draw(this.ctx);
 		this.timeStep(delta);
 		if (this._effects) {
 			this.runEffects(delta);
@@ -288,7 +285,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 			this.draw(this.ctx);
 			this.timeStep(delta);
 		}
-		this.drawProgress(this.ctx,delta);
+		if(!this.webgl) this.drawProgress(this.ctx,delta);
 
 		if (Studio.progress === 1) {
 			if (this.onReady) {
@@ -308,7 +305,6 @@ Studio.Stage.prototype.activeloop = function(delta) {
 Studio.Stage.prototype.loop = Studio.Stage.prototype.loading;
 
 Studio.Stage.prototype.drawProgress = function(ctx) {
-	ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
 	this.progressBar(ctx, Studio.progress);
 	ctx.restore();
 };
