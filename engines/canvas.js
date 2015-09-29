@@ -14,6 +14,10 @@ Studio.Stage.prototype.CANVAS = {
 	// can worry about user input and tweens. This should help prevent certain
 	// situation that could cause the frames to drop.
 	render: function(lag) {
+		this.camera.render(this);
+		if (this.hasChildren) {
+			this.render_children(lag);
+		}
 		if (this.activeScene) {
 			if (this.activeScene.beforeDraw) {
 				this.activeScene.beforeDraw();
@@ -24,10 +28,6 @@ Studio.Stage.prototype.CANVAS = {
 			if (this.previousScene.active) {
 				this.previousScene.render(this , lag);
 			}
-		}
-		this.camera.render(this);
-		if (this.hasChildren) {
-			this.render_children(lag);
 		}
 	},
 

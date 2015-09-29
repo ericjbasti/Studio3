@@ -83,13 +83,13 @@ if (Object.defineProperty) {
 }
 
 if (!window.Studio) {
-	window.Studio = window.ß = {  // alt+S = ß just for those that hate writing things out.
+	window.Studio = {  // alt+S = ß just for those that hate writing things out.
 		stages: [],
 		stage: null,
 		tko: null,
 		assets: {length: 0},
 		queue: 0,
-		progress: 1,
+		progress: 0,
 		sin: Math.sin,
 		cos: Math.cos,
 		random: Math.random,

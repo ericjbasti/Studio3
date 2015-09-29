@@ -132,7 +132,6 @@ Studio.Stage.prototype.WEBGL = {
 	render:  function(lag) {
 		this.ctx._count = 0;
 		this.vertex_children(this.ctx, lag);
-
 		this.ctx.bufferData(this.ctx.ARRAY_BUFFER, this.ctx._batch, this.ctx.DYNAMIC_DRAW);
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
 		// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);

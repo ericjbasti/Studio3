@@ -37,7 +37,7 @@ Studio.Scene.prototype.setStyle = function(ctx) {
 
 Studio.Scene.prototype.draw = function(ctx) {
 	this.setAlpha(ctx);
-	
+	// return;
 	if (this.image) {
 		ctx.drawImage(this.image.image, this._x, this._y, this.width, this.height);
 		return;

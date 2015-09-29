@@ -28,7 +28,6 @@ Studio.Stage = function(domID, attr) {
 	if (attr) {
 		this.apply(attr);
 	}
-	
 	this._sizeCanvas(this.fullscreen);
 	this.setPixelRatio(1);
 	if (this.webgl) {
@@ -283,9 +282,14 @@ Studio.Stage.prototype.activeloop = function(delta) {
 			this.runEffects(delta);
 		}
 		return;
-
 	}else {
-		// this.drawProgress(this.ctx);
+		if(this.overlay_progress){
+			this.update_children();
+			this.draw(this.ctx);
+			this.timeStep(delta);
+		}
+		this.drawProgress(this.ctx,delta);
+
 		if (Studio.progress === 1) {
 			if (this.onReady) {
 				this.onReady(delta);
