@@ -1,16 +1,16 @@
 
-Studio.TextBox=function(width,height,ctx){
+Studio.TextBox=function(width,height,stage){
 	this.font = null;
 	this.lineHeight = 10;
 	this.image = document.createElement('canvas');
-	this.height= 300;
+	this.height= height;
 	this.width= width
 	this.shadow = true;
-	this.image.height = height * ctx.resolution || 256;
-	this.image.width =  width * ctx.resolution || 256;
+	this.image.height = height * stage.resolution || 256;
+	this.image.width =  width * stage.resolution || 256;
 	this._buffer = this.image.getContext('2d');
     this._buffer.imageSmoothingEnabled = false;
-	this._buffer.scale(ctx.resolution,ctx.resolution);
+	this._buffer.scale(stage.resolution,stage.resolution);
 	this._buffer.textBaseline = 'top';
 	this._buffer.font=this.font;
 	this.text = "";

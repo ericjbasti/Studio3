@@ -4,7 +4,7 @@
 
 Studio.Sprite = function(attr) {
 	this.image = null;
-	this.color = new Studio.Color(1, 1, 1, 1); 
+	this.color = new Studio.Color(1, 1, 1, 1);
 	this.slice = new Studio.Box(0, 0, 1, 1);
 	this._boundingBox = new Studio.Box();
 	if (attr) {
@@ -32,8 +32,8 @@ Studio.Sprite.prototype.draw = function(ctx, ratio) {
 	this.setAlpha(ctx);
 	if (this.angle) {
 		this.drawRotated(ctx);
-	}else {
-		
+	} else {
+
 		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height);
 	}
 };
@@ -48,14 +48,14 @@ Studio.Sprite.prototype.draw = function(ctx, ratio) {
 // Studio.DisplayGroup.prototype.constructor = Studio.DisplayGroup;
 
 // Studio.DisplayGroup.prototype.update = function(ctx){
-	
+
 // }
 
 // Studio.DisplayGroup.prototype.render = function(ctx){
 
 // }
 // Studio.DisplayGroup.prototype.draw = function(ctx){
-	
+
 // }
 
 Studio.ImageSlice = function(attr) {

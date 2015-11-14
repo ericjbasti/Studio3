@@ -1,10 +1,17 @@
 // These are used to enable compatablity with older browsers.
 // The canvas rendering engine will even work on an original iPhone running iOS 3.1 (13 sprites / 24 fps)
-// 
+//
+
+if (!window.console) {
+	var console = {
+		log: function() {},
+		warn: function() {},
+	};
+}
 
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if (!Object.keys) {
-	console.warn("This browser does not support Object.keys() . Using polyfill instead.");
+	console.warn('This browser does not support Object.keys() . Using polyfill instead.');
 	Object.keys = (function() {
 		var hasOwnProperty = Object.prototype.hasOwnProperty,
 			hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
@@ -44,15 +51,15 @@ if (!Object.keys) {
 	}());
 }
 
-if (typeof Object.create != 'function') {
-	console.warn("This browser does not support Object.create() . Using polyfill instead.");
+if (typeof Object.create !== 'function') {
+	console.warn('This browser does not support Object.create() . Using polyfill instead.');
 	Object.create = (function() {
 		var Temp = function() {};
 		return function(prototype) {
 			if (arguments.length > 1) {
 				throw Error('Second argument not supported');
 			}
-			if (typeof prototype != 'object') {
+			if (typeof prototype !== 'object') {
 				throw TypeError('Argument must be an object');
 			}
 			Temp.prototype = prototype;
@@ -70,7 +77,7 @@ if (typeof Object.create != 'function') {
 		window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
 	}
 	if (!window.requestAnimationFrame) {
-		console.warn("This browser does not support requestAnimationFrame() . Using setTimeout() instead.");
+		console.warn('This browser does not support requestAnimationFrame() . Using setTimeout() instead.');
 		window.requestAnimationFrame = function(callback) {
 			var id = window.setTimeout(function() {
 				callback(Date.now());

@@ -34,7 +34,7 @@ Studio.Stage = function(domID, attr) {
 		this.engine = Studio.Stage.prototype.WEBGL;
 	}
 	this.allowPlugins();
-
+	
 	// We need to prepare the canvas element for use.
 	// First we need to grab the appropriate context based on the engine type
 	this.engine.getContext.call(this);
