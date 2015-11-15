@@ -57,8 +57,8 @@ Studio.Rect.prototype.setStyle = function(ctx) {
 };
 
 Studio.Rect.prototype.prepAngled = function(ctx) {
-	if (this._x || this._y) {
-		ctx.translate(this._x, this._y);
+	if (this._dx || this._dy) {
+		ctx.translate(this._dx, this._dy);
 	}
 	ctx.rotate(this.angle || 0);
 

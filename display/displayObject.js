@@ -1,77 +1,9 @@
+
 /**
  * DisplayObject
  * The base for all visual objects in the studio.
  */
 
-Studio.Box = function(left, top, width, height) {
-	this.left = left || 0;
-	this.top = top || 0;
-	this.right = left + width || 1;
-	this.bottom = top + height || 1;
-	return this;
-}
-
-Studio.Box.prototype = {
-	constructor: Studio.Box,
-	set: function(left, top, width, height) {
-		this.left = left || this.left;
-		this.top = top || this.top;
-		this.right = left + width || this.right;
-		this.bottom = top + height || this.bottom;
-	},
-	get_bounds: function(who) {
-		// if(who._rotation){
-		// this.get_rotated_bounds(who);
-		// }else{
-		this.get_straight_bounds(who);
-		// }
-	},
-	get_straight_bounds: function(who) {
-		this.left = who._dx - who._width * who.anchorX;
-		this.right = this.left + who._width;
-		this.top = who._dy - who._height * who.anchorY;
-		this.bottom = this.top + who._height;
-	},
-	get_rotated_bounds: function(who) {
-		this.left = who._x - who._width * who.anchorX * 2;
-		this.right = this.left + who._width * 3;
-		this.top = who._y - who._height * who.anchorY * 3;
-		this.bottom = this.top + who._height * 2;
-	},
-};
-
-Studio.Color = function(r, g, b, a) {
-	this.r = r / 255 || 0;
-	this.g = g / 255 || 0;
-	this.b = b / 255 || 0;
-	this.a = a || 1;
-	this.style = "rgba(255,255,255,1)";
-
-	this.build_style();
-
-	return this;
-}
-
-Studio.Color.prototype = {
-	constructor: Studio.Color,
-	set: function(r, g, b, a) {
-		this.r = r / 255;
-		this.g = g / 255;
-		this.b = b / 255;
-		this.a = a;
-		this.build_style();
-	},
-	build_style: function() {
-		this.style = "rgba(" + parseInt(this.r * 255) + "," + parseInt(this.g * 255) + "," + parseInt(this.b * 255) + "," + this.a + ")";
-	},
-	hex: function(hex) {
-
-	},
-};
-
-Studio.RED = new Studio.Color(204, 0, 17, 1);
-Studio.YELLOW = new Studio.Color(255, 221, 34, 1);
-Studio.BLUE = new Studio.Color(51, 170, 255, 1);
 
 // Studio.DisplayProperty = function(attr){
 // 	this.x        = 0;
@@ -101,8 +33,6 @@ Studio.BLUE = new Studio.Color(51, 170, 255, 1);
 // 		this.apply(attr);
 // 	}
 // }
-
-
 
 Studio.DisplayObject = function(attr) {
 	// Dimensional Settings:
@@ -180,7 +110,7 @@ Studio.DisplayObject = function(attr) {
 Studio.DisplayObject.prototype = {
 
 	constructor: Studio.DisplayObject,
-
+	blendmode: 'source-over',
 	// apply takes an object
 	apply: Studio.apply,
 	
@@ -315,6 +245,9 @@ Studio.DisplayObject.prototype = {
 		if (this._alpha !== ctx.globalAlpha && this._visible) {
 			ctx.globalAlpha = this._alpha;
 		}
+		if (this.blendmode !== ctx.globalCompositeOperation && this._visible) {
+			ctx.globalCompositeOperation = this.blendmode;
+		}
 	},
 	update_scale: function() {
 		this._scaleX  = this.parent._scaleX * this.scaleX;
@@ -333,13 +266,13 @@ Studio.DisplayObject.prototype = {
 	update_rotation: function() {
 		if (this.inheritRotation) {
 			this._rotation = this.parent._rotation + this.rotation;
-		}else {
+		} else {
 			this._rotation = this.rotation;
 		}
 		if (this._rotation) { // jsperf says not being strict about the type is fastest
 			// so this._rotation > this._rotation !=0 || this._rotation !== 0
 			this.update_angle();
-		}else {
+		} else {
 			this.angle = 0;
 		}
 	},
@@ -351,7 +284,7 @@ Studio.DisplayObject.prototype = {
 	update_xy: function() {
 		if (this.orbits && this.parent.angle) {
 			this.update_orbit_xy();
-		}else {
+		} else {
 			this._x  = (this.x * this.parent._scaleX) + this.parent._x;
 			this._y  = (this.y * this.parent._scaleY) + this.parent._y;
 		}
@@ -363,6 +296,10 @@ Studio.DisplayObject.prototype = {
 	_delta: function(ratio) {
 		this._dx = this.__x + ((this._x - this.__x) * ratio);
 		this._dy = this.__y + ((this._y - this.__y) * ratio);
+	},
+	_snapback: function() {
+		this.force_update();
+		this.snapshot();
 	},
 	force_update: function() {
 		this.update_visibility();

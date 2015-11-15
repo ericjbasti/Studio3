@@ -1,6 +1,7 @@
 
 // @codekit-prepend "requirements.js"
-
+// @codekit-append "display/_box.js"
+// @codekit-append "display/_color.js"
 // @codekit-append "display/displayObject.js"
 // @codekit-append "display/LinkedList.js"
 // @codekit-append "display/DisplayList.js"

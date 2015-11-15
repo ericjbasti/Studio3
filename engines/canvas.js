@@ -40,7 +40,6 @@ Studio.fixedTimeStep = function(delta) {
 	this.render(this._lag);
 	this.fixedStep();
 	this.camera.update(this);
-
 }
 
 Studio.simple = function(delta) {

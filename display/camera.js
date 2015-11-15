@@ -24,8 +24,8 @@ Studio.Camera.prototype.updateRect = function() {
 
 Studio.Camera.prototype.update = function(stage) {
 	if (this.tracking) { // are we following a DisplayObject?
-		this.x     = (this.tracking._x * this.scaleX) - this.stage.width / 2 ;
-		this.y     = (this.tracking._y * this.scaleY) - this.stage.height / 2 ;
+		this.x     = (this.tracking._dx * this.scaleX) - this.stage.width / 2 ;
+		this.y     = (this.tracking._dy * this.scaleY) - this.stage.height / 2 ;
 		// this.angle = this.tracking.angle || 0 ;
 	}
 	if (this.bound) { // are we bound to a DisplayObject? this can be the main stage if you want.
@@ -44,6 +44,7 @@ Studio.Camera.prototype.update = function(stage) {
 };
 
 Studio.Camera.prototype.render = function(stage) {
+	// console.log(this.x-((this.tracking._dx* this.scaleX) - this.stage.width / 2), this.y-((this.tracking._dy* this.scaleY) - this.stage.height / 2));
 	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) {
 		stage.ctx.setTransform(stage.resolution * this.scaleX, 0, 0, stage.resolution * this.scaleY, -this.x * stage.resolution, -this.y * stage.resolution);
 	}

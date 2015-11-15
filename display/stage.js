@@ -229,9 +229,6 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 	this._speed = this.camera.speed;
 	this.update_visibility();
 	if (Studio.progress === 2) {
-		// if(this.camera.active){
-		// 	this.camera.update(this);
-		// }
 		if (this.activeScene) {
 			this.activeScene.update(ratio, delta);
 		}
@@ -251,7 +248,6 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 			this.beforeDraw();
 		}
 	}
-	// this.camera.update(this);
 };
 
 Studio.Stage.prototype.runEffects = function(delta) {
@@ -280,12 +276,12 @@ Studio.Stage.prototype.activeloop = function(delta) {
 		}
 		return;
 	}else {
-		if(this.overlay_progress){
-			this.update_children();
-			this.draw(this.ctx);
-			this.timeStep(delta);
-		}
-		if(!this.webgl) this.drawProgress(this.ctx,delta);
+		// if(this.overlay_progress){
+		// 	this.update_children();
+		// 	this.draw(this.ctx);
+		// 	this.timeStep(delta);
+		// }
+		// if(!this.webgl) this.drawProgress(this.ctx,delta);
 
 		if (Studio.progress === 1) {
 			if (this.onReady) {

@@ -70,11 +70,11 @@ Studio._tween_object = function(who, ease, to, duration, callback){
 Studio._tween_object.prototype.constructor = Studio._tween_object;
 
 Studio._tween_object.prototype.loop= function(setting){
-	this._loop = setting;
+	this._loop = true;
 	return this;
 }
 Studio._tween_object.prototype.reflect= function(setting){
-	this._reflect = setting;
+	this._reflect = true;
 	return this;
 }
 Studio._tween_object.prototype.setActor= function(actor){
