@@ -16,7 +16,7 @@ Studio.Stage.prototype.CANVAS = {
 	render: function(lag) {
 		this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
 		this.draw(this.ctx);
-		this.camera.render(this);
+		this.camera.render(this,lag);
 		if (this.hasChildren) {
 			this.render_children(lag);
 		}
@@ -39,13 +39,11 @@ Studio.fixedTimeStep = function(delta) {
 	this.step(delta);
 	this.render(this._lag);
 	this.fixedStep();
-	this.camera.update(this);
 }
 
 Studio.simple = function(delta) {
 	this.render(1);
 	this.update();
-	this.camera.update(this);
 }
 
 Studio.Stage.prototype.timeStep = Studio.fixedTimeStep;

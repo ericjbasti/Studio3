@@ -6,8 +6,9 @@ Studio.TextBox=function(width,height,stage){
 	this.height= height;
 	this.width= width
 	this.shadow = true;
-	this.image.height = height * stage.resolution || 256;
-	this.image.width =  width * stage.resolution || 256;
+	this.image.height = height;
+	this.image.width =  width;
+
 	this._buffer = this.image.getContext('2d');
     this._buffer.imageSmoothingEnabled = false;
 	this._buffer.scale(stage.resolution,stage.resolution);
@@ -18,6 +19,7 @@ Studio.TextBox=function(width,height,stage){
 	this.color='#fff'
 	this._wrap_height = this.lineHeight;
 	this.centered = false;
+	document.body.appendChild(this.image);
 };
 
 Studio.TextBox.prototype = new Studio.Rect();

@@ -22,8 +22,9 @@ Studio.Camera.prototype.updateRect = function() {
 	this.bottom	= this.bound._height * this.scaleY - this.stage.height ; 
 };
 
-Studio.Camera.prototype.update = function(stage) {
+Studio.Camera.prototype.update = function(stage, ratio) {
 	if (this.tracking) { // are we following a DisplayObject?
+		this.tracking._delta(ratio);
 		this.x     = (this.tracking._dx * this.scaleX) - this.stage.width / 2 ;
 		this.y     = (this.tracking._dy * this.scaleY) - this.stage.height / 2 ;
 		// this.angle = this.tracking.angle || 0 ;
@@ -43,7 +44,8 @@ Studio.Camera.prototype.update = function(stage) {
 	} 
 };
 
-Studio.Camera.prototype.render = function(stage) {
+Studio.Camera.prototype.render = function(stage,ratio) {
+	this.update(stage,ratio);
 	// console.log(this.x-((this.tracking._dx* this.scaleX) - this.stage.width / 2), this.y-((this.tracking._dy* this.scaleY) - this.stage.height / 2));
 	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) {
 		stage.ctx.setTransform(stage.resolution * this.scaleX, 0, 0, stage.resolution * this.scaleY, -this.x * stage.resolution, -this.y * stage.resolution);

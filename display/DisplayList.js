@@ -21,7 +21,7 @@ Studio.DisplayList.prototype.cacheAsBitmap = function(who) {
 	this.cache.width = this.width * who.resolution  || 320;
 	this.ctx = this.cache.getContext('2d');
 	this.ctx.scale(who.resolution, who.resolution);
-	// document.body.appendChild(this.cache);
+	document.body.appendChild(this.cache);
 }
 
 Studio.DisplayList.prototype.updateCache = function() {

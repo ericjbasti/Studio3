@@ -1,5 +1,4 @@
 if (!window.Ejecta) {// if not running through EJECTA we need to build out a couple items
-	var iAd = new Studio.Image('ad.png');
 	var Ejecta = {
 		AdBanner: function() {
 			this.isAtBottom = false;

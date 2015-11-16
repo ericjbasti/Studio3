@@ -23,4 +23,3 @@ window.ondevicemotion = function(e) {
 	Studio.rotationRate.beta  += (e.rotationRate.beta - Studio.rotationRate.beta) / 20;
 	Studio.rotationRate.gamma += (e.rotationRate.gamma - Studio.rotationRate.gamma) / 20;
 }
-// }

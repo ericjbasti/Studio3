@@ -292,10 +292,12 @@ Studio.DisplayObject.prototype = {
 	snapshot: function() {
 		this.__x = this._x;
 		this.__y = this._y;
+		this._angle = this.angle;
 	},
 	_delta: function(ratio) {
 		this._dx = this.__x + ((this._x - this.__x) * ratio);
 		this._dy = this.__y + ((this._y - this.__y) * ratio);
+		this._dAngle = this._angle + ((this.angle - this._angle) * ratio);
 	},
 	_snapback: function() {
 		this.force_update();

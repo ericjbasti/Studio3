@@ -60,7 +60,7 @@ Studio.Rect.prototype.prepAngled = function(ctx) {
 	if (this._dx || this._dy) {
 		ctx.translate(this._dx, this._dy);
 	}
-	ctx.rotate(this.angle || 0);
+	ctx.rotate(this._dAngle || 0);
 
 	if (this._scaleX !== 1 || this._scaleY !== 1) {
 		ctx.scale(this._scaleX, this._scaleY);
