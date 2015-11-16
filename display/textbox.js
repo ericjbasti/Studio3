@@ -19,7 +19,7 @@ Studio.TextBox=function(width,height,stage){
 	this.color='#fff'
 	this._wrap_height = this.lineHeight;
 	this.centered = false;
-	document.body.appendChild(this.image);
+	// document.body.appendChild(this.image);
 };
 
 Studio.TextBox.prototype = new Studio.Rect();

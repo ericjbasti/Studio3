@@ -25,7 +25,7 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 	this.mouse_onDown = function(touch) {
 		if (this.buttons && !this._pause_buttons) {
 			for (var i = 0; i != this.buttons.length; i++) {
-				if (this.buttons[i]._touchID) {
+				if (this.buttons[i]._touchID || !this.buttons[i]._visible) {
 
 					// already tapped by someone so lets leave it alone
 				} else {

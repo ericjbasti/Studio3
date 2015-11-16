@@ -17,9 +17,6 @@ Studio.Stage.prototype.CANVAS = {
 		this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
 		this.draw(this.ctx);
 		this.camera.render(this,lag);
-		if (this.hasChildren) {
-			this.render_children(lag);
-		}
 		if (this.activeScene) {
 			if (this.activeScene.beforeDraw) {
 				this.activeScene.beforeDraw();
@@ -30,6 +27,9 @@ Studio.Stage.prototype.CANVAS = {
 			if (this.previousScene.active) {
 				this.previousScene.render(this , lag);
 			}
+		}
+		if (this.hasChildren) {
+			this.render_children(lag);
 		}
 	},
 
@@ -46,7 +46,7 @@ Studio.simple = function(delta) {
 	this.update();
 }
 
-Studio.Stage.prototype.timeStep = Studio.fixedTimeStep;
+Studio.Stage.prototype.timeStep = Studio.simple;
 
 Studio.Stage.prototype.fixedStep = function() {
 	while (this._d >= this.dur) {

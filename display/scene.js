@@ -3,7 +3,7 @@
  */
 
 Studio.Scene = function(attr) {
-	this.color = null;
+	this.color = new Studio.Color();
 	this.active = false;
 	this.image = null;
 	this.loader = null;

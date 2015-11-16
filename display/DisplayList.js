@@ -15,24 +15,24 @@ Studio.DisplayList = function(attr) {
 Studio.DisplayList.prototype = new Studio.DisplayObject();
 Studio.DisplayList.prototype.constructor = Studio.DisplayList;
 
-Studio.DisplayList.prototype.cacheAsBitmap = function(who) {
+Studio.DisplayList.prototype.cacheAsBitmap = function(stage) {
 	this.cache = document.createElement('canvas');
-	this.cache.height = this.height * who.resolution || 400;
-	this.cache.width = this.width * who.resolution  || 320;
+	this.cache.height = this.height * stage.resolution;
+	this.cache.width = this.width * stage.resolution;
 	this.ctx = this.cache.getContext('2d');
-	this.ctx.scale(who.resolution, who.resolution);
-	document.body.appendChild(this.cache);
+	this.ctx.scale(stage.resolution, stage.resolution);
+	// document.body.appendChild(this.cache);
 }
 
 Studio.DisplayList.prototype.updateCache = function() {
 	this.cached = false;
 	this.ctx.clearRect(0, 0, this.width, this.height);
-	this.render(this);
+	this.render(this,1);
 	this.cached = true;
 }
 Studio.DisplayList.prototype._cacheIt = function() {
 	this.ctx.clearRect(0, 0, this.width, this.height);
-	this.render(this);
+	this.render(this,1);
 }
 Studio.DisplayList.prototype.updateElement = function(who) {
 	who.render(this);
@@ -61,7 +61,7 @@ Studio.DisplayList.prototype.deactivateCache = function() {
 	this.cached = false;
 }
 
-Studio.DisplayList.prototype.update = function(e, f) {
+Studio.DisplayList.prototype.update = function() {
 	if (this.marked.length) {
 		this.removeMarked();
 	}
@@ -75,7 +75,7 @@ Studio.DisplayList.prototype.update = function(e, f) {
 	var listItem = this.first;
 	while (listItem) {
 		this.next = listItem.next;
-		listItem.update(e, f);
+		listItem.update();
 		listItem = listItem.next || this.next;
 	}
 	if (!this.cached && this.autoCache && this.ctx) {
@@ -83,19 +83,19 @@ Studio.DisplayList.prototype.update = function(e, f) {
 	}
 }
 
-Studio.DisplayList.prototype.render = function(e, f) {
+Studio.DisplayList.prototype.render = function(stage, ratio) {
 	if (this.cached) {
-		if (this._alpha !== e.ctx.globalAlpha) {
-			e.ctx.globalAlpha = this._alpha;
+		if (this._alpha !== stage.ctx.globalAlpha) {
+			stage.ctx.globalAlpha = this._alpha;
 		}
-		this.draw(e.ctx);
+		this.draw(stage.ctx);
 	}else {
 		
 		var listItem = this.first;
 		while (listItem) {
 			this.next = listItem.next;
-			listItem._delta(f);
-			listItem.render(e, f);
+			listItem._delta(ratio);
+			listItem.render(stage, ratio);
 			listItem = listItem.next || this.next;
 		}
 	}

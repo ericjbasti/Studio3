@@ -8,7 +8,7 @@ Studio.Plugin = function(attr) {
 
 Studio.Plugin.constructor = Studio.Plugin;
 
-Studio.Plugin.prototype.apply = Studio.DisplayObject.prototype.apply;
+Studio.Plugin.prototype.apply = Studio.apply;
 
 Studio.Plugin.prototype._options = function(a) {
 	for (var i in a) {
