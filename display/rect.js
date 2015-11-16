@@ -62,8 +62,8 @@ Studio.Rect.prototype.prepAngled = function(ctx) {
 	}
 	ctx.rotate(this._dAngle || 0);
 
-	if (this._scaleX !== 1 || this._scaleY !== 1) {
-		ctx.scale(this._scaleX, this._scaleY);
+	if (this._world.scaleX !== 1 || this._world.scaleY !== 1) {
+		ctx.scale(this._world.scaleX, this._world.scaleY);
 	}
 };
 
@@ -80,7 +80,7 @@ Studio.Rect.prototype.draw = function(ctx, ratio) {
 	if (this.angle) {
 		this.drawAngled(ctx);
 	}else {
-		ctx.fillRect(this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height);
+		ctx.fillRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 	}
 };
 

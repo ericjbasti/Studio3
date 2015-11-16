@@ -39,16 +39,16 @@ Studio.Scene.prototype.draw = function(ctx) {
 	this.setAlpha(ctx);
 	// return;
 	if (this.image) {
-		ctx.drawImage(this.image.image, this._x, this._y, this.width, this.height);
+		ctx.drawImage(this.image.image, this._world.x, this._world.y, this.width, this.height);
 		return;
 	}
 	if (this.color) {
 		if (this.color.a === 0) {
-			ctx.clearRect(this._x, this._y, this.width, this.height);
+			ctx.clearRect(this._world.x, this._world.y, this.width, this.height);
 			return;
 		}
 		this.setStyle(ctx);
-		ctx.fillRect(this._x, this._y,  this.width, this.height);
+		ctx.fillRect(this._world.x, this._world.y,  this.width, this.height);
 		return;
 	}
 };
