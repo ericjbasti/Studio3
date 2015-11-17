@@ -3,12 +3,13 @@
  */
 
 Studio.Scene = function(attr) {
-	this.color = null;
+	this.color = new Studio.Color(0,0,0,0);
 	this.active = false;
 	this.image = null;
 	this.loader = null;
 	this.assets = [];
 	this.children = [];
+	this._world = new Studio.DisplayProperty();
 	if (attr) {
 		this.apply(attr); 
 	}

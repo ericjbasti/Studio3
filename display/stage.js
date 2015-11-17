@@ -17,7 +17,7 @@ Studio.Stage = function(domID, attr) {
 	if (attr) {
 		this.apply(attr);
 	}
-	
+
 	this._getCanvasElement(domID);
 	this._count = 0;
 	this._maxCount = 16050;
