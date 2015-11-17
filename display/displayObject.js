@@ -5,34 +5,26 @@
  */
 
 
-// Studio.DisplayProperty = function(attr){
-// 	this.x        = 0;
-// 	this.y        = 0;
-// 	this.z        = 0;
-// 	this.height   = 1;
-// 	this.width    = 1;
-// 	this.scaleX   = 1;
-// 	this.scaleY   = 1;
-// 	this.anchorX  = 0.5;
-// 	this.anchorY  = 0.5;
-// 	this.rotation = 0;
+Studio.DisplayProperty = function(){
+	this.x        = 0;
+	this.y        = 0;
+	this.z        = 0;
+	this.height   = 1;
+	this.width    = 1;
+	this.scaleX   = 1;
+	this.scaleY   = 1;
+	this.anchorX  = 0.5;
+	this.anchorY  = 0.5;
+	this.rotation = 0;
+	this.angle 	  = 0;
+	this.alpha 	  = 1;
+	this.speed 	  = 1;
+}
 
-// 	this.alpha   = 1; // sets the opacity/alpha of an object
-// 	this.visible = 1; // invisible items are ignored when rendering
-// 	this.speed   = 1; // the local speed of an object
-// 	this.active  = 1; // set as inactive, and we never try to render 
-// 	// or update this or its children. Use this to
-// 	// manually pool objects
-
-// 	// Rotation Settings:
-// 	this.orbits = true;
-// 	this.inheritRotation = true;
-// 	this.orbit_speed = 1;
-	
-// 	if (attr) {
-// 		this.apply(attr);
-// 	}
-// }
+Studio.DisplayProperty.prototype = {
+	constructor: Studio.DisplayProperty,
+	apply: Studio.apply
+}
 
 Studio.DisplayObject = function(attr) {
 	// Dimensional Settings:
@@ -64,26 +56,7 @@ Studio.DisplayObject = function(attr) {
 	if (attr) {
 		this.apply(attr);
 	}
-
-	// Inherited Attributes:
-	// if it starts with an _ it will be overwritten.
-	// These are used by the engine and you to know exactly where an item is in
-	// reference to the stage, not its parent. we will default all of these
-	// varibales to their own property values. However once the engine starts
-	// these variables will change.
-	this._x = this.x;
-	this._y = this.y;
-	this._scaleX = this.scaleX;
-	this._scaleY = this.scaleY;
-	this._width  = this.width * this._scaleX;
-	this._height = this.height * this._scaleY;
-	this._anchoredX = this.anchorX * this._width;
-	this._anchoredY = this.anchorY * this._height;
-
 	this._boundingBox = new Studio.Box();
-
-	this._rotation = this.rotation;
-	this._speed  = this.speed;
 	this._alpha = this.alpha;
 	this._visible = this.alpha * this.visible; // if either value = 0 we wont draw it to the screen... save some cycles.
 	// Children Information
@@ -96,31 +69,30 @@ Studio.DisplayObject = function(attr) {
 
 	// set any of these to false if you know they will never be needed.
 	// this will increase performace, by reducing calculations done per object per frame.
-	this.__update_XY = true;
-	this.__update_SCALE = true;
-	this.__update_DIMENSIONS = true;
-	this.__update_SPEED = true;
-	this.__update_ALPHA = true;
-	this.__update_ROTATION = true;
 
-	this.__x = this._x;
-	this.__y = this._y;
+	this.__x = this._world.x;
+	this.__y = this._world.y;
 };
 
 Studio.DisplayObject.prototype = {
-
 	constructor: Studio.DisplayObject,
+	_world: new Studio.DisplayProperty(),
 	blendmode: 'source-over',
 	// apply takes an object
 	apply: Studio.apply,
-	
+	__update_XY: true,
+	__update_SCALE: true,
+	__update_DIMENSIONS: true,
+	__update_SPEED: true,
+	__update_ALPHA: true,
+	__update_ROTATION: true,
 	addChild: function(child) {
 		// Adds a child to this object
 
 		if (!this.hasOwnProperty("children")) {
 			this.children = []; // if we didn't use 'hasOwnProperty', we would learn that JS treats [] like pointers and in this particular case will cause a crash.
 		}
-		child.parent = this;
+		child.parent = this._world;
 		this.children[this.hasChildren] = child;
 		this.hasChildren++;
 
@@ -154,14 +126,6 @@ Studio.DisplayObject.prototype = {
 	},
 	_order: function() {
 		this.children.sort(Studio.z_index);
-	},
-	orbitXY: function() {
-		var x = this.x;
-		var y = this.y;
-		var sin = Studio.sin(this.parent.angle * this.orbit_speed);
-		var cos = Studio.cos(this.parent.angle * this.orbit_speed);
-		this._orbitX = (x * cos) - (y * sin);
-		this._orbitY = (x * sin) + (y * cos);
 	},
 	draw: function(ratio) {
 	},
@@ -226,51 +190,58 @@ Studio.DisplayObject.prototype = {
 		}
 	},
 	update_children: function(ratio, delta) {
-		if (this.hasChildren) {
-			for (var i = 0; i !== this.hasChildren; i++) {
-				this.children[i].update(ratio, delta);
-			}
+		if(!this.hasChildren) return;
+		
+		for (var i = 0; i !== this.hasChildren; i++) {
+			this.children[i].update(ratio, delta);
 		}
 	},
 	update_visibility: function() {
-		this._alpha = this.alpha * this.parent._alpha;
+		this._world.alpha = this.alpha * this.parent.alpha;
 		//if(this._alpha > 0){
-		this._visible = this._alpha * this.visible;
+		this._visible = this._world.alpha * this.visible;
 		// }else{
 		// 	this._visible = false;
 		// }
 		
 	},
 	setAlpha: function(ctx) {
-		if (this._alpha !== ctx.globalAlpha && this._visible) {
-			ctx.globalAlpha = this._alpha;
+		if (this._world.alpha !== ctx.globalAlpha && this._visible) {
+			ctx.globalAlpha = this._world.alpha;
 		}
 		if (this.blendmode !== ctx.globalCompositeOperation && this._visible) {
 			ctx.globalCompositeOperation = this.blendmode;
 		}
 	},
 	update_scale: function() {
-		this._scaleX  = this.parent._scaleX * this.scaleX;
-		this._scaleY  = this.parent._scaleY * this.scaleY;
+		this._world.scaleX  = this.parent.scaleX * this.scaleX;
+		this._world.scaleY  = this.parent.scaleY * this.scaleY;
 	},
 	update_dimensions: function() {
-		this._width = this.width * this._scaleX;
-		this._height = this.height * this._scaleY;
+		this._world.width = this.width * this._world.scaleX;
+		this._world.height = this.height * this._world.scaleY;
 	},
 	update_angle: function() {
-		this.angle = (this._rotation / 180 * 3.14159265);
+		this.angle = (this._world.rotation / 180 * 3.14159265);
 	},
 	update_speed: function() {
-		this._speed = this.speed * this.parent._speed;
+		this._world.speed = this.speed * this.parent.speed;
+	},
+	orbitXY: function() {
+		var x = this.x;
+		var y = this.y;
+		var sin = Studio.sin(this.parent.angle * this.orbit_speed);
+		var cos = Studio.cos(this.parent.angle * this.orbit_speed);
+		this._orbitX = (x * cos) - (y * sin);
+		this._orbitY = (x * sin) + (y * cos);
 	},
 	update_rotation: function() {
 		if (this.inheritRotation) {
-			this._rotation = this.parent._rotation + this.rotation;
+			this._world.rotation = this.parent.rotation + this.rotation;
 		} else {
-			this._rotation = this.rotation;
+			this._world.rotation = this.rotation;
 		}
-		if (this._rotation) { // jsperf says not being strict about the type is fastest
-			// so this._rotation > this._rotation !=0 || this._rotation !== 0
+		if (this._world.rotation) {
 			this.update_angle();
 		} else {
 			this.angle = 0;
@@ -278,26 +249,26 @@ Studio.DisplayObject.prototype = {
 	},
 	update_orbit_xy: function() {
 		this.orbitXY();
-		this._x = (this._orbitX * this.parent._scaleX) + this.parent._x;
-		this._y = (this._orbitY * this.parent._scaleY) + this.parent._y;
+		this._world.x = (this._orbitX * this.parent.scaleX) + this.parent.x;
+		this._world.y = (this._orbitY * this.parent.scaleY) + this.parent.y;
 	},
 	update_xy: function() {
 		if (this.orbits && this.parent.angle) {
 			this.update_orbit_xy();
 		} else {
-			this._x  = (this.x * this.parent._scaleX) + this.parent._x;
-			this._y  = (this.y * this.parent._scaleY) + this.parent._y;
+			this._world.x  = (this.x * this.parent.scaleX) + this.parent.x;
+			this._world.y  = (this.y * this.parent.scaleY) + this.parent.y;
 		}
 	},
 	snapshot: function() {
-		this.__x = this._x;
-		this.__y = this._y;
-		this._angle = this.angle;
+		this.__x = this._world.x;
+		this.__y = this._world.y;
+		this._world.angle = this.angle;
 	},
 	_delta: function(ratio) {
-		this._dx = this.__x + ((this._x - this.__x) * ratio);
-		this._dy = this.__y + ((this._y - this.__y) * ratio);
-		this._dAngle = this._angle + ((this.angle - this._angle) * ratio);
+		this._dx = this.__x + ((this._world.x - this.__x) * ratio);
+		this._dy = this.__y + ((this._world.y - this.__y) * ratio);
+		this._dAngle = this._world.angle + ((this.angle - this._world.angle) * ratio);
 	},
 	_snapback: function() {
 		this.force_update();

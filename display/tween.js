@@ -3,7 +3,7 @@ Studio.Stage.prototype.update_tweens = function(){
 	var tween,key, delta;
 	for (i in this.tweens){
 		tween = this.tweens[i];
-		tween.cur+=((Studio.delta)*tween.actor._speed);
+		tween.cur+=((Studio.delta)*tween.actor._world.speed);
 		if(!tween.dir) {
 			delta = tween.cur/tween.duration;
 		}else{

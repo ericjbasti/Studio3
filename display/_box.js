@@ -22,15 +22,15 @@ Studio.Box.prototype = {
 		// }
 	},
 	get_straight_bounds: function(who) {
-		this.left = who._dx - who._width * who.anchorX;
-		this.right = this.left + who._width;
-		this.top = who._dy - who._height * who.anchorY;
-		this.bottom = this.top + who._height;
+		this.left = who._dx - who._world.width * who.anchorX;
+		this.right = this.left + who._world.width;
+		this.top = who._dy - who._world.height * who.anchorY;
+		this.bottom = this.top + who._world.height;
 	},
 	get_rotated_bounds: function(who) {
-		this.left = who._x - who._width * who.anchorX * 2;
-		this.right = this.left + who._width * 3;
-		this.top = who._y - who._height * who.anchorY * 3;
-		this.bottom = this.top + who._height * 2;
+		this.left = who._world.x - who._world.width * who.anchorX * 2;
+		this.right = this.left + who._world.width * 3;
+		this.top = who._world.y - who._world.height * who.anchorY * 3;
+		this.bottom = this.top + who._world.height * 2;
 	},
 };

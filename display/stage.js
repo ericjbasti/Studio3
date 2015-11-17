@@ -21,7 +21,6 @@ Studio.Stage = function(domID, attr) {
 	this._getCanvasElement(domID);
 	this._count = 0;
 	this._maxCount = 16050;
-	this.resolution = 1; 
 	this.dur = 1000 / 60;
 	this._d = 0;
 

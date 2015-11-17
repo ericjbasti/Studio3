@@ -49,7 +49,7 @@ Studio.Color.prototype = {
 			hex += 'ff';
 		}
 		// take each value besides [0] an convert it to RGBA since that works for both Canvas and WebGL
-		this.set('0x' + hex[1] + hex[2] | 0, '0x' + hex[3] + hex[4] | 0, '0x' + hex[5] + hex[6] | 0, '0x' + hex[7] + hex[8] | 0);
+		this.set('0x' + hex[1] + hex[2] | 0, '0x' + hex[3] + hex[4] | 0, '0x' + hex[5] + hex[6] | 0, ('0x' + hex[7] + hex[8] | 0)/255);
 		return this;
 	},
 	_build_style: function() {
