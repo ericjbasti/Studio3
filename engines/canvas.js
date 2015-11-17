@@ -46,7 +46,7 @@ Studio.simple = function(delta) {
 	this.update();
 }
 
-Studio.Stage.prototype.timeStep = Studio.simple;
+Studio.Stage.prototype.timeStep = Studio.fixedTimeStep;
 
 Studio.Stage.prototype.fixedStep = function() {
 	while (this._d >= this.dur) {
