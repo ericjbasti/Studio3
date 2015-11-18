@@ -7,6 +7,7 @@ Studio.Sprite = function(attr) {
 	this.color = new Studio.Color(1, 1, 1, 1);
 	this.slice = new Studio.Box(0, 0, 1, 1);
 	this._boundingBox = new Studio.Box();
+	this._world = new Studio.DisplayProperty();
 	if (attr) {
 		this.apply(attr);
 	}
@@ -34,7 +35,7 @@ Studio.Sprite.prototype.draw = function(ctx, ratio) {
 		this.drawRotated(ctx);
 	} else {
 
-		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height);
+		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 	}
 };
 
@@ -77,7 +78,7 @@ Studio.ImageSlice.prototype.draw = function(ctx) {
 		return;
 	}
 	this.setAlpha(ctx);
-	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height);
+	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 };
 
 // SPRITEANIMATION --- just like a Sprite but uses a SpriteSheet to render, and as such has frames, framerates etc...
@@ -114,7 +115,7 @@ Studio.SpriteAnimation.prototype.draw = function(ctx, ratio) {
 		return;
 	}
 	this.setAlpha(ctx);
-	ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorX), this._width, this._height);
+	ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorX), this._world.width, this._world.height);
 	if (this.loop.length) {
 		this.updateFrame();
 	}
