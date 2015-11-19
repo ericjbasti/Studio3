@@ -62,6 +62,7 @@ Studio.Sprite.prototype.draw = function(ctx, ratio) {
 Studio.ImageSlice = function(attr) {
 	this.image = null;
 	this.rect = {x: 0, y: 0, height: 32, width: 32};
+	this._world = new Studio.DisplayProperty();
 	if (attr) {
 		this.apply(attr);
 	}

@@ -61,10 +61,10 @@ Studio.Rect.prototype.prepAngled = function(ctx) {
 	if (this._dx || this._dy) {
 		ctx.translate(this._dx, this._dy);
 	}
+	ctx.rotate(this._dAngle || 0);
 	if (this._world.scaleX !== 1 || this._world.scaleY !== 1) {
 		ctx.scale(this._world.scaleX, this._world.scaleY);
 	}
-	ctx.rotate(this._dAngle || 0);
 };
 
 Studio.Rect.prototype.drawAngled = function(ctx) {
