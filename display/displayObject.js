@@ -228,8 +228,8 @@ Studio.DisplayObject.prototype = {
 		this._world.speed = this.speed * this.parent.speed;
 	},
 	orbitXY: function() {
-		var x = this.x;
-		var y = this.y;
+		var x = this.x * this._world.scaleX;
+		var y = this.y * this._world.scaleY;
 		var sin = Studio.sin(this.parent.angle * this.orbit_speed);
 		var cos = Studio.cos(this.parent.angle * this.orbit_speed);
 		this._orbitX = (x * cos) - (y * sin);
@@ -249,8 +249,8 @@ Studio.DisplayObject.prototype = {
 	},
 	update_orbit_xy: function() {
 		this.orbitXY();
-		this._world.x = (this._orbitX * this.parent.scaleX) + this.parent.x;
-		this._world.y = (this._orbitY * this.parent.scaleY) + this.parent.y;
+		this._world.x = this._orbitX + this.parent.x;
+		this._world.y = this._orbitY + this.parent.y;
 	},
 	update_xy: function() {
 		if (this.orbits && this.parent.angle) {
