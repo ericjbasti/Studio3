@@ -92,6 +92,9 @@ Studio.DisplayObject.prototype = {
 		if (!this.hasOwnProperty("children")) {
 			this.children = []; // if we didn't use 'hasOwnProperty', we would learn that JS treats [] like pointers and in this particular case will cause a crash.
 		}
+		if (!child.hasOwnProperty("_world")) {
+			console.warn('This child is missing _world = new Studio.DisplayProperty(); the code will still run, but it is very likely to act in unexpected ways.')
+		}
 		child.parent = this._world;
 		this.children[this.hasChildren] = child;
 		this.hasChildren++;
