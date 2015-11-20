@@ -5,7 +5,6 @@
 Studio.Sprite = function(attr) {
 	this.image = null;
 	this.color = new Studio.Color(1, 1, 1, 1);
-	this.slice = new Studio.Box(0, 0, 1, 1);
 	this._boundingBox = new Studio.Box();
 	this._world = new Studio.DisplayProperty();
 	if (attr) {
@@ -13,10 +12,11 @@ Studio.Sprite = function(attr) {
 	}
 };
 
-Studio.Sprite.prototype = new Studio.Rect();
-Studio.Sprite.prototype.constructor = Studio.Sprite;
+Studio.extends(Studio.Sprite, Studio.Rect);
 
-Studio.Sprite.prototype.drawRotated = function(ctx) {
+
+
+Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
 	ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, -(this.width * this.anchorX), -(this.height * this.anchorY), this.width, this.height);
@@ -32,46 +32,43 @@ Studio.Sprite.prototype.draw = function(ctx, ratio) {
 	}
 	this.setAlpha(ctx);
 	if (this.angle) {
-		this.drawRotated(ctx);
+		this.drawAngled(ctx);
 	} else {
 
 		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 	}
 };
 
-// Studio.DisplayGroup = function(){
-// 	this.image ={ready:true};
-// 	this.image.image = document.createElement('canvas');
-// 	this.imageCTX = this.image.image.getContext('2d');
-// };
 
-// Studio.DisplayGroup.prototype = new Studio.Sprite();
-// Studio.DisplayGroup.prototype.constructor = Studio.DisplayGroup;
 
-// Studio.DisplayGroup.prototype.update = function(ctx){
 
-// }
 
-// Studio.DisplayGroup.prototype.render = function(ctx){
 
-// }
-// Studio.DisplayGroup.prototype.draw = function(ctx){
 
-// }
+/**
+ * ImageSlice
+ */
 
 Studio.ImageSlice = function(attr) {
 	this.image = null;
+	this.color = new Studio.Color(1, 1, 1, 1);
 	this.rect = {x: 0, y: 0, height: 32, width: 32};
+	this._boundingBox = new Studio.Box();
 	this._world = new Studio.DisplayProperty();
 	if (attr) {
 		this.apply(attr);
 	}
 }
+Studio.extends(Studio.ImageSlice, Studio.Sprite);
 
-Studio.ImageSlice.prototype = new Studio.Sprite();
-Studio.ImageSlice.prototype.constructor = Studio.ImageSlice;
+Studio.ImageSlice.prototype.drawAngled = function(ctx) {
+	ctx.save();
+	this.prepAngled(ctx);
+	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, -(this.width * this.anchorX), -(this.height * this.anchorY), this.width, this.height);
+	ctx.restore();
+};
 
-Studio.ImageSlice.prototype.draw = function(ctx) {
+Studio.ImageSlice.prototype.draw = function(ctx, ratio) {
 	if (!this.image) {
 		return;
 	}
@@ -79,10 +76,18 @@ Studio.ImageSlice.prototype.draw = function(ctx) {
 		return;
 	}
 	this.setAlpha(ctx);
-	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
+	if (this.angle) {
+		this.drawAngled(ctx);
+	} else {
+
+		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
+	}
 };
 
-// SPRITEANIMATION --- just like a Sprite but uses a SpriteSheet to render, and as such has frames, framerates etc...
+
+/**
+ * SpriteAnimation --- just like a Sprite but uses a SpriteSheet to render, and as such has frames, framerates etc...
+ */ 
 
 Studio.SpriteAnimation = function(attr) {
 	this.sheet = new Studio.SpriteSheet();
@@ -99,8 +104,7 @@ Studio.SpriteAnimation = function(attr) {
 	this.setStartingFrame(this.frame);
 };
 
-Studio.SpriteAnimation.prototype = new Studio.Rect();
-Studio.SpriteAnimation.prototype.constructor = Studio.SpriteAnimation;
+Studio.extends(Studio.SpriteAnimation, Studio.Rect);
 
 Studio.SpriteAnimation.prototype.setStartingFrame = function(a) {
 	this.frame = a;
@@ -142,6 +146,7 @@ Studio.SpriteAnimation.prototype.updateFrame = function() {
 	this.setSlice();
 };
 
+
 Studio.SpriteSheet = function(path, attr) {
 	this.image = new Studio.Image();
 	this.rect = {height: 32, width: 32};
@@ -152,8 +157,8 @@ Studio.SpriteSheet = function(path, attr) {
 		this.apply(attr);
 	}
 };
-Studio.SpriteSheet.prototype = new Studio.Image();
-Studio.SpriteSheet.prototype.constructor = Studio.SpriteSheet;
+
+Studio.extends(Studio.SpriteSheet, Studio.Image);
 
 Studio.SpriteSheet.prototype.apply = function(obj) {
 	var keys = Object.keys(obj);

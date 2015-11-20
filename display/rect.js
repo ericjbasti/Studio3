@@ -4,15 +4,14 @@
 
 Studio.Rect = function(attr) {
 	this.color = new Studio.Color(1, 0, 0, 0);
-	this.slice = new Studio.Box(10, 0, 0, 0);
 	this._world = new Studio.DisplayProperty();
+	this.slice = new Studio.Box(10, 0, 0, 0);
 	if (attr) {
 		this.apply(attr); 
 	}
 };
 
-Studio.Rect.prototype = new Studio.DisplayObject();
-Studio.Rect.prototype.constructor = Studio.Rect;
+Studio.extends(Studio.Rect, Studio.DisplayObject);
 
 Studio.Rect.prototype.setTexture = function(tx, ty, tX, tY) {
 
