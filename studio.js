@@ -208,6 +208,16 @@ Studio.addTo = function(a, b) {
 	}
 }
 
+
+// Studio.extends(a,b)
+// a : New Class
+// b : Class to inherit attributes from.
+
+Studio.extends = function(a,b){
+	a.prototype = new b();
+	a.prototype.constructor = a;
+}
+
 Studio.infoStyle = 'background-color: #3af; padding: 2px 4px; color: #fff';
 Studio.errorStyle = 'background-color: #c01; padding: 2px 4px;';
 Studio.warningStyle = 'background-color: #fd2; padding: 2px 4px;';
