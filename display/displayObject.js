@@ -1,11 +1,8 @@
-
 /**
- * DisplayObject
- * The base for all visual objects in the studio.
+ * DisplayProperty
  */
 
-
-Studio.DisplayProperty = function(){
+Studio.DisplayProperty = function() {
 	this.x        = 0;
 	this.y        = 0;
 	this.z        = 0;
@@ -25,6 +22,11 @@ Studio.DisplayProperty.prototype = {
 	constructor: Studio.DisplayProperty,
 	apply: Studio.apply
 }
+
+/**
+ * DisplayObject
+ * The base for all visual objects in the studio.
+ */
 
 Studio.DisplayObject = function(attr) {
 	// Dimensional Settings:
@@ -92,8 +94,14 @@ Studio.DisplayObject.prototype = {
 		if (!this.hasOwnProperty("children")) {
 			this.children = []; // if we didn't use 'hasOwnProperty', we would learn that JS treats [] like pointers and in this particular case will cause a crash.
 		}
+		if (!this.hasOwnProperty("_world")) {
+			console.log('added _world to me.')
+			this._world = new Studio.DisplayProperty();
+		}
 		if (!child.hasOwnProperty("_world")) {
-			console.warn('This child is missing _world = new Studio.DisplayProperty(); the code will still run, but it is very likely to act in unexpected ways.')
+			console.log('added _world to my child.')
+			// This child is missing _world = new Studio.DisplayProperty(); the code will still run, but it is very likely to act in unexpected ways. Lets fix this.
+			child._world = new Studio.DisplayProperty();
 		}
 		child.parent = this._world;
 		this.children[this.hasChildren] = child;
@@ -193,7 +201,7 @@ Studio.DisplayObject.prototype = {
 		}
 	},
 	update_children: function(ratio, delta) {
-		if(!this.hasChildren) return;
+		if (!this.hasChildren) return;
 		
 		for (var i = 0; i !== this.hasChildren; i++) {
 			this.children[i].update(ratio, delta);

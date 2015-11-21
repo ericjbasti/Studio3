@@ -12,8 +12,7 @@ Studio.DisplayList = function(attr) {
 	}
 }
 
-Studio.DisplayList.prototype = new Studio.DisplayObject();
-Studio.DisplayList.prototype.constructor = Studio.DisplayList;
+Studio.extends(Studio.DisplayList,Studio.DisplayObject)
 
 Studio.DisplayList.prototype.cacheAsBitmap = function(stage) {
 	this.cache = document.createElement('canvas');

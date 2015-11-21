@@ -15,4 +15,3 @@ Studio.Plugin.prototype._options = function(a) {
 		this.options[i] = a[i];
 	}
 }
-

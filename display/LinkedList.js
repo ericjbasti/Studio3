@@ -121,7 +121,7 @@ LinkedList.prototype = {
 			this.add(exception);
 		}
 	},
-	print_f: function() {
+	toString: function() {
 		var listItem = this.first;
 		var toString = "linked list : [";
 		while (listItem) {

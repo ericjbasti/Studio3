@@ -6,7 +6,6 @@ Studio.Sprite = function(attr) {
 	this.image = null;
 	this.color = new Studio.Color(1, 1, 1, 1);
 	this._boundingBox = new Studio.Box();
-	this._world = new Studio.DisplayProperty();
 	if (attr) {
 		this.apply(attr);
 	}
@@ -54,7 +53,6 @@ Studio.ImageSlice = function(attr) {
 	this.color = new Studio.Color(1, 1, 1, 1);
 	this.rect = {x: 0, y: 0, height: 32, width: 32};
 	this._boundingBox = new Studio.Box();
-	this._world = new Studio.DisplayProperty();
 	if (attr) {
 		this.apply(attr);
 	}

@@ -9,7 +9,6 @@ Studio.Scene = function(attr) {
 	this.loader = null;
 	this.assets = [];
 	this.children = [];
-	this._world = new Studio.DisplayProperty();
 	if (attr) {
 		this.apply(attr); 
 	}
@@ -21,8 +20,7 @@ Studio.Scene = function(attr) {
 	}
 };
 
-Studio.Scene.prototype = new Studio.DisplayObject();
-Studio.Scene.prototype.constructor = Studio.Scene;
+Studio.extends(Studio.Scene, Studio.DisplayObject);
 
 Studio.Scene.prototype.loadAssets = function() {
 	for (var i = 0; i !== arguments.length; i++) {

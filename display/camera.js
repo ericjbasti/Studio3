@@ -8,12 +8,9 @@ Studio.Camera = function(stage) {
 	this.tracking 	= null ;
 	this.bound 		= null ;
 	this.active		= true ;
-	//this.width 	= stage.width;
-	//this.height 	= stage.height;
 };
 
-Studio.Camera.prototype = new Studio.DisplayObject();
-Studio.Camera.prototype.constructor = Studio.Camera;
+Studio.extends(Studio.Camera,Studio.DisplayObject)
 
 Studio.Camera.prototype.updateRect = function() {
 	this.left	= this.bound._x ;
@@ -46,7 +43,6 @@ Studio.Camera.prototype.update = function(stage, ratio) {
 
 Studio.Camera.prototype.render = function(stage,ratio) {
 	this.update(stage,ratio);
-	// console.log(this.x-((this.tracking._dx* this.scaleX) - this.stage.width / 2), this.y-((this.tracking._dy* this.scaleY) - this.stage.height / 2));
 	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) {
 		stage.ctx.setTransform(stage.resolution * this.scaleX, 0, 0, stage.resolution * this.scaleY, -this.x * stage.resolution, -this.y * stage.resolution);
 	}

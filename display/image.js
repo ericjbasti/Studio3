@@ -48,13 +48,3 @@ Studio.Image.prototype.loadImage = function(who) {
 		this.image = Studio.assets[who];
 	}
 };
-
-// Studio.EmbededImage = function(data){
-// 	this.image.src = data;
-// 	this.ready = true;
-// 	this.height = this.image.height;
-// 	this.width = this.image.width;
-// };
-
-// Studio.EmbededImage.prototype = new Studio.Image();
-// Studio.EmbededImage.prototype.constructor = Studio.EmbededImage;

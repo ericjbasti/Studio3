@@ -22,8 +22,8 @@ Studio.TextBox=function(width,height,stage){
 	// document.body.appendChild(this.image);
 };
 
-Studio.TextBox.prototype = new Studio.Rect();
-Studio.TextBox.prototype.constructor = Studio.TextBox;
+
+Studio.extends(Studio.TextBox,Studio.Rect)
 
 Studio.TextBox.prototype.setFont= function(font){
 	this.font=font;

@@ -9,7 +9,7 @@ Studio.Stage = function(domID, attr) {
 	this.webgl = false//!!window.WebGLRenderingContext;
 	this.fullscreen = false;
 	this.color = new Studio.Color(0, 0, 0, 1); // defaults to black
-
+	this.snap = false;
 	// Before we do anything we should apply any attached attributes.
 	// to disable webgl even if the browser supports it:
 	// you would send an object like this { webgl : false }
@@ -55,8 +55,7 @@ Studio.Stage = function(domID, attr) {
 	return this;
 };
 
-Studio.Stage.prototype = new Studio.Scene();
-Studio.Stage.prototype.constructor = Studio.Stage;
+Studio.extends(Studio.Stage, Studio.Scene);
 
 Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 
