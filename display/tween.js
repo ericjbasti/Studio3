@@ -152,6 +152,14 @@ Studio.Ease.snap = function(t) {
 	return Math.round(t);
 };
 
+Studio.Ease.chillInOut = function(t){
+	var s = .75 ;
+	if ((t *= 2) < 1) {
+		return 0.5 * (t * t * ((s + 1) * t - s));
+	}
+	return 0.5 * ((t -= 2) * t * ((s + 1) * t + s) + 2);
+}
+
 Studio.Ease.backOut = function(t) {
 	var s = 1.70158;
 	return --t * t * ((s + 1) * t + s) + 1;
