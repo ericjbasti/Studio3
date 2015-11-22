@@ -153,14 +153,14 @@ Studio.DisplayObject.prototype = {
 		this.anchoredY = this.anchorY * this._height;
 		if (this._relativeX < -this.anchoredX && this._relativeY < -this.anchoredY) return false
 		if (this._relativeX > this.width && this._relativeY > this.height) return false
-		if (this._rotation) {
+		if (this._world.rotation) {
 			x = (this._relativeX * Math.cos(-this.angle)) - (this._relativeY * Math.sin(-this.angle));
 			y = (this._relativeX * Math.sin(-this.angle)) + (this._relativeY * Math.cos(-this.angle));
 			this._relativeX = x;
 			this._relativeY = y;
 		}
 
-		if ((this._relativeX > -this.anchoredX && this._relativeY > -this.anchoredY) && (this._relativeX < (this._width) - this.anchoredX && this._relativeY < (this._height) - this.anchoredY)) {
+		if ((this._relativeX > -this.anchoredX && this._relativeY > -this.anchoredY) && (this._relativeX < (this._world.width) - this.anchoredX && this._relativeY < (this._world.height) - this.anchoredY)) {
 			return (true);
 		}
 		return (false);
@@ -274,12 +274,16 @@ Studio.DisplayObject.prototype = {
 	snapshot: function() {
 		this.__x = this._world.x;
 		this.__y = this._world.y;
-		this._world.angle = this.angle;
+		if(this._world.rotation){
+			this._world.angle = this.angle;
+		}
 	},
 	_delta: function(ratio) {
 		this._dx = this.__x + ((this._world.x - this.__x) * ratio);
 		this._dy = this.__y + ((this._world.y - this.__y) * ratio);
-		this._dAngle = this._world.angle + ((this.angle - this._world.angle) * ratio);
+		if(this._world.rotation){
+			this._dAngle = this._world.angle + ((this.angle - this._world.angle) * ratio);
+		}
 	},
 	_snapback: function() {
 		this.force_update();
