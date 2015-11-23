@@ -147,10 +147,10 @@ Studio.DisplayObject.prototype = {
 		this._width = this._width + 0.5 | 0;
 	},
 	hitTestPoint: function(x, y) {
-		this._relativeX = x - this._x;
-		this._relativeY = y - this._y;
-		this.anchoredX = this.anchorX * this._width;
-		this.anchoredY = this.anchorY * this._height;
+		this._relativeX = x - this._world.x;
+		this._relativeY = y - this._world.y;
+		this.anchoredX = this.anchorX * this._world.width;
+		this.anchoredY = this.anchorY * this._world.height;
 		if (this._relativeX < -this.anchoredX && this._relativeY < -this.anchoredY) return false
 		if (this._relativeX > this.width && this._relativeY > this.height) return false
 		if (this._world.rotation) {
