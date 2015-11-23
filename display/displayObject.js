@@ -147,20 +147,21 @@ Studio.DisplayObject.prototype = {
 		this._width = this._width + 0.5 | 0;
 	},
 	hitTestPoint: function(x, y) {
-		this._relativeX = x - this._x;
-		this._relativeY = y - this._y;
-		this.anchoredX = this.anchorX * this._width;
-		this.anchoredY = this.anchorY * this._height;
-		if (this._relativeX < -this.anchoredX && this._relativeY < -this.anchoredY) return false
-		if (this._relativeX > this.width && this._relativeY > this.height) return false
-		if (this._rotation) {
-			x = (this._relativeX * Math.cos(-this.angle)) - (this._relativeY * Math.sin(-this.angle));
-			y = (this._relativeX * Math.sin(-this.angle)) + (this._relativeY * Math.cos(-this.angle));
-			this._relativeX = x;
-			this._relativeY = y;
-		}
+		var _relativeX = x - this._world.x;
+		var _relativeY = y - this._world.y;
+		var anchoredX = this.anchorX * this._world.width;
+		var anchoredY = this.anchorY * this._world.height;
+		
 
-		if ((this._relativeX > -this.anchoredX && this._relativeY > -this.anchoredY) && (this._relativeX < (this._width) - this.anchoredX && this._relativeY < (this._height) - this.anchoredY)) {
+		if (_relativeX < -anchoredX && _relativeY < -anchoredY) return false
+		if (_relativeX > this.width && _relativeY > this.height) return false
+		if (this._world.rotation) {
+			x = (_relativeX * Math.cos(-this.angle)) - (_relativeY * Math.sin(-this.angle));
+			y = (_relativeX * Math.sin(-this.angle)) + (_relativeY * Math.cos(-this.angle));
+			_relativeX = x;
+			_relativeY = y;
+		}
+		if ((_relativeX > -anchoredX && _relativeY > -anchoredY) && (_relativeX < (this._world.width) - anchoredX && _relativeY < (this._world.height) - anchoredY)) {
 			return (true);
 		}
 		return (false);

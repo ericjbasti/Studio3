@@ -88,10 +88,11 @@ Studio.Rect.prototype.draw = function(ctx, ratio) {
 Studio.difference = {};
 
 Studio.Rect.prototype.hitTestRect = function(b) {
-	Studio.difference.height = this._height + b._height;
-	Studio.difference.width = this._width + b._width;
-	Studio.difference.x = this._x - (this._width * this.anchorX) - b._x - (b._width * b.anchorX);
-	Studio.difference.y = this._y - (this._height * this.anchorY) - b._y - (b._height * b.anchorY);
+	Studio.difference.height = this._world.height + b._world.height;
+	Studio.difference.width = this._world.width + b._world.width;
+	Studio.difference.x = this._world.x - (this._world.width * this.anchorX) - b._x - (b._world.width * b.anchorX);
+	Studio.difference.y = this._world.y - (this._world.height * this.anchorY) - b._y - (b._world.height * b.anchorY);
+
 	if (Studio.difference.x < 0 && Studio.difference.y <= 0 && Studio.difference.height + Studio.difference.y >= 0 && Studio.difference.width + Studio.difference.x >= 0) {
 		return true;
 	}

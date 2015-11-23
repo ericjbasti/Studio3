@@ -149,7 +149,7 @@ Studio.Ease.linear = function(t) {
 };
 
 Studio.Ease.snap = function(t) {
-	return Math.round(t);
+	return t+.5 | 0;
 };
 
 Studio.Ease.chillInOut = function(t){
