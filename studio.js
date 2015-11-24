@@ -218,6 +218,10 @@ Studio.extends = function(a,b){
 	a.prototype.constructor = a;
 }
 
+Studio.TOP = Studio.LEFT= 0;
+Studio.MIDDLE = Studio.CENTER = 0.5;
+Studio.BOTTOM = Studio.RIGHT = 1;
+
 Studio.infoStyle = 'background-color: #3af; padding: 2px 4px; color: #fff';
 Studio.errorStyle = 'background-color: #c01; padding: 2px 4px;';
 Studio.warningStyle = 'background-color: #fd2; padding: 2px 4px;';
