@@ -35,7 +35,7 @@ Studio.Stage.prototype.loadShader = function(who, shader) {
 	// 	k = k.nextSibling;
 	// }
 	this.ctx.shaderSource(who, shader);
-}
+};
 
 
 Studio.Stage.prototype.WEBGL = {
@@ -138,4 +138,4 @@ Studio.Stage.prototype.WEBGL = {
 		this.ctx.drawElements(this.ctx.TRIANGLES, this.hasChildren * 6, this.ctx.UNSIGNED_SHORT, 0);  
 
 	}
-}
+};

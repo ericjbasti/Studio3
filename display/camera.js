@@ -10,7 +10,7 @@ Studio.Camera = function(stage) {
 	this.active		= true ;
 };
 
-Studio.extends(Studio.Camera,Studio.DisplayObject)
+Studio.extends(Studio.Camera,Studio.DisplayObject);
 
 Studio.Camera.prototype.updateRect = function() {
 	this.left	= this.bound._x ;

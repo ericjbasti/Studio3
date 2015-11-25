@@ -13,7 +13,7 @@ LinkedList.prototype = {
 			this.first = who;
 			this.last = who;
 			who.prev = null;
-			this.length = 1
+			this.length = 1;
 			return who;
 		}
 		this.last.next = who; // we add the new item to the previously last item.
@@ -24,9 +24,9 @@ LinkedList.prototype = {
 	insert: function(a, b) {
 		this.length++;
 		a.prev = b;
-		if (b != this.last) {
+		if (b !== this.last) {
 			b.next = a;
-		}else {
+		} else {
 			this.last = a;
 			a.next = this.first;
 		}
@@ -48,7 +48,7 @@ LinkedList.prototype = {
 		// check for the begining or the end of the list
 		if (this.first === who) {
 			this.first = this.first.next;
-		}else if (this.last === who) {
+		} else if (this.last === who) {
 			this.last = this.last.prev;
 		}
 
@@ -74,7 +74,7 @@ LinkedList.prototype = {
 			// while we still have a list item lets do some fun stuff.
 
 			this.next = listItem.next;
-			// we need to hold on to the next in line. 
+			// we need to hold on to the next in line.
 			// WHY: I've been known to delete an object in the list
 			// thus causing listItem.next to return null.
 			// By saving this reference we can always continue on
@@ -123,7 +123,7 @@ LinkedList.prototype = {
 	},
 	toString: function() {
 		var listItem = this.first;
-		var toString = "linked list : [";
+		var toString = 'linked list : [';
 		while (listItem) {
 			toString += listItem;
 			listItem = listItem.next;

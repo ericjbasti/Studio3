@@ -14,12 +14,12 @@ Studio.DisplayProperty = function() {
 	this.angle 	  = 0;
 	this.alpha 	  = 1;
 	this.speed 	  = 1;
-}
+};
 
 Studio.DisplayProperty.prototype = {
 	constructor: Studio.DisplayProperty,
 	apply: Studio.apply
-}
+};
 
 /**
  * DisplayObject
@@ -43,7 +43,7 @@ Studio.DisplayObject = function(attr) {
 	this.alpha   = 1; // sets the opacity/alpha of an object
 	this.visible = 1; // invisible items are ignored when rendering
 	this.speed   = 1; // the local speed of an object
-	this.active  = 1; // set as inactive, and we never try to render 
+	this.active  = 1; // set as inactive, and we never try to render
 	// or update this or its children. Use this to
 	// manually pool objects
 
@@ -60,11 +60,11 @@ Studio.DisplayObject = function(attr) {
 	this._alpha = this.alpha;
 	this._visible = this.alpha * this.visible; // if either value = 0 we wont draw it to the screen... save some cycles.
 	// Children Information
-	// to save memory we don't include a default child container. This will be 
+	// to save memory we don't include a default child container. This will be
 	// created if one is need.
 	this.parent = null;
-	this.hasChildren = 0; // we use this as a quick flag to let us know if we 
-	// should even think about looking for children 
+	this.hasChildren = 0; // we use this as a quick flag to let us know if we
+	// should even think about looking for children
 	// objects. It also stores our length.
 
 	// set any of these to false if you know they will never be needed.
@@ -89,15 +89,13 @@ Studio.DisplayObject.prototype = {
 	addChild: function(child) {
 		// Adds a child to this object
 
-		if (!this.hasOwnProperty("children")) {
+		if (!this.hasOwnProperty('children')) {
 			this.children = []; // if we didn't use 'hasOwnProperty', we would learn that JS treats [] like pointers and in this particular case will cause a crash.
 		}
-		if (!this.hasOwnProperty("_world")) {
-			console.log('added _world to me.')
+		if (!this.hasOwnProperty('_world')) {
 			this._world = new Studio.DisplayProperty();
 		}
-		if (!child.hasOwnProperty("_world")) {
-			console.log('added _world to my child.')
+		if (!child.hasOwnProperty('_world')) {
 			// This child is missing _world = new Studio.DisplayProperty(); the code will still run, but it is very likely to act in unexpected ways. Lets fix this.
 			child._world = new Studio.DisplayProperty();
 		}
@@ -117,7 +115,7 @@ Studio.DisplayObject.prototype = {
 		return this;
 	},
 	getChildByName: function(name) {
-		// this will look for a named object and return it. If your using 
+		// this will look for a named object and return it. If your using
 		// names (names are not required).
 		for (var i = 0; i !== this.hasChildren; i++) {
 			if (this.children[i].name === name) {
@@ -136,7 +134,7 @@ Studio.DisplayObject.prototype = {
 	_order: function() {
 		this.children.sort(Studio.z_index);
 	},
-	draw: function(ratio) {
+	draw: function() {
 	},
 	snapPixels: function() {
 		this._dx = this._dx + 0.5 | 0;
@@ -149,8 +147,12 @@ Studio.DisplayObject.prototype = {
 		this._relativeY = y - this._world.y;
 		this.anchoredX = this.anchorX * this._world.width;
 		this.anchoredY = this.anchorY * this._world.height;
-		if (this._relativeX < -this.anchoredX && this._relativeY < -this.anchoredY) return false
-		if (this._relativeX > this.width && this._relativeY > this.height) return false
+		if (this._relativeX < -this.anchoredX && this._relativeY < -this.anchoredY) {
+			return false;
+		}
+		if (this._relativeX > this.width && this._relativeY > this.height) {
+			return false;
+		}
 		if (this._world.rotation) {
 			x = (this._relativeX * Math.cos(-this.angle)) - (this._relativeY * Math.sin(-this.angle));
 			y = (this._relativeX * Math.sin(-this.angle)) + (this._relativeY * Math.cos(-this.angle));
@@ -159,9 +161,9 @@ Studio.DisplayObject.prototype = {
 		}
 
 		if ((this._relativeX > -this.anchoredX && this._relativeY > -this.anchoredY) && (this._relativeX < (this._world.width) - this.anchoredX && this._relativeY < (this._world.height) - this.anchoredY)) {
-			return (true);
+			return true;
 		}
-		return (false);
+		return false;
 	},
 	vertex_children: function(stage, ratio) {
 		if (this.hasChildren) {
@@ -181,7 +183,7 @@ Studio.DisplayObject.prototype = {
 	render: function(stage, ratio) {
 		if (this._visible) {
 			// Studio.objectDraw++;
-			// if((this._x + (this._width*this.anchorX) >= 0) || 
+			// if((this._x + (this._width*this.anchorX) >= 0) ||
 			// 	(this._x - (this._width*this.anchorX) <= stage.width) ||
 			// 	(this._y + (this._height*this.anchorY) >= 0) ||
 			// 	(this._y - (this._height*this.anchorY) <= stage.height)
@@ -199,8 +201,9 @@ Studio.DisplayObject.prototype = {
 		}
 	},
 	update_children: function(ratio, delta) {
-		if (!this.hasChildren) return;
-		
+		if (!this.hasChildren) {
+			return;
+		}
 		for (var i = 0; i !== this.hasChildren; i++) {
 			this.children[i].update(ratio, delta);
 		}
@@ -212,7 +215,7 @@ Studio.DisplayObject.prototype = {
 		// }else{
 		// 	this._visible = false;
 		// }
-		
+
 	},
 	setAlpha: function(ctx) {
 		if (this._world.alpha !== ctx.globalAlpha && this._visible) {
@@ -272,17 +275,17 @@ Studio.DisplayObject.prototype = {
 	snapshot: function() {
 		this.__x = this._world.x;
 		this.__y = this._world.y;
-		if(this._world.rotation){
+		if (this._world.rotation) {
 			this._world.angle = this.angle;
 		}
 	},
-	__delta : function(snap,cur,ratio){
+	__delta: function(snap, cur, ratio) {
 		return snap + ((cur - snap) * ratio);
 	},
 	_delta: function(ratio) {
 		this._dx = this.__delta(this.__x, this._world.x, ratio);
 		this._dy = this.__delta(this.__y, this._world.y, ratio);
-		if(this._world.rotation){
+		if (this._world.rotation) {
 			this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
 		}
 	},

@@ -6,15 +6,15 @@ Studio.Rect = function(attr) {
 	this.color = new Studio.Color(1, 0, 0, 0);
 	this.slice = new Studio.Box(10, 0, 0, 0);
 	if (attr) {
-		this.apply(attr); 
+		this.apply(attr);
 	}
 };
 
 Studio.extends(Studio.Rect, Studio.DisplayObject);
 
-Studio.Rect.prototype.setTexture = function(tx, ty, tX, tY) {
+// Studio.Rect.prototype.setTexture = function(tx, ty, tX, tY) {
 
-}
+// };
 
 Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	gl._batch[gl._count++] = x;
@@ -27,7 +27,7 @@ Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	gl._batch[gl._count++] = (tx);
 	gl._batch[gl._count++] = (ty);
 	// gl._count +=8;
-}
+};
 
 Studio.Rect.prototype.buildElement = function(gl, ratio) {
 	this._delta(ratio);
@@ -73,13 +73,13 @@ Studio.Rect.prototype.drawAngled = function(ctx) {
 	ctx.restore();
 };
 
-Studio.Rect.prototype.draw = function(ctx, ratio) {
+Studio.Rect.prototype.draw = function(ctx) {
 	this.setStyle(ctx);
 	this.setAlpha(ctx);
 	ctx.strokeStyle = '#fff';
 	if (this.angle) {
 		this.drawAngled(ctx);
-	}else {
+	} else {
 		// ctx.strokeRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 		ctx.fillRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 	}
@@ -99,23 +99,21 @@ Studio.Rect.prototype.hitTestRect = function(b) {
 	return false;
 };
 
-
-
 Studio.Clip = function(attr) {
 	if (attr) {
-		this.apply(attr); 
+		this.apply(attr);
 	}
 };
 
 Studio.extends(Studio.Clip, Studio.Rect);
 
-Studio.Clip.prototype.draw = function(ctx, ratio) {
+Studio.Clip.prototype.draw = function(ctx) {
 	ctx.save();
-    ctx.beginPath();
-    if (this.angle) {
+	ctx.beginPath();
+	if (this.angle) {
 		this.drawAngled(ctx);
-	}else {
-		ctx.rect(this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height)
+	} else {
+		ctx.rect(this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height);
 	}
 	ctx.stroke();
 	ctx.clip();
@@ -127,26 +125,26 @@ Studio.Clip.prototype.drawAngled = function(ctx) {
 
 Studio.CircleClip = function(attr) {
 	if (attr) {
-		this.apply(attr); 
+		this.apply(attr);
 	}
 };
 
 Studio.extends(Studio.CircleClip, Studio.Rect);
 
-Studio.CircleClip.prototype.draw = function(ctx, ratio) {
+Studio.CircleClip.prototype.draw = function(ctx) {
 	ctx.save();
-    ctx.beginPath();
-	ctx.arc(this._dx, this._dy ,this._width/2, 0,2*Math.PI)
+	ctx.beginPath();
+	ctx.arc(this._dx, this._dy ,this._width / 2, 0,2 * Math.PI);
 	ctx.clip();
 };
 
-Studio.Restore = function(attr) {
+Studio.Restore = function() {
 };
 
 Studio.Restore.prototype = new Studio.Rect();
 Studio.Restore.prototype.constructor = Studio.Restore;
 
-Studio.Restore.prototype.draw = function(ctx, ratio) {
+Studio.Restore.prototype.draw = function(ctx) {
 	ctx.restore();
 };
 

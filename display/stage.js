@@ -6,7 +6,7 @@ Studio.Stage = function(domID, attr) {
 
 	// a very basic check for webgl support.
 	// this will probably change later.
-	this.webgl = false//!!window.WebGLRenderingContext;
+	this.webgl = false; //!!window.WebGLRenderingContext;
 	this.fullscreen = false;
 	this.color = new Studio.Color(0, 0, 0, 1); // defaults to black
 	this.snap = false;
@@ -28,7 +28,7 @@ Studio.Stage = function(domID, attr) {
 		this.apply(attr);
 	}
 	this._sizeCanvas(this.fullscreen);
-	this.setPixelRatio(1);
+	this.setPixelRatio(2);
 	if (this.webgl) {
 		this.engine = Studio.Stage.prototype.WEBGL;
 	}
@@ -76,17 +76,16 @@ Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 		// it gives you control of what happens.
 		this.canvas = document.getElementById(domElementID);
 	}
-}
-
+};
 
 Studio.Stage.prototype.setColor = function(r, g, b, a) {
 	this.color.set(r, g, b, a);
 	if (this.ctx.clearColor) {
 		this.ctx.clearColor(this.color.r, this.color.g, this.color.b, this.color.a);
 	}
-}
+};
 
-Studio.Stage.prototype._init = function(a) {
+Studio.Stage.prototype._init = function() {
 	this.ready = false;
 	this.autoPause = false;
 	this._watching = false;
@@ -106,14 +105,14 @@ Studio.Stage.prototype._init = function(a) {
 	// Studio.stages.push(this);
 	Studio.stage = this;
 	return this;
-}
+};
 
-Studio.Stage.prototype.allowPlugins = function(a) {
+Studio.Stage.prototype.allowPlugins = function() {
 	this.plugins = Object.create(null);
 	this.plugins.input = [];
 	this.plugins.effect = [];
 	this._effects = 0;
-}
+};
 
 Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
 	this.height = this.canvas.height;
@@ -127,18 +126,18 @@ Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
 		this.canvas.style.height= '100%';
 		this.canvas.style.width= '100%';
 	}
-}
+};
 
 Studio.Stage.prototype.pauseButtons = function(a) {
 	this._pause_buttons = a;
-}
+};
 
 Studio.Stage.prototype.setPixelRatio = function(pixelRatio) {
 	this.resolution = pixelRatio || window.devicePixelRatio;
 	this.canvas.width = this.width * this.resolution;
 	this.canvas.height = this.height * this.resolution;
 };
-Studio.Stage.prototype.fillScreen = function(type) {
+Studio.Stage.prototype.fillScreen = function() {
 	// this._scaleRatio = window.innerHeight/this.height;
 	// this.canvas.style.height = (this.height*this._scaleRatio) +'px';
 	// this.canvas.style.width = (this.width*this._scaleRatio) +'px';
@@ -199,6 +198,7 @@ Studio.Stage.prototype.update_children = function(ratio, delta) {
 		}
 	}
 };
+
 Studio.Stage.prototype.render_children = function(lag) {
 	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
 		if (this.children[this.i].active) {
@@ -206,9 +206,11 @@ Studio.Stage.prototype.render_children = function(lag) {
 		}
 	}
 };
+
 Studio.Stage.prototype.update_visibility = function() {
 	this._alpha = this.alpha;
-}
+};
+
 /**
  * stage.update
  * This is different from the displayObject.update() because a stage will never have a parent.
@@ -248,23 +250,23 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 	}
 };
 
-Studio.Stage.prototype.runEffects = function(delta) {
+Studio.Stage.prototype.runEffects = function() {
 	// this.setAlpha(this.ctx);
 	// this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
 	for (this.i = 0; this.i !== this._effects; this.i++) {
 		this.plugins.effect[this.i].action(this);
 	}
-}
+};
 
 Studio.Stage.prototype.loading = function(delta) {
-	if (Studio.loaded == true) { // BAD DESIGN! This should be based on each stage. 
+	if (Studio.loaded === true) { // BAD DESIGN! This should be based on each stage. 
 		// as it stands loading an image for one canvas will cause all to pause. oops.
 		if (this.onReady) {
 			this.onReady(delta);
 		}
 		this.loop = this.activeloop;
 	}
-}
+};
 
 Studio.Stage.prototype.activeloop = function(delta) {
 	if (Studio.progress === 2) {
@@ -294,7 +296,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 			}
 		}
 	}
-}
+};
 
 Studio.Stage.prototype.loop = Studio.Stage.prototype.loading;
 

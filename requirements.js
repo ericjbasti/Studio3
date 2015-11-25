@@ -60,7 +60,7 @@ if (typeof Object.create !== 'function') {
 				throw Error('Second argument not supported');
 			}
 			if (typeof prototype !== 'object') {
-				throw TypeError('Argument must be an object');
+				throw new TypeError('Argument must be an object');
 			}
 			Temp.prototype = prototype;
 			var result = new Temp();

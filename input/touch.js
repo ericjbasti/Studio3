@@ -18,37 +18,45 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 					dx: 0,
 					dy: 0,
 					id: 0
-				}
+				};
 
 	/* MOUSE EVENTS*/
 
 	this.mouse_onDown = function(touch) {
 		if (this.buttons && !this._pause_buttons) {
-			for (var i = 0; i != this.buttons.length; i++) {
+			for (var i = 0; i !== this.buttons.length; i++) {
 				if (this.buttons[i]._touchID || !this.buttons[i]._visible) {
 
 					// already tapped by someone so lets leave it alone
 				} else {
 					if (this.buttons[i].hitTestPoint(touch.x, touch.y)) {
 						this.buttons[i]._touchID = touch.id;
-						if (this.buttons[i].onTap) this.buttons[i].onTap(touch); // cool we just clicked the button
-						if (this.buttons[i].preventBubble) return;
+						if (this.buttons[i].onTap) {
+							this.buttons[i].onTap(touch); // cool we just clicked the button
+						}
+						if (this.buttons[i].preventBubble) {
+							return;
+						}
 					} else {
-						if (this.buttons[i].onTapOutside) this.buttons[i].onTapOutside(touch);
+						if (this.buttons[i].onTapOutside) {
+							this.buttons[i].onTapOutside(touch);
+						}
 					}
 				}
 			}
 		}
-	}
+	};
 
 	this.mouse_onMove = function(touch) {
 		if (this.buttons && !this._pause_buttons) {
-			for (var i = 0; i != this.buttons.length; i++) {
+			for (var i = 0; i !== this.buttons.length; i++) {
 				if (this.buttons[i].hitTestPoint(touch.x, touch.y)) {
 					if (this.buttons[i].draggable && touch.id) {
-						if ((this.buttons[i]._touchID == touch.id)) {
+						if ((this.buttons[i]._touchID === touch.id)) {
 							if (!this.buttons[i]._activeDrag) {
-								if (this.buttons[i].onDragStart) this.buttons[i].onDragStart(touch); // we check to see if a drag has ever occured
+								if (this.buttons[i].onDragStart) {
+									this.buttons[i].onDragStart(touch); // we check to see if a drag has ever occured
+								}
 								this.buttons[i]._activeDrag = true;
 							} else {
 								if (this.buttons[i].onDrag) {
@@ -71,7 +79,7 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 						}
 					}
 				}
-				if ((this.buttons[i].draggable && this.buttons[i]._activeDrag) && (this.buttons[i]._touchID == touch.id)) {
+				if ((this.buttons[i].draggable && this.buttons[i]._activeDrag) && (this.buttons[i]._touchID === touch.id)) {
 					this.relativeX = touch.dx;
 					this.relativeY = touch.dy;
 					if (this.buttons[i].angle  && (this.buttons[i].orbits || this.buttons[i].inheritRotation)) {
@@ -80,40 +88,54 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 						touch.dx = this.relativeX;
 						touch.dy = this.relativeY;
 					}
-					if (this.buttons[i].onDrag) this.buttons[i].onDrag(touch);
+					if (this.buttons[i].onDrag) {
+						this.buttons[i].onDrag(touch);
+					}
 				}
-				if (this.buttons[i].onTouchMove) this.buttons[i].onTouchMove(touch);
+				if (this.buttons[i].onTouchMove) {
+					this.buttons[i].onTouchMove(touch);
+				}
 			}
 		}
-	}
+	};
 
 	this.mouse_onUp = function(touch) {
 		if (this.buttons) {
-			for (var i = 0; i != this.buttons.length; i++) {
-				if (this.buttons[i]._touchID == touch.id) {
+			for (var i = 0; i !== this.buttons.length; i++) {
+				if (this.buttons[i]._touchID === touch.id) {
 
 					if (this.buttons[i]._activeDrag) {
-						if (this.buttons[i].onDragEnd) this.buttons[i].onDragEnd(touch); // we can end the drag if its active.
+						if (this.buttons[i].onDragEnd) {
+							this.buttons[i].onDragEnd(touch); // we can end the drag if its active.
+						}
 					}
 					if (this.buttons[i].hitTestPoint(touch.x, touch.y)) {
-						if (this.buttons[i].onRelease) this.buttons[i].onRelease(touch); // cool we just let go of the button
+						if (this.buttons[i].onRelease) {
+							this.buttons[i].onRelease(touch); // cool we just let go of the button
+						}
 
 					} else {
-						if (this.buttons[i].onReleaseOutside) this.buttons[i].onReleaseOutside(touch);
+						if (this.buttons[i].onReleaseOutside) {
+							this.buttons[i].onReleaseOutside(touch);
+						}
 					}
 					this.buttons[i]._activeDrag = false;
 					this.buttons[i]._touchID = 0;
 				}
 			}
 		}
-	}
-	var scaledMouse = {clientX: 0, clientY: 0}
+	};
+
+	var scaledMouse = {
+		clientX: 0,
+		clientY: 0
+	};
 
 	var ratioEvent = function(event) {
 		scaledMouse.clientX = (event.clientX - me.canvas.offsetLeft) / me._scaleRatio;
 		scaledMouse.clientY = (event.clientY - me.canvas.offsetTop) / me._scaleRatio;
 		// return me.scaledMouse;
-	}
+	};
 
 	var mouse_down = function(event) {
 		ratioEvent(event);
@@ -122,7 +144,8 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 		mouse.y = scaledMouse.clientY + me.camera.y;
 		mouse.dx = mouse.dy = 0;
 		me.mouse_onDown(mouse);
-	}
+	};
+
 	var mouse_move = function(event) {
 		ratioEvent(event);
 		mouse.dx = mouse.x - (scaledMouse.clientX + me.camera.x);
@@ -130,11 +153,13 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 		mouse.x = scaledMouse.clientX + me.camera.x;
 		mouse.y = scaledMouse.clientY + me.camera.y;
 		me.mouse_onMove(mouse);
-	}
-	var mouse_release = function(event) {
+	};
+
+	var mouse_release = function() {
 		me.mouse_onUp(mouse);
 		mouse.id = 0;
-	}
+	};
+
 	if (this._mouseWindow) {
 		document.addEventListener('mousedown', mouse_down, false);
 		document.addEventListener('mousemove', mouse_move, false);
@@ -150,16 +175,16 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 	/* touch events
 */
 
-	var touches = {}
+	var touches = {};
 	var touchID = 0;
-	var events = [];
-	var Event = {};
+	// var events = [];
+	// var Event = {};
 	var length = 0;
 
 	var finger_press = function(event) {
 		event.preventDefault();
-		length =  event.targetTouches.length
-		for (var i = 0; i != length; i++) {
+		length = event.targetTouches.length;
+		for (var i = 0; i !== length; i++) {
 			touchID = event.targetTouches[i].identifier;
 			ratioEvent(event.targetTouches[i]);
 			touches[touchID] = {};
@@ -172,11 +197,12 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 			touches[touchID].dy = 0;
 			me.mouse_onDown(touches[touchID]);
 		}
-	}
+	};
+
 	var finger_move = function(event) {
 		event.preventDefault();
-		length =  event.targetTouches.length
-		for (var i = 0; i != length; i++) {
+		length = event.targetTouches.length;
+		for (var i = 0; i !== length; i++) {
 			touchID = event.targetTouches[i].identifier;
 			ratioEvent(event.targetTouches[i]);
 			touches[touchID].dx = touches[touchID].x - scaledMouse.clientX;
@@ -187,17 +213,17 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 			touches[touchID].y = scaledMouse.clientY + me.camera.y;
 			me.mouse_onMove(touches[touchID]);
 		}
-	}
+	};
+
 	var finger_release = function(event) {
 		event.preventDefault();
-		length =  event.changedTouches.length
-		for (var i = 0; i != length; i++) {
+		length = event.changedTouches.length;
+		for (var i = 0; i !== length; i++) {
 			touchID = event.changedTouches[i].identifier;
 			me.mouse_onUp(touches[touchID]);
 			delete touches[touchID];
 		}
-
-	}
+	};
 
 	if (!window.ejecta) {
 		this.canvas.addEventListener('touchstart', finger_press, false);
@@ -212,5 +238,5 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 		document.addEventListener('touchend', finger_release, false);
 		document.addEventListener('touchcancel', finger_release, false);
 	}
-}
+};
 

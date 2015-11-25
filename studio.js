@@ -155,7 +155,7 @@ Studio.uncapped = function(time_stamp) {
 	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
-Studio.tick = Studio.capped;
+Studio.tick = Studio.uncapped;
 
 Studio.stopTime = function() {
 	//this.time = this.now();
@@ -196,7 +196,7 @@ Studio.apply = function(obj) { // Display Object and a few others share this fun
 		Studio.temp.keys_i--;
 	}
 	return this;
-}
+};
 
 // addTo()
 
@@ -206,17 +206,17 @@ Studio.addTo = function(a, b) {
 			a[attr] = b[attr];
 		}
 	}
-}
+};
 
 
 // Studio.extends(a,b)
 // a : New Class
 // b : Class to inherit attributes from.
 
-Studio.extends = function(a,b){
-	a.prototype = new b();
-	a.prototype.constructor = a;
-}
+Studio.extends = function(A,B){
+	A.prototype = new B();
+	A.prototype.constructor = A;
+};
 
 Studio.TOP = Studio.LEFT= 0;
 Studio.MIDDLE = Studio.CENTER = 0.5;

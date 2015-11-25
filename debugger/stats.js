@@ -58,6 +58,7 @@ var STATS = new Studio.Plugin({
 		show_text: true,
 		clear_mode: 'cover', // modes : cover, erase
 		position: 0,
+		refresh: .5,
 	},
 	init: function(a) { // lets build out a canvas for the stats
 		this.buffer = document.createElement('canvas');
@@ -68,7 +69,6 @@ var STATS = new Studio.Plugin({
 		if (this.options.show_text) {
 			this.half = this.buffer.height
 		}
-		// this.buffer.style.background="#000";
 
 		this.buffer.ctx = this.buffer.getContext('2d');
 		if (this.options.external) {
@@ -85,52 +85,30 @@ var STATS = new Studio.Plugin({
 		this._tick = 0;
 		this._ratio = 0;
 		this._spikes = 0;
+		
 		// we rewrite these function just so we can track the draw count
-		Studio.DisplayObject.prototype.render = function(stage) {
-			if (this._visible) {
-				if (stage.snapPixels) {
-					this.snapPixels();
-				}
-				Studio.draws ++;
-				this.draw(stage.ctx);
-				this.render_children(stage);
+		Studio.draws = 0;
+		Studio.DisplayObject.prototype._delta = function(ratio) {
+			Studio.draws++;
+			this._dx = this.__delta(this.__x, this._world.x, ratio);
+			this._dy = this.__delta(this.__y, this._world.y, ratio);
+			if (this._world.rotation) {
+				this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
 			}
-			if (this.onExitFrame) {
-				this.onExitFrame();
-			}
-		}
-		Studio.DisplayList.prototype.render = function(e) {
-			if (this.cached) {
-				if (this.alpha !== e.ctx.globalAlpha) {
-					e.ctx.globalAlpha = this.alpha;
-				}
-				Studio.draws++;
-				this.draw(e.ctx);
-			} else {
-				var listItem = this.first;
-				while (listItem) {
-					this.next = listItem.next;
-					listItem.render(e);
-					listItem = listItem.next || this.next;
-				}
-			}
-		}
+		};
 	},
 	action: function(a) {
 		this._time += Studio.delta;
 		this._tick++;
-		this._ratio += Studio.frameRatio;
-		if (Studio.frameRatio > 3.1) {
+		if (Studio.delta > 1000/15) {
 			this._spikes++;
 		}
-		// if(this.options.show_text && this._time>1000){
-		// 	this.displayDraws(this.buffer.ctx);
-		// 	this._time = 0;
-		// 	this._tick = 0;
-		// 	this._ratio = 0;
-		// }
+		if(this.options.show_text && this._time>this.options.refresh*1000){
+			this.displayDraws(this.buffer.ctx);
+			this._time = 0;
+			this._tick = 0;
+		}
 		this.displayFPS(this.buffer.ctx);
-
 		if (!this.options.external) {
 			a.ctx.drawImage(this.buffer, 0, this.options.position);
 		}
@@ -143,26 +121,27 @@ var STATS = new Studio.Plugin({
 		ctx.clearRect(0, 0, this.buffer.width, this.buffer.height);
 	},
 	displayFPS: function(ctx) {
-		if (Studio.frameRatio > 3.01) {
+		if (Studio.delta > 1000/15) {
 			ctx.fillStyle = 'rgb(240,0,0)';
-		} else if (Studio.frameRatio > 2.1) {
+		} else if (Studio.delta > 1000/30) {
 			ctx.fillStyle = 'rgb(240,220,0)';
 		} else {
 			ctx.fillStyle = 'rgb(20,245,0)';
 		}
 		
-		// ctx.fillRect(this.step,this.half,2,-(Studio.frameRatio*5));
+		ctx.fillRect(this.step,this.half,2,-(Studio.delta/2));
 		this.step++;
 		if (this.step > this.buffer.width) {
 			this.step = 0;
 			this[this.options.clear_mode](ctx);
 		}
+		Studio.draws = 0;
 	},
 	displayDraws: function(ctx) {
 		ctx.fillStyle = 'rgba(0,0,0,.8)';
 		ctx.fillRect(0, 0, this.buffer.width, 12);
 		ctx.fillStyle = 'rgb(255,255,255)';
-		ctx.fillText((60 / (this._ratio / this._tick) | 0) + ' fps / ' + Studio.draws + ' draw / ' + this._spikes + ' spikes', 2, 10);
+		ctx.fillText((this._tick/this.options.refresh | 0) + ' fps / ' + Studio.draws + ' draw / ' + this._spikes + ' spikes', 2, 10);
 	}
 
 })

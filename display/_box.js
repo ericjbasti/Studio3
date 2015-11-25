@@ -4,7 +4,7 @@ Studio.Box = function(left, top, width, height) {
 	this.right = left + width || 1;
 	this.bottom = top + height || 1;
 	return this;
-}
+};
 
 Studio.Box.prototype = {
 	constructor: Studio.Box,

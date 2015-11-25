@@ -13,8 +13,6 @@ Studio.Sprite = function(attr) {
 
 Studio.extends(Studio.Sprite, Studio.Rect);
 
-
-
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
@@ -22,7 +20,7 @@ Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.restore();
 };
 
-Studio.Sprite.prototype.draw = function(ctx, ratio) {
+Studio.Sprite.prototype.draw = function(ctx) {
 	if (!this.image) {
 		return;
 	}
@@ -38,12 +36,6 @@ Studio.Sprite.prototype.draw = function(ctx, ratio) {
 	}
 };
 
-
-
-
-
-
-
 /**
  * ImageSlice
  */
@@ -56,7 +48,8 @@ Studio.ImageSlice = function(attr) {
 	if (attr) {
 		this.apply(attr);
 	}
-}
+};
+
 Studio.extends(Studio.ImageSlice, Studio.Sprite);
 
 Studio.ImageSlice.prototype.drawAngled = function(ctx) {
@@ -66,7 +59,7 @@ Studio.ImageSlice.prototype.drawAngled = function(ctx) {
 	ctx.restore();
 };
 
-Studio.ImageSlice.prototype.draw = function(ctx, ratio) {
+Studio.ImageSlice.prototype.draw = function(ctx) {
 	if (!this.image) {
 		return;
 	}
@@ -110,7 +103,7 @@ Studio.SpriteAnimation.prototype.setStartingFrame = function(a) {
 	this.myTime = this.startTime + (a * (1000 / this.fps));
 };
 
-Studio.SpriteAnimation.prototype.draw = function(ctx, ratio) {
+Studio.SpriteAnimation.prototype.draw = function(ctx) {
 	if (!this.sheet) {
 		return;
 	}

@@ -17,7 +17,7 @@ Studio.Image.prototype.constructor = Studio.Image;
 
 Studio.Image.prototype.loadImage = function(who) {
 	if (Studio.assets[who]) {
-		console.warn('Already loaded : ', who, Studio.assets[who])
+		console.warn('Already loaded : ', who, Studio.assets[who]);
 		this.image = Studio.assets[who];
 		this.ready = true;
 		if (this.onLoadComplete) {

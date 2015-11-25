@@ -1,88 +1,87 @@
-Studio.Stage.prototype.update_tweens = function(){
+Studio.Stage.prototype.update_tweens = function() {
 	var i,j = 0;
 	var tween,key, delta;
-	for (i in this.tweens){
+	for (i in this.tweens) {
 		tween = this.tweens[i];
-		tween.cur+=((Studio.delta)*tween.actor._world.speed);
-		if(!tween.dir) {
-			delta = tween.cur/tween.duration;
-		}else{
-			delta = 1 - tween.cur/tween.duration;
+		tween.cur += ((Studio.delta) * tween.actor._world.speed);
+		if (!tween.dir) {
+			delta = tween.cur / tween.duration;
+		} else {
+			delta = 1 - tween.cur / tween.duration;
 		}
-		if(delta<1 && delta>0){
-			for(j=0;j!==tween.keys.length;j++){
+		if (delta < 1 && delta > 0) {
+			for (j = 0; j !== tween.keys.length; j++) {
 				key = tween.keys[j];
 				this.update_property(tween,key, delta);
 			}
-		}else{
-			if(tween._loop) {
-				tween.cur=0;
-				if(tween._reflect){
-					if(!tween.dir){
-						tween.dir=1;
-					}else{
-						tween.dir=0;
+		} else {
+			if (tween._loop) {
+				tween.cur = 0;
+				if (tween._reflect) {
+					if (!tween.dir) {
+						tween.dir = 1;
+					} else {
+						tween.dir = 0;
 					}
 				}
 				return;
-			}else{
-				if(tween.reset){
+			} else {
+				if (tween.reset) {
 					tween.actor.apply(tween.original);
-				}else{
+				} else {
 					tween.actor.apply(tween.to);
 					// for(j=0;j!==tween.keys.length;j++){
 					// 	key = tween.keys[j];
 					// 	tween.actor[key] = tween.to[key];
 					// }
 				}
-				if(tween.callback){
+				if (tween.callback) {
 					tween.callback.call(tween.actor);
 				}
-				tween=null;
-				this.tweens[i]=null;
+				tween = null;
+				this.tweens[i] = null;
 				delete this.tweens[i];
 			}
 		}
 	}
 };
 
-Studio.Stage.prototype.update_property = function(tween,key,delta){
-	tween.actor[key] = tween.original[key] + (Studio.Ease[tween.ease](delta) * (tween.to[key]-tween.original[key]));
-}
+Studio.Stage.prototype.update_property = function(tween, key, delta) {
+	tween.actor[key] = tween.original[key] + (Studio.Ease[tween.ease](delta) * (tween.to[key] - tween.original[key]));
+};
 
-
-Studio._tween_object = function(who, ease, to, duration, callback){
-	this.actor= who;
-	this.ease= ease;
-	this.original= {};
-	this.to= to;
-	this.cur= 0;
-	this.duration= duration;
-	this.callback= callback;
-	this._loop= false;
-	this._reflect= true;
-	this.reset= false;
-	this.dir= 0;
-	this.id= null;
-	this.keys= Object.keys(to);
-}
+Studio._tween_object = function(who, ease, to, duration, callback) {
+	this.actor = who;
+	this.ease = ease;
+	this.original = {};
+	this.to = to;
+	this.cur = 0;
+	this.duration = duration;
+	this.callback = callback;
+	this._loop = false;
+	this._reflect = true;
+	this.reset = false;
+	this.dir = 0;
+	this.id = null;
+	this.keys = Object.keys(to);
+};
 
 Studio._tween_object.prototype.constructor = Studio._tween_object;
 
-Studio._tween_object.prototype.loop= function(setting){
+Studio._tween_object.prototype.loop = function() {
 	this._loop = true;
 	return this;
-}
-Studio._tween_object.prototype.reflect= function(setting){
+};
+
+Studio._tween_object.prototype.reflect = function() {
 	this._reflect = true;
 	return this;
-}
-Studio._tween_object.prototype.setActor= function(actor){
+};
+
+Studio._tween_object.prototype.setActor = function(actor) {
 	this.actor = actor;
 	return this;
-}
-
-
+};
 
 Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback) {
 	var temp = new Studio._tween_object(who, ease, to, duration, callback);
@@ -92,7 +91,7 @@ Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback)
 			this[key] = a[key];
 		}
 		return this;
-	}
+	};
 
 	for (var key in to) {
 		temp.original[key] = who[key];
@@ -102,17 +101,16 @@ Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback)
 	return temp;
 };
 
-
-Studio.Stage.prototype.createLoop = function(who,ease,to,duration,callback){
+Studio.Stage.prototype.createLoop = function(who, ease, to, duration, callback) {
 	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback);
-	this.tweens[this.nextID-1].loop = true;
-	return this.tweens[this.nextID-1];
-}
-Studio.Stage.prototype.addTween = function(who,ease,to,duration,callback){
-	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback);
-	return this.tweens[this.nextID-1];
+	this.tweens[this.nextID - 1].loop = true;
+	return this.tweens[this.nextID - 1];
 };
 
+Studio.Stage.prototype.addTween = function(who, ease, to, duration, callback) {
+	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback);
+	return this.tweens[this.nextID - 1];
+};
 
 Studio.Stage.prototype.playTween = function(who) {
 	who.cur = 0;
@@ -122,22 +120,23 @@ Studio.Stage.prototype.playTween = function(who) {
 	this.tweens[who.id] = who;
 };
 
-Studio.Stage.prototype.stopTween = function(who,snap,original){
-	if(this.tweens[who.id]){ // lets make sure the tween is active first
-		who.cur=0;
-		who.dir=0;
-		if(snap){
-			if(original){
-				for(var j=0;j!==who.keys.length;j++){
-					who.actor[who.keys[j]]=who.original[who.keys[j]];
+Studio.Stage.prototype.stopTween = function(who, snap, original) {
+	if (this.tweens[who.id]) { // lets make sure the tween is active first
+		who.cur = 0;
+		who.dir = 0;
+		if (snap) {
+			var j;
+			if (original) {
+				for (j = 0; j !== who.keys.length; j++) {
+					who.actor[who.keys[j]] = who.original[who.keys[j]];
 				}
-			}else{
-				for(var j=0;j!==who.keys.length;j++){
-					who.actor[who.keys[j]]=who.to[who.keys[j]];
+			} else {
+				for (j = 0; j !== who.keys.length; j++) {
+					who.actor[who.keys[j]] = who.to[who.keys[j]];
 				}
 			}
 		}
-		this.tweens[who.id]=null;
+		this.tweens[who.id] = null;
 		delete this.tweens[who.id];
 	}
 };
@@ -149,16 +148,16 @@ Studio.Ease.linear = function(t) {
 };
 
 Studio.Ease.snap = function(t) {
-	return t+.5 | 0;
+	return t + 0.5 | 0;
 };
 
-Studio.Ease.chillInOut = function(t){
-	var s = .75 ;
+Studio.Ease.chillInOut = function(t) {
+	var s = 0.75 ;
 	if ((t *= 2) < 1) {
 		return 0.5 * (t * t * ((s + 1) * t - s));
 	}
 	return 0.5 * ((t -= 2) * t * ((s + 1) * t + s) + 2);
-}
+};
 
 Studio.Ease.backOut = function(t) {
 	var s = 1.70158;
@@ -185,9 +184,9 @@ Studio.Ease.elasticOut = function(t) {
 	if (t === 1) {
 		return 1;
 	}
-	if (!a || a < 1) { 
-		a = 1; s = p / 4; 
-	}else {
+	if (!a || a < 1) {
+		a = 1; s = p / 4;
+	} else {
 		s = p * Math.asin(1 / a) / (6.283);
 	}
 	return (a * Math.pow(2, -10 * t) * Math.sin((t - s) * (6.283) / p) + 1);
