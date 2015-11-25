@@ -276,11 +276,14 @@ Studio.DisplayObject.prototype = {
 			this._world.angle = this.angle;
 		}
 	},
+	__delta : function(snap,cur,ratio){
+		return snap + ((cur - snap) * ratio);
+	},
 	_delta: function(ratio) {
-		this._dx = this.__x + ((this._world.x - this.__x) * ratio);
-		this._dy = this.__y + ((this._world.y - this.__y) * ratio);
+		this._dx = this.__delta(this.__x, this._world.x, ratio);
+		this._dy = this.__delta(this.__y, this._world.y, ratio);
 		if(this._world.rotation){
-			this._dAngle = this._world.angle + ((this.angle - this._world.angle) * ratio);
+			this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
 		}
 	},
 	_snapback: function() {
