@@ -72,6 +72,8 @@ Studio.DisplayObject = function(attr) {
 
 	this.__x = this._world.x;
 	this.__y = this._world.y;
+	this._dx = this._world.x;
+	this._dy = this._world.y;
 };
 
 Studio.DisplayObject.prototype = {
@@ -288,6 +290,7 @@ Studio.DisplayObject.prototype = {
 		if (this._world.rotation) {
 			this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
 		}
+
 	},
 	_snapback: function() {
 		this.force_update();
@@ -301,14 +304,7 @@ Studio.DisplayObject.prototype = {
 		this.update_rotation();
 		this.update_xy();
 	},
-	update: function() {
-		this.snapshot();
-		// lets apply any changes before we update the object.
-		if (this.onEnterFrame) {
-			this.onEnterFrame();
-		}
-		// now that those changes have been applied lets update our stats.
-
+	_update : function(){
 		if (this.__update_ALPHA) {
 			this.update_visibility();
 		}
@@ -330,5 +326,14 @@ Studio.DisplayObject.prototype = {
 			}
 			this.update_children();
 		}
+	},
+	update: function() {
+		this.snapshot();
+		// lets apply any changes before we update the object.
+		if (this.onEnterFrame) {
+			this.onEnterFrame();
+		}
+		// now that those changes have been applied lets update our stats.
+		this._update();
 	},
 };

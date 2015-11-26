@@ -108,9 +108,20 @@ Studio.TextBox.prototype.debugDraw = function(ctx) {
 	ctx.strokeRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._wrap_height);
 };
 
+Studio.TextBox.prototype.drawAngled = function(ctx) {
+	ctx.save();
+	this.prepAngled(ctx);
+	ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, -(this.width * this.anchorX), -(this.height * this.anchorY) - this._vertical_align, this.width, this.height);
+	ctx.restore();
+};
+
 Studio.TextBox.prototype.draw = function(ctx) {
 	this.setAlpha(ctx);
 	// this.debugDraw(ctx);
 	// since we don't resize the buffer, we need to compensate based on the differences of the buffer height and text height
-	ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._world.height);
+	if (this.angle) {
+		this.drawAngled(ctx);
+	} else {
+		ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._world.height);
+	}
 };

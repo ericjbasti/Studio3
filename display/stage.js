@@ -217,6 +217,7 @@ Studio.Stage.prototype.update_visibility = function() {
  * Yet it should still update its private variables.
  */
 
+
 Studio.Stage.prototype.update = function(ratio, delta) {
 	this.update_tweens();
 	if (this.onEnterFrame) {
@@ -259,6 +260,7 @@ Studio.Stage.prototype.runEffects = function() {
 };
 
 Studio.Stage.prototype.loading = function(delta) {
+
 	if (Studio.loaded === true) { // BAD DESIGN! This should be based on each stage. 
 		// as it stands loading an image for one canvas will cause all to pause. oops.
 		if (this.onReady) {

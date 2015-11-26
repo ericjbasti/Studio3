@@ -1,7 +1,5 @@
 Studio.Stage.prototype.CANVAS = {
-
 	type: '2dContext',
-
 	getContext: function() {
 		this.ctx = this.canvas.getContext('2d');
 	},
@@ -57,6 +55,7 @@ Studio.Stage.prototype.fixedStep = function() {
 Studio.Stage.prototype.step = function(delta) {
 	this._d += delta;
 	this._lag = this._d / this.dur;
+	if( this._lag > 1 ) this._lag = 1;
 };
 
 Studio.Stage.prototype.engine = Studio.Stage.prototype.CANVAS;
