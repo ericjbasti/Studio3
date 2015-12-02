@@ -49,6 +49,7 @@ Studio.DisplayObject = function(attr) {
 
 	// Rotation Settings:
 	this.orbits = true;
+	this.orbit = 0;
 	this.inheritRotation = true;
 	this.orbit_speed = 1;
 
@@ -244,8 +245,8 @@ Studio.DisplayObject.prototype = {
 	orbitXY: function() {
 		var x = this.x * this._world.scaleX;
 		var y = this.y * this._world.scaleY;
-		var sin = Studio.sin(this.parent.angle * this.orbit_speed);
-		var cos = Studio.cos(this.parent.angle * this.orbit_speed);
+		var sin = Studio.sin((this.parent.angle + this.orbit) * this.orbit_speed);
+		var cos = Studio.cos((this.parent.angle + this.orbit) * this.orbit_speed);
 		this._orbitX = (x * cos) - (y * sin);
 		this._orbitY = (x * sin) + (y * cos);
 	},

@@ -62,6 +62,7 @@ var STATS = new Studio.Plugin({
 	},
 	init: function(a) { // lets build out a canvas for the stats
 		this.buffer = document.createElement('canvas');
+		this.buffer.style.position = 'absolute';
 		this.buffer.id = '_stats_buffer'
 		this.buffer.width = this.options.width;
 		this.buffer.height = this.options.height;
