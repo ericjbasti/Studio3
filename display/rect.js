@@ -10,7 +10,7 @@ Studio.Rect = function(attr) {
 	}
 };
 
-Studio.extends(Studio.Rect, Studio.DisplayObject);
+Studio.extend(Studio.Rect, Studio.DisplayObject);
 
 // Studio.Rect.prototype.setTexture = function(tx, ty, tX, tY) {
 
@@ -105,7 +105,7 @@ Studio.Clip = function(attr) {
 	}
 };
 
-Studio.extends(Studio.Clip, Studio.Rect);
+Studio.extend(Studio.Clip, Studio.Rect);
 
 Studio.Clip.prototype.draw = function(ctx) {
 	ctx.save();
@@ -129,7 +129,7 @@ Studio.CircleClip = function(attr) {
 	}
 };
 
-Studio.extends(Studio.CircleClip, Studio.Rect);
+Studio.extend(Studio.CircleClip, Studio.Rect);
 
 Studio.CircleClip.prototype.draw = function(ctx) {
 	ctx.save();

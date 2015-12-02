@@ -11,7 +11,7 @@ Studio.Sprite = function(attr) {
 	}
 };
 
-Studio.extends(Studio.Sprite, Studio.Rect);
+Studio.extend(Studio.Sprite, Studio.Rect);
 
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
@@ -50,7 +50,7 @@ Studio.ImageSlice = function(attr) {
 	}
 };
 
-Studio.extends(Studio.ImageSlice, Studio.Sprite);
+Studio.extend(Studio.ImageSlice, Studio.Sprite);
 
 Studio.ImageSlice.prototype.drawAngled = function(ctx) {
 	ctx.save();
@@ -95,7 +95,7 @@ Studio.SpriteAnimation = function(attr) {
 	this.setStartingFrame(this.frame);
 };
 
-Studio.extends(Studio.SpriteAnimation, Studio.Rect);
+Studio.extend(Studio.SpriteAnimation, Studio.Rect);
 
 Studio.SpriteAnimation.prototype.setStartingFrame = function(a) {
 	this.frame = a;
@@ -149,7 +149,7 @@ Studio.SpriteSheet = function(path, attr) {
 	}
 };
 
-Studio.extends(Studio.SpriteSheet, Studio.Image);
+Studio.extend(Studio.SpriteSheet, Studio.Image);
 
 Studio.SpriteSheet.prototype.apply = function(obj) {
 	var keys = Object.keys(obj);

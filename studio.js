@@ -111,6 +111,7 @@ if (!window.Studio) {
 	Studio.interval = null;
 	Studio.browser = navigator.userAgent.toLowerCase();
 	Studio.disableRAF = false;
+	Studio.RAF;
 }
 
 Studio.start = function(time_stamp) {
@@ -120,15 +121,15 @@ Studio.start = function(time_stamp) {
 	}
 	if (time_stamp) {
 		Studio.time = time_stamp;
-		requestAnimationFrame(Studio.loop);
+		Studio.RAF = requestAnimationFrame(Studio.loop);
 
 	}else {
-		requestAnimationFrame(Studio.start);
+		Studio.RAF = requestAnimationFrame(Studio.start);
 	}
 };
 
 Studio.loop = function(time_stamp) {
-	requestAnimationFrame(Studio.loop);
+	Studio.RAF = requestAnimationFrame(Studio.loop);
 
 	Studio.tick(time_stamp);
 	Studio.draws = 0;
@@ -155,7 +156,7 @@ Studio.uncapped = function(time_stamp) {
 	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
-Studio.tick = Studio.uncapped;
+Studio.tick = Studio.capped;
 
 Studio.stopTime = function() {
 	//this.time = this.now();
@@ -169,6 +170,19 @@ Studio.resetTime = function() {
 	//this.start();
 	// console.log('START');
 };
+
+Studio.handleVisibilityChange = function() {
+  if (document.hidden) {
+    console.log('%cStudio Paused (visibilitychange)', Studio.statStyle);
+    cancelAnimationFrame(Studio.RAF);
+  } else  {
+     console.log('%cStudio Play (visibilitychange)', Studio.statStyle);
+    Studio.RAF = requestAnimationFrame(Studio.start);
+  }
+}
+
+document.addEventListener("visibilitychange", Studio.handleVisibilityChange, false);
+
 
 Studio.z_index = function(a, b) {
 	if (a.z < b.z) {
@@ -209,11 +223,11 @@ Studio.addTo = function(a, b) {
 };
 
 
-// Studio.extends(a,b)
-// a : New Class
-// b : Class to inherit attributes from.
+// Studio.extend(a,b)
+// A : the New Class
+// B : Class to inherit attributes from.
 
-Studio.extends = function(A,B){
+Studio.extend = function(A,B){
 	A.prototype = new B();
 	A.prototype.constructor = A;
 };
@@ -225,5 +239,6 @@ Studio.BOTTOM = Studio.RIGHT = 1;
 Studio.infoStyle = 'background-color: #3af; padding: 2px 4px; color: #fff';
 Studio.errorStyle = 'background-color: #c01; padding: 2px 4px;';
 Studio.warningStyle = 'background-color: #fd2; padding: 2px 4px;';
+Studio.statStyle = 'background-color: #eee; padding: 2px 4px; color: #555; font-size: 10px';
 Studio.engineStyle = 'background-color: #eee; color: #3af; padding: 1px 4px; border: 1px solid #3af';
 
