@@ -1,9 +1,13 @@
-Studio.Stage.prototype.update_tweens = function() {
+Studio.Stage.prototype.update_tweens = function(global_delta) {
 	var i,j = 0;
 	var tween,key, delta;
 	for (i in this.tweens) {
 		tween = this.tweens[i];
-		tween.cur += ((Studio.delta) * tween.actor._world.speed);
+		tween.cur += ((global_delta) * tween.actor._world.speed);
+		if(!tween.active && tween.onStart){
+			tween.onStart.call(tween.actor);
+			tween.active = 1;
+		}
 		if (!tween.dir) {
 			delta = tween.cur / tween.duration;
 		} else {
@@ -17,12 +21,18 @@ Studio.Stage.prototype.update_tweens = function() {
 		} else {
 			if (tween._loop) {
 				tween.cur = 0;
+				if (tween.onEnd) {
+					tween.onEnd.call(tween.actor);
+				}
 				if (tween._reflect) {
 					if (!tween.dir) {
 						tween.dir = 1;
 					} else {
 						tween.dir = 0;
 					}
+				}else{
+					tween.actor.apply(tween.original);
+					tween.active = 0;
 				}
 				return;
 			} else {
@@ -35,8 +45,8 @@ Studio.Stage.prototype.update_tweens = function() {
 					// 	tween.actor[key] = tween.to[key];
 					// }
 				}
-				if (tween.callback) {
-					tween.callback.call(tween.actor);
+				if (tween.onEnd) {
+					tween.onEnd.call(tween.actor);
 				}
 				tween = null;
 				this.tweens[i] = null;
@@ -50,18 +60,20 @@ Studio.Stage.prototype.update_property = function(tween, key, delta) {
 	tween.actor[key] = tween.original[key] + (Studio.Ease[tween.ease](delta) * (tween.to[key] - tween.original[key]));
 };
 
-Studio._tween_object = function(who, ease, to, duration, callback) {
+Studio._tween_object = function(who, ease, to, duration, onEnd, onStart) {
 	this.actor = who;
 	this.ease = ease;
 	this.original = {};
 	this.to = to;
 	this.cur = 0;
 	this.duration = duration;
-	this.callback = callback;
+	this.onStart = onStart;
+	this.onEnd = onEnd;
 	this._loop = false;
 	this._reflect = true;
 	this.reset = false;
 	this.dir = 0;
+	this.active = 0;
 	this.id = null;
 	this.keys = Object.keys(to);
 };
@@ -73,8 +85,8 @@ Studio._tween_object.prototype.loop = function() {
 	return this;
 };
 
-Studio._tween_object.prototype.reflect = function() {
-	this._reflect = true;
+Studio._tween_object.prototype.reflect = function(status) {
+	this._reflect = status;
 	return this;
 };
 
@@ -83,8 +95,8 @@ Studio._tween_object.prototype.setActor = function(actor) {
 	return this;
 };
 
-Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback) {
-	var temp = new Studio._tween_object(who, ease, to, duration, callback);
+Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback, onstart) {
+	var temp = new Studio._tween_object(who, ease, to, duration, callback, onstart);
 	temp.id = this.nextID;
 	temp.apply = function(a) {
 		for (var key in a) {

@@ -12,7 +12,7 @@ Studio.DisplayList = function(attr) {
 	}
 };
 
-Studio.extends(Studio.DisplayList,Studio.DisplayObject);
+Studio.extend(Studio.DisplayList,Studio.DisplayObject);
 
 Studio.DisplayList.prototype.cacheAsBitmap = function(stage) {
 	this.cache = document.createElement('canvas');

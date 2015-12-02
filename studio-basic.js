@@ -138,7 +138,7 @@ Studio.addTo = function(a, b) {
 }
 
 
-// Studio.extends(a,b)
+// Studio.extend(a,b)
 // a : New Class
 // b : Class to inherit attributes from.
 

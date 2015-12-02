@@ -20,7 +20,7 @@ Studio.Scene = function(attr) {
 	}
 };
 
-Studio.extends(Studio.Scene, Studio.DisplayObject);
+Studio.extend(Studio.Scene, Studio.DisplayObject);
 
 Studio.Scene.prototype.loadAssets = function() {
 	for (var i = 0; i !== arguments.length; i++) {

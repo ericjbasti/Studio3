@@ -295,7 +295,6 @@ Studio.DisplayObject.prototype = {
 	},
 	_snapback: function() {
 		this.force_update();
-		this.snapshot();
 	},
 	force_update: function() {
 		this.update_visibility();
@@ -304,6 +303,7 @@ Studio.DisplayObject.prototype = {
 		this.update_dimensions();
 		this.update_rotation();
 		this.update_xy();
+		this.snapshot();
 	},
 	_update : function(){
 		if (this.__update_ALPHA) {

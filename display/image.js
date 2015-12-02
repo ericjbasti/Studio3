@@ -48,3 +48,20 @@ Studio.Image.prototype.loadImage = function(who) {
 		this.image = Studio.assets[who];
 	}
 };
+
+
+Studio.Cache = function(width, height, resolution){
+	var resolution = resolution || 1;
+
+	this.image = document.createElement('canvas');
+	this.image.width = width * resolution || 512;
+	this.image.height = height * resolution || 512;
+	this.ready = false;
+	this.buffer = this.image.getContext('2d');
+	this.buffer.scale(resolution, resolution);
+
+	// document.body.appendChild(this.image)
+	// this.image.style.border = "1px solid green"
+}
+
+Studio.extend(Studio.Cache, Studio.Image);

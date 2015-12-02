@@ -1,28 +1,26 @@
 Studio.TextBox = function(width, height, stage) {
-	this.font = null;
+	this.font = "12px Arial";
 	this.lineHeight = 10;
-	this.image = document.createElement('canvas');
 	this.height = height;
 	this.width = width;
 	this.shadow = 1;
 	this.shadowColor = 'rgba(0,0,0,0.5)';
-	this.image.height = height * stage.resolution;
-	this.image.width =  width * stage.resolution;
-	this._buffer = this.image.getContext('2d');
-	this._buffer.imageSmoothingEnabled = false;
-	this._buffer.scale(stage.resolution, stage.resolution);
-	this._buffer.textBaseline = 'top';
-	this._buffer.font = this.font;
+	this.cache = new Studio.Cache(width,height, stage.resolution);
+
+	this.cache.buffer.textBaseline = 'top';
+	this.cache.buffer.font = this.font;
+
 	this.text = '';
 	this.color = '#fff';
 	this._wrap_height = this.lineHeight;
 	this.horizontal_align = Studio.LEFT;
 	this.vertical_align = Studio.TOP;
 	this._vertical_align = 0;
+
 	return this;
 };
 
-Studio.extends(Studio.TextBox, Studio.Rect);
+Studio.extend(Studio.TextBox, Studio.Rect);
 
 Studio.TextBox.prototype.setFont = function(font) {
 	this.font = font;
@@ -40,29 +38,27 @@ Studio.TextBox.prototype.setColor = function(color) {
 };
 
 Studio.TextBox.prototype.setFont = function(font) {
-	this._buffer.font = this.font = font;
+	this.cache.buffer.font = this.font = font;
 	return this;
 };
 
 Studio.TextBox.prototype.finish = function() {
 	this.reset();
 	this.wrapText();
-	// this.height = (this._wrap_height - this.lineHeight) * 2;
-	// this.fit()
 };
 
 Studio.TextBox.prototype.reset = function() {
-	this._buffer.clearRect(0, 0, this.width, this.height);
-	this._buffer.font = this.font;
+	this.cache.buffer.clearRect(0, 0, this.width, this.height);
+	this.cache.buffer.font = this.font;
 };
 
 Studio.TextBox.prototype.writeLine = function(text, x, y) {
 	if (this.shadow) {
-		this._buffer.fillStyle = this.shadowColor;
-		this._buffer.fillText(text, x + 1 + this.shadow, y + this.shadow);
+		this.cache.buffer.fillStyle = this.shadowColor;
+		this.cache.buffer.fillText(text, x + 1 + this.shadow, y + this.shadow);
 	}
-	this._buffer.fillStyle = this.color;
-	this._buffer.fillText(text, x + 1, y);
+	this.cache.buffer.fillStyle = this.color;
+	this.cache.buffer.fillText(text, x + 1, y);
 };
 
 Studio.TextBox.prototype.wrapText = function() {
@@ -73,10 +69,10 @@ Studio.TextBox.prototype.wrapText = function() {
 		var line = '';
 		for (var n = 0; n < words.length; n++) {
 			var testLine = line + words[n] + ' ';
-			var metrics = this._buffer.measureText(testLine);
+			var metrics = this.cache.buffer.measureText(testLine);
 			var testWidth = metrics.width;
 			if (testWidth > this.width && n > 0) {
-				testWidth = this._buffer.measureText(line).width;
+				testWidth = this.cache.buffer.measureText(line).width;
 				// We want to avoid any off pixel font rendering so we use | 0 to prevent floats
 				// also offset everything by 2px because it helps with the centering of text
 				this.writeLine(line, 2 + (this.width - testWidth) * this.horizontal_align | 0 , y);
@@ -86,7 +82,7 @@ Studio.TextBox.prototype.wrapText = function() {
 				line = testLine;
 			}
 		}
-		this.writeLine(line, 2 + (this.width - this._buffer.measureText(line).width) * this.horizontal_align | 0, y);
+		this.writeLine(line, 2 + (this.width - this.cache.buffer.measureText(line).width) * this.horizontal_align | 0, y);
 		this._wrap_height = y + this.lineHeight;
 		if (i !== paragraphs.length - 1) {
 			y += this.lineHeight;
@@ -100,7 +96,7 @@ Studio.TextBox.prototype.wrapText = function() {
 };
 
 Studio.TextBox.prototype.fit = function() {
-	this.image.height = this._wrap_height;
+	this.cache.height = this._wrap_height;
 	this.wrapText();
 };
 
@@ -111,17 +107,16 @@ Studio.TextBox.prototype.debugDraw = function(ctx) {
 Studio.TextBox.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
-	ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, -(this.width * this.anchorX), -(this.height * this.anchorY) - this._vertical_align, this.width, this.height);
+	ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, -(this.width * this.anchorX), -(this.height * this.anchorY) - this._vertical_align, this.width, this.height);
 	ctx.restore();
 };
 
 Studio.TextBox.prototype.draw = function(ctx) {
 	this.setAlpha(ctx);
-	// this.debugDraw(ctx);
 	// since we don't resize the buffer, we need to compensate based on the differences of the buffer height and text height
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
-		ctx.drawImage(this.image, 0, 0, this.image.width, this.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._world.height);
+		ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._world.height);
 	}
 };

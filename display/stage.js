@@ -23,12 +23,14 @@ Studio.Stage = function(domID, attr) {
 	this._maxCount = 16050;
 	this.dur = 1000 / 60;
 	this._d = 0;
-
+	this.resolution = window.devicePixelRatio; // defaults to device setting.
+	
 	if (attr) {
 		this.apply(attr);
 	}
+
 	this._sizeCanvas(this.fullscreen);
-	this.setPixelRatio(2);
+	this.setPixelRatio();
 	if (this.webgl) {
 		this.engine = Studio.Stage.prototype.WEBGL;
 	}
@@ -55,7 +57,7 @@ Studio.Stage = function(domID, attr) {
 	return this;
 };
 
-Studio.extends(Studio.Stage, Studio.Scene);
+Studio.extend(Studio.Stage, Studio.Scene);
 
 Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 
@@ -132,8 +134,7 @@ Studio.Stage.prototype.pauseButtons = function(a) {
 	this._pause_buttons = a;
 };
 
-Studio.Stage.prototype.setPixelRatio = function(pixelRatio) {
-	this.resolution = pixelRatio || window.devicePixelRatio;
+Studio.Stage.prototype.setPixelRatio = function() {
 	this.canvas.width = this.width * this.resolution;
 	this.canvas.height = this.height * this.resolution;
 };
@@ -216,10 +217,11 @@ Studio.Stage.prototype.update_visibility = function() {
  * This is different from the displayObject.update() because a stage will never have a parent.
  * Yet it should still update its private variables.
  */
-
+Studio.Stage.prototype._timebased_updates = function(delta){
+	this.update_tweens(delta);
+}
 
 Studio.Stage.prototype.update = function(ratio, delta) {
-	this.update_tweens();
 	if (this.onEnterFrame) {
 		this.onEnterFrame();
 	}
