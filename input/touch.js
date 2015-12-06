@@ -19,7 +19,7 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 					dy: 0,
 					id: 0
 				};
-
+	this.mouse = mouse;
 	/* MOUSE EVENTS*/
 
 	this.mouse_onDown = function(touch) {

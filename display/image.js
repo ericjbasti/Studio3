@@ -2,7 +2,7 @@
  * Image
  */
 
-Studio.Image = function(path) {
+Studio.Image = function(path, parent, callback) {
 	this.image = new Image();
 	this.path = path;
 	this.ready = false;
@@ -11,6 +11,10 @@ Studio.Image = function(path) {
 	if (path) {
 		this.loadImage(path);
 	}
+	if(callback){
+		this.onLoadComplete = callback || null;
+	}
+	this.parent = parent || null;
 };
 
 Studio.Image.prototype.constructor = Studio.Image;
@@ -21,7 +25,7 @@ Studio.Image.prototype.loadImage = function(who) {
 		this.image = Studio.assets[who];
 		this.ready = true;
 		if (this.onLoadComplete) {
-			this.onLoadComplete();
+			this.onLoadComplete(this.parent);
 		}
 		return this;
 	} else {
@@ -40,7 +44,9 @@ Studio.Image.prototype.loadImage = function(who) {
 				Studio.loaded = true;
 			}
 			if (newAsset.onLoadComplete) {
-				newAsset.onLoadComplete();
+				if(newAsset.parent){
+					newAsset.onLoadComplete(newAsset.parent);
+				}
 			}
 			return newAsset;
 		};
@@ -60,8 +66,8 @@ Studio.Cache = function(width, height, resolution){
 	this.buffer = this.image.getContext('2d');
 	this.buffer.scale(resolution, resolution);
 
-	// document.body.appendChild(this.image)
-	// this.image.style.border = "1px solid green"
+	document.body.appendChild(this.image)
+	this.image.style.border = "1px solid green"
 }
 
 Studio.extend(Studio.Cache, Studio.Image);

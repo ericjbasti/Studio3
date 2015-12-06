@@ -3,7 +3,11 @@ Studio.Stage.prototype.update_tweens = function(global_delta) {
 	var tween,key, delta;
 	for (i in this.tweens) {
 		tween = this.tweens[i];
-		tween.cur += ((global_delta) * tween.actor._world.speed);
+		if(tween.actor._world){
+			tween.cur += global_delta * tween.actor._world.speed;
+		}else{
+			tween.cur += global_delta;
+		}
 		if(!tween.active && tween.onStart){
 			tween.onStart.call(tween.actor);
 			tween.active = 1;
@@ -19,6 +23,13 @@ Studio.Stage.prototype.update_tweens = function(global_delta) {
 				this.update_property(tween,key, delta);
 			}
 		} else {
+			if (tween.next){
+				tween.next._snapshot();
+				tween.next.cur = tween.cur-tween.duration;
+				this.tweens[i] = tween.next;
+
+				// return;
+			}else{
 			if (tween._loop) {
 				tween.cur = 0;
 				if (tween.onEnd) {
@@ -52,7 +63,7 @@ Studio.Stage.prototype.update_tweens = function(global_delta) {
 				this.tweens[i] = null;
 				delete this.tweens[i];
 			}
-		}
+		}}
 	}
 };
 
@@ -76,12 +87,21 @@ Studio._tween_object = function(who, ease, to, duration, onEnd, onStart) {
 	this.active = 0;
 	this.id = null;
 	this.keys = Object.keys(to);
+	this.next = null;
+	this.prev = null;
 };
 
 Studio._tween_object.prototype.constructor = Studio._tween_object;
 
 Studio._tween_object.prototype.loop = function() {
 	this._loop = true;
+	return this;
+};
+
+Studio._tween_object.prototype.apply = function(a) {
+	for (var key in a) {
+		this[key] = a[key];
+	}
 	return this;
 };
 
@@ -98,12 +118,6 @@ Studio._tween_object.prototype.setActor = function(actor) {
 Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback, onstart) {
 	var temp = new Studio._tween_object(who, ease, to, duration, callback, onstart);
 	temp.id = this.nextID;
-	temp.apply = function(a) {
-		for (var key in a) {
-			this[key] = a[key];
-		}
-		return this;
-	};
 
 	for (var key in to) {
 		temp.original[key] = who[key];
@@ -112,6 +126,34 @@ Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback,
 	this.nextID++;
 	return temp;
 };
+
+Studio._tween_object.prototype._snapshot = function(){
+	for(var key in this.to){
+		this.original[key] = this.actor[key];
+	}
+}
+
+
+Studio._tween_object.prototype.then = function(ease,to,duration,callback,onstart){
+	this.next = new Studio._tween_object(this.actor, ease, to, duration, callback, onstart);
+	this.next.prev = this;
+	return this.next;
+}
+Studio._tween_object.prototype.last = function(){
+	var next = this.next;
+	var prev = this;
+	while( next !== null ){
+		prev = next;
+		next = next.next;
+	}
+	return prev;
+}
+
+Studio._tween_object.prototype.completeLoop = function(who){
+	this.next = who;
+	who.prev = this;
+	return this.next;
+}
 
 Studio.Stage.prototype.createLoop = function(who, ease, to, duration, callback) {
 	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback);

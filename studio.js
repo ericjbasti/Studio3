@@ -120,6 +120,7 @@ Studio.start = function(time_stamp) {
 		Studio.progress = 1;
 	}
 	if (time_stamp) {
+		Studio.now = time_stamp;
 		Studio.time = time_stamp;
 		Studio.RAF = requestAnimationFrame(Studio.loop);
 
@@ -156,7 +157,7 @@ Studio.uncapped = function(time_stamp) {
 	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
-Studio.tick = Studio.capped;
+Studio.tick = Studio.uncapped;
 
 Studio.stopTime = function() {
 	//this.time = this.now();
@@ -176,7 +177,7 @@ Studio.handleVisibilityChange = function() {
     console.log('%cStudio Paused (visibilitychange)', Studio.statStyle);
     cancelAnimationFrame(Studio.RAF);
   } else  {
-     console.log('%cStudio Play (visibilitychange)', Studio.statStyle);
+    console.log('%cStudio Play (visibilitychange)', Studio.statStyle);
     Studio.RAF = requestAnimationFrame(Studio.start);
   }
 }
