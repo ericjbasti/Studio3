@@ -1,19 +1,33 @@
+// Studio.Broadcast = function(){
+// 	this.broadcasts = {
+// 		'stage.onReady': {status: false, tell:[]};
+// 	};
+// }
+
+// Studio.Broadcast.prototype.addListener = function(who, to){
+
+// }
+
+
+
+
 /**
  * Image
  */
 
-Studio.Image = function(path, parent, callback) {
-	this.image = new Image();
-	this.path = path;
+Studio.Image = function(path, parent) {
+	this.image = null;
+	this.path = null;
 	this.ready = false;
 	this.height = 1;
 	this.width = 1;
+
 	if (path) {
 		this.loadImage(path);
 	}
-	if(callback){
-		this.onLoadComplete = callback || null;
-	}
+
+	this.status = new Studio.Messanger();
+
 	this.parent = parent || null;
 };
 
@@ -24,9 +38,7 @@ Studio.Image.prototype.loadImage = function(who) {
 		console.warn('Already loaded : ', who, Studio.assets[who]);
 		this.image = Studio.assets[who];
 		this.ready = true;
-		if (this.onLoadComplete) {
-			this.onLoadComplete(this.parent);
-		}
+		this.status.setStatus(newAsset.ready);
 		return this;
 	} else {
 		//Studio.loaded=Studio.loadOnDemand;
@@ -37,16 +49,12 @@ Studio.Image.prototype.loadImage = function(who) {
 			Studio.queue++;
 			Studio.progress = Studio.queue / Studio.assets.length;
 			newAsset.ready = true;
+			newAsset.status.setStatus(newAsset.ready);
 			newAsset.height = this.height;
 			newAsset.width = this.width;
 			
 			if (Studio.queue === Studio.assets.length) {
 				Studio.loaded = true;
-			}
-			if (newAsset.onLoadComplete) {
-				if(newAsset.parent){
-					newAsset.onLoadComplete(newAsset.parent);
-				}
 			}
 			return newAsset;
 		};

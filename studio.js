@@ -233,6 +233,27 @@ Studio.extend = function(A,B){
 	A.prototype.constructor = A;
 };
 
+
+Studio.Messanger = function(){
+	this.listeners = [];
+	this.status = 0;
+}
+
+Studio.Messanger.prototype.addListener = function(callback){
+	this.listeners.push(callback);
+	// reply back with current status when adding new listener.
+	callback(this.status);
+}
+
+Studio.Messanger.prototype.setStatus = function(message){
+	this.status = message;
+	// now lets tell everyone that listens.
+	for(var i =0; i<this.listeners.length; i++){
+		this.listeners[i](this.status);
+	}
+}
+
+
 Studio.TOP = Studio.LEFT= 0;
 Studio.MIDDLE = Studio.CENTER = 0.5;
 Studio.BOTTOM = Studio.RIGHT = 1;
