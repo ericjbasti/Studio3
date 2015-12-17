@@ -3,14 +3,16 @@ Studio.Stage.prototype.enableKeyboardInput = function() {
 
 	this.keys = {};
 
-	this.canvas.onkeydown = function(e) {
+	var keydown = function(e) {
 		e.preventDefault();
 		me.keys[e.keyCode] = 1;
 	};
 
-	this.canvas.onkeyup = function(e)  {
+	var keyup = function(e)  {
 		e.preventDefault();
 		me.keys[e.keyCode] = 0;
 	};
-};
 
+	document.addEventListener('keydown', keydown, false);
+	document.addEventListener('keyup', keyup, false);
+};

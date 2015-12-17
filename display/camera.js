@@ -13,10 +13,10 @@ Studio.Camera = function(stage) {
 Studio.extend(Studio.Camera,Studio.DisplayObject);
 
 Studio.Camera.prototype.updateRect = function() {
-	this.left	= this.bound._x ;
-	this.top	= this.bound._y ;
-	this.right	= this.bound._width * this.scaleX - this.stage.width ;
-	this.bottom	= this.bound._height * this.scaleY - this.stage.height ; 
+	this.left	= -this.bound._world.x * this.scaleX;
+	this.top	= -this.bound._world.y * this.scaleY;
+	this.right	= this.left + (this.bound._world.width * this.scaleX - this.stage.width) ;
+	this.bottom	= this.top + (this.bound._world.height * this.scaleY - this.stage.height) ; 
 };
 
 Studio.Camera.prototype.update = function(stage, ratio) {
@@ -33,7 +33,7 @@ Studio.Camera.prototype.update = function(stage, ratio) {
 		}else if (this.x > this.right) {
 			this.x = this.right ;
 		}
-		if (this.y < this.top) { // checking the bounds of the Y coord.
+		if (this.y <  this.top) { // checking the bounds of the Y coord.
 			this.y = this.top ;
 		}else if (this.y > this.bottom) {
 			this.y = this.bottom ;
