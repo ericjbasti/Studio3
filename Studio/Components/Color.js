@@ -3,7 +3,7 @@ Studio.Color = function(r, g, b, a) {
 	this.g = g / 255 || 0;
 	this.b = b / 255 || 0;
 	this.a = a || 1;
-	this.style = "rgba(255,255,255,1)";
+	this.style = 'rgba(255,255,255,1)';
 
 	this._build_style();
 	return this;
@@ -19,23 +19,23 @@ Studio.Color.prototype = {
 		this._build_style();
 		return this;
 	},
-	red: function(v){
+	red: function(v) {
 		this.r = v;
 		return this;
 	},
-	green: function(v){
+	green: function(v) {
 		this.g = v;
 		return this;
 	},
-	blue: function(v){
+	blue: function(v) {
 		this.b = v;
 		return this;
 	},
-	alpha: function(v){
+	alpha: function(v) {
 		this.a = v;
 		return this;
 	},
-	build: function(){
+	build: function() {
 		this._build_style();
 		return this;
 	},
@@ -49,11 +49,11 @@ Studio.Color.prototype = {
 			hex += 'ff';
 		}
 		// take each value besides [0] an convert it to RGBA since that works for both Canvas and WebGL
-		this.set('0x' + hex[1] + hex[2] | 0, '0x' + hex[3] + hex[4] | 0, '0x' + hex[5] + hex[6] | 0, ('0x' + hex[7] + hex[8] | 0)/255);
+		this.set('0x' + hex[1] + hex[2] | 0, '0x' + hex[3] + hex[4] | 0, '0x' + hex[5] + hex[6] | 0, ('0x' + hex[7] + hex[8] | 0) / 255);
 		return this;
 	},
 	_build_style: function() {
-		this.style = "rgba(" + parseInt(this.r * 255) + "," + parseInt(this.g * 255) + "," + parseInt(this.b * 255) + "," + this.a + ")";
+		this.style = 'rgba(' + parseInt(this.r * 255) + ',' + parseInt(this.g * 255) + ',' + parseInt(this.b * 255) + ',' + this.a + ')';
 	}
 };
 

@@ -1,4 +1,4 @@
-var FRAGMENTSHADER = [  'precision lowp float;',
+var FRAGMENTSHADER = ['precision lowp float;',
 						'uniform sampler2D u_image;',
 						'varying vec4 v_color;',
 						'varying vec2 v_texture;',
@@ -10,7 +10,7 @@ var FRAGMENTSHADER = [  'precision lowp float;',
 						'	}',
 						'}'].join('\n');
 
-var VERTEXSHADER = [  	'attribute vec3 a_position;',
+var VERTEXSHADER = ['attribute vec3 a_position;',
 						'attribute vec4 a_color;',
 						'attribute vec2 a_texture;',
 						'uniform vec2 u_resolution;',
@@ -22,7 +22,6 @@ var VERTEXSHADER = [  	'attribute vec3 a_position;',
 						'	v_color = a_color;',
 						'	v_texture = a_texture;',
 						'}'].join('\n');
-						
 
 Studio.Stage.prototype.loadShader = function(who, shader) {
 	//var shaderScript = document.getElementById(shader);
@@ -37,7 +36,6 @@ Studio.Stage.prototype.loadShader = function(who, shader) {
 	this.ctx.shaderSource(who, shader);
 };
 
-
 Studio.Stage.prototype.WEBGL = {
 
 	type: 'webgl',
@@ -50,7 +48,7 @@ Studio.Stage.prototype.WEBGL = {
 		this.ctx = this.canvas.getContext('webgl', {
 			antialias: this.WEBGL.antialias ,
 			premultipliedAlpha: this.WEBGL.premultipliedAlpha ,
-			stencil: this.WEBGL.stencil 
+			stencil: this.WEBGL.stencil
 		});
 	},
 
@@ -88,17 +86,17 @@ Studio.Stage.prototype.WEBGL = {
 	},
 
 	prep: function(gl) {
-		gl.resolutionLocation = gl.getUniformLocation(this.program, "u_resolution");
+		gl.resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution');
 
 		gl.enableVertexAttribArray(0);
 
-		gl.positionLocation = gl.getAttribLocation(this.program, "a_position");
+		gl.positionLocation = gl.getAttribLocation(this.program, 'a_position');
 		gl.bindAttribLocation(this.program, 0, 'a_position');
 
-		gl.colorLocation = gl.getAttribLocation(this.program, "a_color");
+		gl.colorLocation = gl.getAttribLocation(this.program, 'a_color');
 		// gl.bindAttribLocation(this.program, 2, 'a_color');
 
-		gl.textureLocation = gl.getAttribLocation(this.program, "a_texture");
+		gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture');
 		// gl.bindAttribLocation(this.program, 6, 'a_texture');
 
 		gl.uniform2f(gl.resolutionLocation, this.width, this.height);
@@ -135,7 +133,7 @@ Studio.Stage.prototype.WEBGL = {
 		this.ctx.bufferData(this.ctx.ARRAY_BUFFER, this.ctx._batch, this.ctx.DYNAMIC_DRAW);
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
 		// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);
-		this.ctx.drawElements(this.ctx.TRIANGLES, this.hasChildren * 6, this.ctx.UNSIGNED_SHORT, 0);  
+		this.ctx.drawElements(this.ctx.TRIANGLES, this.hasChildren * 6, this.ctx.UNSIGNED_SHORT, 0);
 
 	}
 };

@@ -1,17 +1,93 @@
-// @codekit-prepend "requirements.js"
-// @codekit-append "display/_box.js"
-// @codekit-append "display/_color.js"
-// @codekit-append "display/displayObject.js"
-// @codekit-append "display/rect.js"
-// @codekit-append "display/image.js"
-// @codekit-append "display/sprite.js"
-// @codekit-append "display/camera.js"
-// @codekit-append "display/scene.js"
-// @codekit-append "display/stage.js"
-// @codekit-append "engines/canvas.js"
-// @codekit-append "display/tween.js"
+// @codekit-append "Studio/Components/Box.js"
+// @codekit-append "Studio/Components/Color.js"
+// @codekit-append "Studio/Components/DisplayProperty.js"
+
+// @codekit-append "Studio/Components/Image.js"
+// @codekit-append "Studio/Components/Cache.js"
+// @codekit-append "Studio/Components/Plugin.js"
+
+// @codekit-append "Studio/DisplayObjects/DisplayObject.js"
+
+// @codekit-append "Studio/DisplayObjects/Rect.js"
+// @codekit-append "Studio/DisplayObjects/Sprite.js"
+
+// @codekit-append "Studio/DisplayObjects/Camera.js"
+// @codekit-append "Studio/DisplayObjects/Scene.js"
+// @codekit-append "Studio/DisplayObjects/Stage.js"
+
+// @codekit-append "Studio/DisplayObjects/Tween.js"
+
+// @codekit-append "Studio/Effects/Standards.js"
+
+// @codekit-append "Studio/engines/WebGL.js"
+// @codekit-append "Studio/engines/Canvas.js"
+
+// @codekit-append "Studio/Input/Keyboard.js"
+// @codekit-append "Studio/Input/Touch.js"
+
 
 'use strict';
+
+// Copyright  Vincent Piel 2013.
+// https://github.com/gamealchemist/Javascript-Pooling
+// setupPool.
+// setup a pool on the function, add a pnew method to retrieve objects
+// from the pool, and add a hidden pdispose method to the instances so
+// they can be sent back on the pool.
+// use : MyPureJSClass.setupPool(100);
+// then : var myInstance = MyPureJSClass.pnew(23, 'arg 2', ..)
+function setupPool(newPoolSize) {
+	//debugger;
+	if (!(newPoolSize >= 0)) throw('setupPool takes a size >= 0 as argument.');
+	this.pool                = this.pool || []    ;
+	this.poolSize            = this.poolSize || 0 ;
+	this.pnew                = pnew               ;
+	if (Object.defineProperty) {
+		Object.defineProperty(this.prototype, 'pdispose', {value: pdispose}) ;
+	} else {
+		Object.prototype.pdispose = pdispose;
+	}
+	// pre-fill the pool.
+	while (this.poolSize < newPoolSize) { (new this()).pdispose(); }
+	// reduce the pool size if new size is smaller than previous size.
+	if (this.poolSize > newPoolSize) {
+		this.poolSize    =  newPoolSize ;
+		this.pool.length =  newPoolSize ; // allow for g.c.
+	}
+}
+
+// pnew : method of the constructor function.
+//        returns an instance, that might come from the pool
+//        if there was some instance left,
+//        or created new, if the pool was empty.
+// 		  instance is initialized the same way it would be when using new
+function  pnew() {
+	var pnewObj  = null     ;
+	if (this.poolSize !== 0) {              // the pool contains objects : grab one
+		this.poolSize--  ;
+		pnewObj = this.pool[this.poolSize];
+		this.pool[this.poolSize] = null   ;
+	} else {
+		pnewObj = new this() ;             // the pool is empty : create new object
+	}
+	this.apply(pnewObj, arguments);           // initialize object
+	return pnewObj;
+}
+
+// pdispose : release on object that will return in the pool.
+//            if a dispose method exists, it will get called.
+//            do not re-use a pdisposed object.
+function pdispose() {
+	var thisCttr = this.constructor;
+	if (this.dispose) this.dispose()          ;  // Call dispose if defined
+	thisCttr.pool[thisCttr.poolSize++] = this ;  // throw the object back in the pool
+}
+
+if (Object.defineProperty) {
+	Object.defineProperty(Function.prototype, 'setupPool', {value: setupPool});
+} else {
+	Function.prototype.setupPool = setupPool;
+}
 
 if (!window.Studio) {
 	window.Studio = {  // alt+S = ß just for those that hate writing things out.
@@ -40,24 +116,42 @@ if (!window.Studio) {
 	Studio.interval = null;
 	Studio.browser = navigator.userAgent.toLowerCase();
 	Studio.disableRAF = false;
+	Studio.RAF;
 }
+
+Studio.updateProgress = function() {
+	this.progress = this.queue / this.assets.length;
+};
+
+Studio.addAsset = function(path, Who) {
+	if (!this.assets[path]) {
+		this.assets.length += 1;
+		this.assets[path] = new Who();
+		this.updateProgress();
+		return true;
+	} else {
+		console.warn('Already loaded : ', path, Studio.assets[Who]);
+		return false;
+	}
+};
 
 Studio.start = function(time_stamp) {
 	// Studio.stage=Studio.stages[0];
-	if(Studio.queue==Studio.assets.length){
+	if (Studio.queue === Studio.assets.length) {
 		Studio.progress = 1;
 	}
 	if (time_stamp) {
+		Studio.now = time_stamp;
 		Studio.time = time_stamp;
-		requestAnimationFrame(Studio.loop);
+		Studio.RAF = requestAnimationFrame(Studio.loop);
 
-	}else {
-		requestAnimationFrame(Studio.start);
+	} else {
+		Studio.RAF = requestAnimationFrame(Studio.start);
 	}
 };
 
 Studio.loop = function(time_stamp) {
-	requestAnimationFrame(Studio.loop);
+	Studio.RAF = requestAnimationFrame(Studio.loop);
 
 	Studio.tick(time_stamp);
 	Studio.draws = 0;
@@ -84,7 +178,7 @@ Studio.uncapped = function(time_stamp) {
 	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
-Studio.tick = Studio.capped;
+Studio.tick = Studio.uncapped;
 
 Studio.stopTime = function() {
 	//this.time = this.now();
@@ -98,6 +192,18 @@ Studio.resetTime = function() {
 	//this.start();
 	// console.log('START');
 };
+
+Studio.handleVisibilityChange = function() {
+	if (document.hidden) {
+		console.log('%cStudio Paused (visibilitychange)', Studio.statStyle);
+		cancelAnimationFrame(Studio.RAF);
+	} else {
+		console.log('%cStudio Play (visibilitychange)', Studio.statStyle);
+		Studio.RAF = requestAnimationFrame(Studio.start);
+	}
+};
+
+document.addEventListener('visibilitychange', Studio.handleVisibilityChange, false);
 
 Studio.z_index = function(a, b) {
 	if (a.z < b.z) {
@@ -125,7 +231,7 @@ Studio.apply = function(obj) { // Display Object and a few others share this fun
 		Studio.temp.keys_i--;
 	}
 	return this;
-}
+};
 
 // addTo()
 
@@ -135,20 +241,43 @@ Studio.addTo = function(a, b) {
 			a[attr] = b[attr];
 		}
 	}
-}
-
+};
 
 // Studio.extend(a,b)
-// a : New Class
-// b : Class to inherit attributes from.
+// A : the New Class
+// B : Class to inherit attributes from.
 
-Studio.extends = function(a,b){
-	a.prototype = new b();
-	a.prototype.constructor = a;
-}
+Studio.extend = function(A, B) {
+	A.prototype = new B();
+	A.prototype.constructor = A;
+};
+
+Studio.Messanger = function() {
+	this.listeners = [];
+	this.status = 0;
+};
+
+Studio.Messanger.prototype.addListener = function(callback) {
+	this.listeners.push(callback);
+	// reply back with current status when adding new listener.
+	callback(this.status);
+};
+
+Studio.Messanger.prototype.setStatus = function(message) {
+	this.status = message;
+	// now lets tell everyone that listens.
+	for (var i = 0; i < this.listeners.length; i++) {
+		this.listeners[i](this.status);
+	}
+};
+
+Studio.TOP = Studio.LEFT = 0;
+Studio.MIDDLE = Studio.CENTER = 0.5;
+Studio.BOTTOM = Studio.RIGHT = 1;
 
 Studio.infoStyle = 'background-color: #3af; padding: 2px 4px; color: #fff';
 Studio.errorStyle = 'background-color: #c01; padding: 2px 4px;';
 Studio.warningStyle = 'background-color: #fd2; padding: 2px 4px;';
+Studio.statStyle = 'background-color: #eee; padding: 2px 4px; color: #555; font-size: 10px';
 Studio.engineStyle = 'background-color: #eee; color: #3af; padding: 1px 4px; border: 1px solid #3af';
 

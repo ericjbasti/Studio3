@@ -1,4 +1,4 @@
-Studio.Cache = function(width, height, resolution){
+Studio.Cache = function(width, height, resolution) {
 	var resolution = resolution || 1;
 
 	this.image = document.createElement('canvas');
@@ -9,6 +9,6 @@ Studio.Cache = function(width, height, resolution){
 	this.ready = false;
 	this.buffer = this.image.getContext('2d');
 	this.buffer.scale(resolution, resolution);
-}
+};
 
 Studio.extend(Studio.Cache, Studio.Image);

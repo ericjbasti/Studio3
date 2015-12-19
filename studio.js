@@ -1,29 +1,40 @@
 
-// @codekit-prepend "requirements.js"
-// @codekit-append "Display/Box.js"
-// @codekit-append "Display/Color.js"
-// @codekit-append "Display/DisplayProperty.js"
-// @codekit-append "Display/DisplayObject.js"
-// @codekit-append "Display/LinkedList.js"
-// @codekit-append "Display/DisplayList.js"
-// @codekit-append "Display/Plugin.js"
-// @codekit-append "Display/Rect.js"
-// @codekit-append "Display/Circle.js"
-// @codekit-append "Display/Image.js"
-// @codekit-append "Display/Sprite.js"
-// @codekit-append "Display/Camera.js"
-// @codekit-append "Display/Scene.js"
-// @codekit-append "Display/Stage.js"
-// @codekit-append "engines/webgl.js"
-// @codekit-append "engines/canvas.js"
-// @codekit-append "Display/tween.js"
-// @codekit-append "Display/font.js"
-// @codekit-append "Display/TextBox.js"
-// @codekit-append "input/keyboard.js"
-// @codekit-append "input/touch.js"
-// @codekit-append "Display/Clip.js"
-// @codekit-append "Display/CircleClip.js"
-// @codekit-append "Display/Restore.js"
+// @codekit-prepend "Studio/Requirements.js"
+
+// @codekit-append "Studio/Components/Box.js"
+// @codekit-append "Studio/Components/Color.js"
+// @codekit-append "Studio/Components/DisplayProperty.js"
+
+// @codekit-append "Studio/Components/LinkedList.js"
+// @codekit-append "Studio/Components/Plugin.js"
+// @codekit-append "Studio/Components/Image.js"
+// @codekit-append "Studio/Components/Cache.js"
+// @codekit-append "Studio/Components/Ease.js"
+
+// @codekit-append "Studio/DisplayObjects/DisplayObject.js"
+
+// @codekit-append "Studio/DisplayObjects/DisplayList.js"
+// @codekit-append "Studio/DisplayObjects/Rect.js"
+// @codekit-append "Studio/DisplayObjects/Clip.js"
+// @codekit-append "Studio/DisplayObjects/CircleClip.js"
+// @codekit-append "Studio/DisplayObjects/Restore.js"
+// @codekit-append "Studio/DisplayObjects/Circle.js"
+// @codekit-append "Studio/DisplayObjects/Sprite.js"
+// @codekit-append "Studio/DisplayObjects/Camera.js"
+// @codekit-append "Studio/DisplayObjects/Scene.js"
+// @codekit-append "Studio/DisplayObjects/Stage.js"
+// @codekit-append "Studio/DisplayObjects/TextBox.js"
+// @codekit-append "Studio/DisplayObjects/Tween.js"
+
+// @codekit-append "Studio/Effects/Standards.js"
+
+// @codekit-append "Studio/engines/WebGL.js"
+// @codekit-append "Studio/engines/Canvas.js"
+
+// @codekit-append "Studio/Input/Keyboard.js"
+// @codekit-append "Studio/Input/Touch.js"
+
+
 
 'use strict';
 
@@ -43,7 +54,7 @@ function setupPool(newPoolSize) {
 	this.pnew                = pnew               ;
 	if (Object.defineProperty) {
 		Object.defineProperty(this.prototype, 'pdispose', {value: pdispose}) ;
-	}else {
+	} else {
 		Object.prototype.pdispose = pdispose;
 	}
 	// pre-fill the pool.
@@ -84,7 +95,7 @@ function pdispose() {
 
 if (Object.defineProperty) {
 	Object.defineProperty(Function.prototype, 'setupPool', {value: setupPool});
-}else {
+} else {
 	Function.prototype.setupPool = setupPool;
 }
 
@@ -118,25 +129,25 @@ if (!window.Studio) {
 	Studio.RAF;
 }
 
-Studio.updateProgress = function(){
+Studio.updateProgress = function() {
 	this.progress = this.queue / this.assets.length;
-}
+};
 
-Studio.addAsset = function(path, who){
-	if(!this.assets[path]){
-		this.assets.length+=1;
-		this.assets[path] = new who();
+Studio.addAsset = function(path, Who) {
+	if (!this.assets[path]) {
+		this.assets.length += 1;
+		this.assets[path] = new Who();
 		this.updateProgress();
 		return true;
-	}else{
-		console.warn('Already loaded : ', path, Studio.assets[who]);
+	} else {
+		console.warn('Already loaded : ', path, Studio.assets[Who]);
 		return false;
 	}
-}
+};
 
 Studio.start = function(time_stamp) {
 	// Studio.stage=Studio.stages[0];
-	if(Studio.queue==Studio.assets.length){
+	if (Studio.queue === Studio.assets.length) {
 		Studio.progress = 1;
 	}
 	if (time_stamp) {
@@ -144,7 +155,7 @@ Studio.start = function(time_stamp) {
 		Studio.time = time_stamp;
 		Studio.RAF = requestAnimationFrame(Studio.loop);
 
-	}else {
+	} else {
 		Studio.RAF = requestAnimationFrame(Studio.start);
 	}
 };
@@ -193,17 +204,16 @@ Studio.resetTime = function() {
 };
 
 Studio.handleVisibilityChange = function() {
-  if (document.hidden) {
-    console.log('%cStudio Paused (visibilitychange)', Studio.statStyle);
-    cancelAnimationFrame(Studio.RAF);
-  } else  {
-    console.log('%cStudio Play (visibilitychange)', Studio.statStyle);
-    Studio.RAF = requestAnimationFrame(Studio.start);
-  }
-}
+	if (document.hidden) {
+		console.log('%cStudio Paused (visibilitychange)', Studio.statStyle);
+		cancelAnimationFrame(Studio.RAF);
+	} else {
+		console.log('%cStudio Play (visibilitychange)', Studio.statStyle);
+		Studio.RAF = requestAnimationFrame(Studio.start);
+	}
+};
 
-document.addEventListener("visibilitychange", Studio.handleVisibilityChange, false);
-
+document.addEventListener('visibilitychange', Studio.handleVisibilityChange, false);
 
 Studio.z_index = function(a, b) {
 	if (a.z < b.z) {
@@ -243,38 +253,35 @@ Studio.addTo = function(a, b) {
 	}
 };
 
-
 // Studio.extend(a,b)
 // A : the New Class
 // B : Class to inherit attributes from.
 
-Studio.extend = function(A,B){
+Studio.extend = function(A, B) {
 	A.prototype = new B();
 	A.prototype.constructor = A;
 };
 
-
-Studio.Messanger = function(){
+Studio.Messanger = function() {
 	this.listeners = [];
 	this.status = 0;
-}
+};
 
-Studio.Messanger.prototype.addListener = function(callback){
+Studio.Messanger.prototype.addListener = function(callback) {
 	this.listeners.push(callback);
 	// reply back with current status when adding new listener.
 	callback(this.status);
-}
+};
 
-Studio.Messanger.prototype.setStatus = function(message){
+Studio.Messanger.prototype.setStatus = function(message) {
 	this.status = message;
 	// now lets tell everyone that listens.
-	for(var i =0; i<this.listeners.length; i++){
+	for (var i = 0; i < this.listeners.length; i++) {
 		this.listeners[i](this.status);
 	}
-}
+};
 
-
-Studio.TOP = Studio.LEFT= 0;
+Studio.TOP = Studio.LEFT = 0;
 Studio.MIDDLE = Studio.CENTER = 0.5;
 Studio.BOTTOM = Studio.RIGHT = 1;
 

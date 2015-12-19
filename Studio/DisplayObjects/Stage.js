@@ -24,7 +24,7 @@ Studio.Stage = function(domID, attr) {
 	this.dur = 1000 / 60;
 	this._d = 0;
 	this.resolution = window.devicePixelRatio; // defaults to device setting.
-	
+
 	if (attr) {
 		this.apply(attr);
 	}
@@ -35,13 +35,13 @@ Studio.Stage = function(domID, attr) {
 		this.engine = Studio.Stage.prototype.WEBGL;
 	}
 	this.allowPlugins();
-	
+
 	// We need to prepare the canvas element for use.
 	// First we need to grab the appropriate context based on the engine type
 	this.engine.getContext.call(this);
 
 	// Once the context is obtained we need to fire some actions on it
-	// this is mainly for webgl, since it needs shaders and programs created 
+	// this is mainly for webgl, since it needs shaders and programs created
 	this.engine.init.call(this, this.ctx);
 
 	// One the basic are competed by the init we can apply more changes through
@@ -61,7 +61,7 @@ Studio.extend(Studio.Stage, Studio.Scene);
 
 Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 
-	if (!domElementID) { 
+	if (!domElementID) {
 		// If an ID is not passed to us.
 		// We will find the first Canvas element and use that.
 		var temp = document.body.getElementsByTagName('canvas');
@@ -69,11 +69,11 @@ Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 			// If we can't find a Canvas element on the page, we create one.
 			this.canvas = document.createElement('canvas');
 			document.body.appendChild(this.canvas);
-		}else {
+		} else {
 			// Otherwise we use the first one we see.
 			this.canvas = temp[0];
 		}
-	}else {
+	} else {
 		// this is the expected behavior, please provide an ID
 		// it gives you control of what happens.
 		this.canvas = document.getElementById(domElementID);
@@ -122,11 +122,11 @@ Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
 	this.canvas.style.height = this.height + 'px';
 	this.canvas.style.width = this.width + 'px';
 	this._scaleRatio = 1;
-	if(fullscreen){
+	if (fullscreen) {
 		this.width = window.innerWidth;
 		this.height = window.innerHeight;
-		this.canvas.style.height= '100%';
-		this.canvas.style.width= '100%';
+		this.canvas.style.height = '100%';
+		this.canvas.style.width = '100%';
 	}
 };
 
@@ -217,9 +217,9 @@ Studio.Stage.prototype.update_visibility = function() {
  * This is different from the displayObject.update() because a stage will never have a parent.
  * Yet it should still update its private variables.
  */
-Studio.Stage.prototype._timebased_updates = function(delta){
+Studio.Stage.prototype._timebased_updates = function(delta) {
 	this.update_tweens(delta);
-}
+};
 
 Studio.Stage.prototype.update = function(ratio, delta) {
 	if (this.onEnterFrame) {
@@ -263,11 +263,11 @@ Studio.Stage.prototype.runEffects = function() {
 
 Studio.Stage.prototype.loading = function(delta) {
 
-	if (Studio.loaded === true) { // BAD DESIGN! This should be based on each stage. 
+	if (Studio.loaded === true) { // BAD DESIGN! This should be based on each stage.
 		// as it stands loading an image for one canvas will cause all to pause. oops.
-		// if (this.onReady) {
-		// 	this.onReady(delta);
-		// }
+		if (this.onReady) {
+			this.onReady(delta);
+		}
 		this.loop = this.activeloop;
 	}
 };
@@ -279,7 +279,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 			this.runEffects(delta);
 		}
 		return;
-	}else {
+	} else {
 		// if(this.overlay_progress){
 		// 	this.update_children();
 		// 	this.draw(this.ctx);
@@ -288,7 +288,6 @@ Studio.Stage.prototype.activeloop = function(delta) {
 		// if(!this.webgl) this.drawProgress(this.ctx,delta);
 
 		if (Studio.progress === 1) {
-			console.log(Studio.progress)
 			if (this.onReady) {
 				this.onReady(delta);
 			}

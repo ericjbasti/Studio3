@@ -1,5 +1,5 @@
 Studio.TextBox = function(width, height, stage) {
-	this.font = "12px Arial";
+	this.font = '12px Arial';
 	this.lineHeight = 10;
 	this.height = height;
 	this.width = width;

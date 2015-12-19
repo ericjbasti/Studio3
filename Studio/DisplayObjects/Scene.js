@@ -10,7 +10,7 @@ Studio.Scene = function(attr) {
 	this.assets = [];
 	this.children = [];
 	if (attr) {
-		this.apply(attr); 
+		this.apply(attr);
 	}
 	if (this.build) {
 		this.build();

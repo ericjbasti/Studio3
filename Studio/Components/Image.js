@@ -5,27 +5,24 @@
 Studio.Image = function(path) {
 	this.image = null;
 	this.path = null;
-	this.ready = false;
-	this.height = 1;
-	this.width = 1;
-
 	if (path) {
 		this.loadImage(path);
 	}
-
 	this.status = new Studio.Messanger();
-
-	this.parent = parent || null;
 };
 
 Studio.Image.prototype.constructor = Studio.Image;
+
+Studio.Image.prototype.ready = false;
+Studio.Image.prototype.height = 1;
+Studio.Image.prototype.width = 1;
 
 Studio.Image.prototype.loadImage = function(who) {
 	if (Studio.assets[who]) {
 		console.warn('Already loaded : ', who, Studio.assets[who]);
 		this.image = Studio.assets[who];
 		this.ready = true;
-		this.status.setStatus(newAsset.ready);
+		this.status.setStatus(this.ready);
 		return this;
 	} else {
 		//Studio.loaded=Studio.loadOnDemand;
@@ -39,7 +36,7 @@ Studio.Image.prototype.loadImage = function(who) {
 			newAsset.status.setStatus(newAsset.ready);
 			newAsset.height = this.height;
 			newAsset.width = this.width;
-			
+
 			if (Studio.queue === Studio.assets.length) {
 				Studio.loaded = true;
 			}

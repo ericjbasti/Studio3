@@ -3,12 +3,12 @@ Studio.Stage.prototype.update_tweens = function(global_delta) {
 	var tween,key, delta;
 	for (i in this.tweens) {
 		tween = this.tweens[i];
-		if(tween.actor._world){
+		if (tween.actor._world) {
 			tween.cur += global_delta * tween.actor._world.speed;
-		}else{
+		} else {
 			tween.cur += global_delta;
 		}
-		if(!tween.active && tween.onStart){
+		if (!tween.active && tween.onStart) {
 			tween.onStart.call(tween.actor);
 			tween.active = 1;
 		}
@@ -23,47 +23,47 @@ Studio.Stage.prototype.update_tweens = function(global_delta) {
 				this.update_property(tween,key, delta);
 			}
 		} else {
-			if (tween.next){
+			if (tween.next) {
 				tween.next._snapshot();
-				tween.next.cur = tween.cur-tween.duration;
+				tween.next.cur = tween.cur - tween.duration;
 				this.tweens[i] = tween.next;
 
 				// return;
-			}else{
-			if (tween._loop) {
-				tween.cur = 0;
-				if (tween.onEnd) {
-					tween.onEnd.call(tween.actor);
-				}
-				if (tween._reflect) {
-					if (!tween.dir) {
-						tween.dir = 1;
-					} else {
-						tween.dir = 0;
-					}
-				}else{
-					tween.actor.apply(tween.original);
-					tween.active = 0;
-				}
-				return;
 			} else {
-				if (tween.reset) {
-					tween.actor.apply(tween.original);
+				if (tween._loop) {
+					tween.cur = 0;
+					if (tween.onEnd) {
+						tween.onEnd.call(tween.actor);
+					}
+					if (tween._reflect) {
+						if (!tween.dir) {
+							tween.dir = 1;
+						} else {
+							tween.dir = 0;
+						}
+					} else {
+						tween.actor.apply(tween.original);
+						tween.active = 0;
+					}
+					return;
 				} else {
-					tween.actor.apply(tween.to);
-					// for(j=0;j!==tween.keys.length;j++){
-					// 	key = tween.keys[j];
-					// 	tween.actor[key] = tween.to[key];
-					// }
+					if (tween.reset) {
+						tween.actor.apply(tween.original);
+					} else {
+						tween.actor.apply(tween.to);
+						// for(j=0;j!==tween.keys.length;j++){
+						// 	key = tween.keys[j];
+						// 	tween.actor[key] = tween.to[key];
+						// }
+					}
+					if (tween.onEnd) {
+						tween.onEnd.call(tween.actor);
+					}
+					tween = null;
+					this.tweens[i] = null;
+					delete this.tweens[i];
 				}
-				if (tween.onEnd) {
-					tween.onEnd.call(tween.actor);
-				}
-				tween = null;
-				this.tweens[i] = null;
-				delete this.tweens[i];
-			}
-		}}
+			}}
 	}
 };
 
@@ -127,33 +127,33 @@ Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback,
 	return temp;
 };
 
-Studio._tween_object.prototype._snapshot = function(){
-	for(var key in this.to){
+Studio._tween_object.prototype._snapshot = function() {
+	for (var key in this.to) {
 		this.original[key] = this.actor[key];
 	}
-}
+};
 
-
-Studio._tween_object.prototype.then = function(ease,to,duration,callback,onstart){
+Studio._tween_object.prototype.then = function(ease, to, duration, callback, onstart) {
 	this.next = new Studio._tween_object(this.actor, ease, to, duration, callback, onstart);
 	this.next.prev = this;
 	return this.next;
-}
-Studio._tween_object.prototype.last = function(){
+};
+
+Studio._tween_object.prototype.last = function() {
 	var next = this.next;
 	var prev = this;
-	while( next !== null ){
+	while (next !== null) {
 		prev = next;
 		next = next.next;
 	}
 	return prev;
-}
+};
 
-Studio._tween_object.prototype.completeLoop = function(who){
+Studio._tween_object.prototype.completeLoop = function(who) {
 	this.next = who;
 	who.prev = this;
 	return this.next;
-}
+};
 
 Studio.Stage.prototype.createLoop = function(who, ease, to, duration, callback) {
 	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback);

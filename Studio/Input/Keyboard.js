@@ -16,3 +16,4 @@ Studio.Stage.prototype.enableKeyboardInput = function() {
 	document.addEventListener('keydown', keydown, false);
 	document.addEventListener('keyup', keyup, false);
 };
+

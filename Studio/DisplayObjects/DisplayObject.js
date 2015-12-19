@@ -282,7 +282,7 @@ Studio.DisplayObject.prototype = {
 		this.update_xy();
 		this.snapshot();
 	},
-	_update : function(){
+	_update: function() {
 		if (this.__update_ALPHA) {
 			this.update_visibility();
 		}

@@ -75,7 +75,6 @@ Studio.ImageSlice.prototype.draw = function(ctx) {
 	}
 };
 
-
 /**
  * SpriteAnimation --- just like a Sprite but uses a SpriteSheet to render, and as such has frames, framerates etc...
  */ 
@@ -136,7 +135,6 @@ Studio.SpriteAnimation.prototype.updateFrame = function() {
 	}
 	this.setSlice();
 };
-
 
 Studio.SpriteSheet = function(path, attr) {
 	this.image = new Studio.Image();
