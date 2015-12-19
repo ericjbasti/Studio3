@@ -12,10 +12,6 @@ Studio.Rect = function(attr) {
 
 Studio.extend(Studio.Rect, Studio.DisplayObject);
 
-// Studio.Rect.prototype.setTexture = function(tx, ty, tX, tY) {
-
-// };
-
 Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	gl._batch[gl._count++] = x;
 	gl._batch[gl._count++] = y;
@@ -98,53 +94,3 @@ Studio.Rect.prototype.hitTestRect = function(b) {
 	}
 	return false;
 };
-
-Studio.Clip = function(attr) {
-	if (attr) {
-		this.apply(attr);
-	}
-};
-
-Studio.extend(Studio.Clip, Studio.Rect);
-
-Studio.Clip.prototype.draw = function(ctx) {
-	ctx.save();
-	ctx.beginPath();
-	if (this.angle) {
-		this.drawAngled(ctx);
-	} else {
-		ctx.rect(this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height);
-	}
-	ctx.stroke();
-	ctx.clip();
-};
-Studio.Clip.prototype.drawAngled = function(ctx) {
-	this.prepAngled(ctx);
-	ctx.rect(-(this.width * this.anchorX), -(this.height * this.anchorY), this.width, this.height);
-};
-
-Studio.CircleClip = function(attr) {
-	if (attr) {
-		this.apply(attr);
-	}
-};
-
-Studio.extend(Studio.CircleClip, Studio.Rect);
-
-Studio.CircleClip.prototype.draw = function(ctx) {
-	ctx.save();
-	ctx.beginPath();
-	ctx.arc(this._dx, this._dy ,this._width / 2, 0,2 * Math.PI);
-	ctx.clip();
-};
-
-Studio.Restore = function() {
-};
-
-Studio.Restore.prototype = new Studio.Rect();
-Studio.Restore.prototype.constructor = Studio.Restore;
-
-Studio.Restore.prototype.draw = function(ctx) {
-	ctx.restore();
-};
-

@@ -129,7 +129,6 @@ LinkedList.prototype = {
 			listItem = listItem.next;
 		}
 		toString += '];';
-	}
+	},
+	constructor: LinkedList
 };
-
-LinkedList.prototype.constructor = LinkedList;

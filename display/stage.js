@@ -265,9 +265,9 @@ Studio.Stage.prototype.loading = function(delta) {
 
 	if (Studio.loaded === true) { // BAD DESIGN! This should be based on each stage. 
 		// as it stands loading an image for one canvas will cause all to pause. oops.
-		if (this.onReady) {
-			this.onReady(delta);
-		}
+		// if (this.onReady) {
+		// 	this.onReady(delta);
+		// }
 		this.loop = this.activeloop;
 	}
 };
@@ -288,6 +288,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 		// if(!this.webgl) this.drawProgress(this.ctx,delta);
 
 		if (Studio.progress === 1) {
+			console.log(Studio.progress)
 			if (this.onReady) {
 				this.onReady(delta);
 			}

@@ -1,25 +1,29 @@
 
 // @codekit-prepend "requirements.js"
-// @codekit-append "display/_box.js"
-// @codekit-append "display/_color.js"
-// @codekit-append "display/displayObject.js"
-// @codekit-append "display/LinkedList.js"
-// @codekit-append "display/DisplayList.js"
-// @codekit-append "display/Plugin.js"
-// @codekit-append "display/rect.js"
-// @codekit-append "display/circle.js"
-// @codekit-append "display/image.js"
-// @codekit-append "display/sprite.js"
-// @codekit-append "display/camera.js"
-// @codekit-append "display/scene.js"
-// @codekit-append "display/stage.js"
+// @codekit-append "Display/Box.js"
+// @codekit-append "Display/Color.js"
+// @codekit-append "Display/DisplayProperty.js"
+// @codekit-append "Display/DisplayObject.js"
+// @codekit-append "Display/LinkedList.js"
+// @codekit-append "Display/DisplayList.js"
+// @codekit-append "Display/Plugin.js"
+// @codekit-append "Display/Rect.js"
+// @codekit-append "Display/Circle.js"
+// @codekit-append "Display/Image.js"
+// @codekit-append "Display/Sprite.js"
+// @codekit-append "Display/Camera.js"
+// @codekit-append "Display/Scene.js"
+// @codekit-append "Display/Stage.js"
 // @codekit-append "engines/webgl.js"
 // @codekit-append "engines/canvas.js"
-// @codekit-append "display/tween.js"
-// @codekit-append "display/font.js"
-// @codekit-append "display/textbox.js"
+// @codekit-append "Display/tween.js"
+// @codekit-append "Display/font.js"
+// @codekit-append "Display/TextBox.js"
 // @codekit-append "input/keyboard.js"
 // @codekit-append "input/touch.js"
+// @codekit-append "Display/Clip.js"
+// @codekit-append "Display/CircleClip.js"
+// @codekit-append "Display/Restore.js"
 
 'use strict';
 
@@ -112,6 +116,22 @@ if (!window.Studio) {
 	Studio.browser = navigator.userAgent.toLowerCase();
 	Studio.disableRAF = false;
 	Studio.RAF;
+}
+
+Studio.updateProgress = function(){
+	this.progress = this.queue / this.assets.length;
+}
+
+Studio.addAsset = function(path, who){
+	if(!this.assets[path]){
+		this.assets.length+=1;
+		this.assets[path] = new who();
+		this.updateProgress();
+		return true;
+	}else{
+		console.warn('Already loaded : ', path, Studio.assets[who]);
+		return false;
+	}
 }
 
 Studio.start = function(time_stamp) {
