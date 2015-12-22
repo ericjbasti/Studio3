@@ -251,6 +251,9 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 			this.beforeDraw();
 		}
 	}
+	if (this.onExitFrame) {
+		this.onExitFrame();
+	}
 };
 
 Studio.Stage.prototype.runEffects = function() {
