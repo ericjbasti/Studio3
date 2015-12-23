@@ -180,14 +180,6 @@ Studio.DisplayObject.prototype = {
 			this.onExitFrame();
 		}
 	},
-	update_children: function(ratio, delta) {
-		if (!this.hasChildren) {
-			return;
-		}
-		for (var i = 0; i !== this.hasChildren; i++) {
-			this.children[i].update(ratio, delta);
-		}
-	},
 	update_visibility: function() {
 		this._world.alpha = this.alpha * this.parent.alpha;
 		//if(this._alpha > 0){
@@ -305,13 +297,32 @@ Studio.DisplayObject.prototype = {
 			this.update_children();
 		}
 	},
-	update: function() {
-		this.snapshot();
-		// lets apply any changes before we update the object.
+	update_children: function() {
+		if (!this.hasChildren) {
+			return;
+		}
+		for (var i = 0; i !== this.hasChildren; i++) {
+			this.children[i].update();
+		}
+	},
+	logic_children: function() {
+		if (!this.hasChildren) {
+			return;
+		}
+		for (var i = 0; i !== this.hasChildren; i++) {
+			this.children[i].logic();
+		}
+	},
+	logic: function(){
 		if (this.onEnterFrame) {
 			this.onEnterFrame();
 		}
-		// now that those changes have been applied lets update our stats.
+		this.logic_children();
+	},
+
+	update: function() {
+		this.snapshot();
+		this.logic();
 		this._update();
 	},
 };
