@@ -54,6 +54,8 @@ Studio.DisplayObject = function(attr) {
 	this._dy = this._world.y;
 };
 
+Studio.difference={};
+
 Studio.DisplayObject.prototype = {
 	constructor: Studio.DisplayObject,
 	_world: new Studio.DisplayProperty(),
@@ -117,10 +119,10 @@ Studio.DisplayObject.prototype = {
 	draw: function() {
 	},
 	snapPixels: function() {
-		this._dx = this._dx + 0.5 | 0;
-		this._dy = this._dy + 0.5 | 0;
-		this._height = this._height + 0.5 | 0;
-		this._width = this._width + 0.5 | 0;
+		this._dx = this._dx + 0 | 0;
+		this._dy = this._dy + 0 | 0;
+		this._height = this._height + 0 | 0;
+		this._width = this._width + 0 | 0;
 	},
 	hitTestPoint: function(x, y) {
 		this._relativeX = x - this._world.x;
@@ -141,6 +143,19 @@ Studio.DisplayObject.prototype = {
 		}
 
 		if ((this._relativeX > -this.anchoredX && this._relativeY > -this.anchoredY) && (this._relativeX < (this._world.width) - this.anchoredX && this._relativeY < (this._world.height) - this.anchoredY)) {
+			return true;
+		}
+		return false;
+	},
+	hitTestRect: function(b) {
+		Studio.difference.height = this._world.height + b._world.height;
+		Studio.difference.width = this._world.width + b._world.width;
+		Studio.difference.x = this._world.x - (this._world.width * this.anchorX) - b._world.x - (b._world.width * b.anchorX);
+		Studio.difference.y = this._world.y - (this._world.height * this.anchorY) - b._world.y - (b._world.height * b.anchorY);
+		
+		stage.ctx.strokeRect(Studio.difference.x,Studio.difference.y,Studio.difference.width,Studio.difference.height)
+
+		if (Studio.difference.x < 0 && Studio.difference.y <= 0 && Studio.difference.height + Studio.difference.y >= 0 && Studio.difference.width + Studio.difference.x >= 0) {
 			return true;
 		}
 		return false;

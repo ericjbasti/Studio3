@@ -16,7 +16,7 @@ Studio.extend(Studio.Sprite, Studio.Rect);
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
-	ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, -(this.width * this.anchorX), -(this.height * this.anchorY), this.width, this.height);
+	ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
 	ctx.restore();
 };
 
@@ -32,7 +32,7 @@ Studio.Sprite.prototype.draw = function(ctx) {
 		this.drawAngled(ctx);
 	} else {
 
-		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
+		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, this._dx, this._dy, this._world.width, this._world.height);
 	}
 };
 
@@ -55,7 +55,7 @@ Studio.extend(Studio.ImageSlice, Studio.Sprite);
 Studio.ImageSlice.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
-	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, -(this.width * this.anchorX), -(this.height * this.anchorY), this.width, this.height);
+	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, 0, 0, this.width, this.height);
 	ctx.restore();
 };
 
@@ -71,7 +71,7 @@ Studio.ImageSlice.prototype.draw = function(ctx) {
 		this.drawAngled(ctx);
 	} else {
 
-		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
+		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx, this._dy, this._world.width, this._world.height);
 	}
 };
 
@@ -111,6 +111,14 @@ Studio.SpriteAnimation.prototype.draw = function(ctx) {
 	}
 	this.setAlpha(ctx);
 	ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorX), this._world.width, this._world.height);
+	if(this.borderlap && this.border){
+		if(this._dx -  (this._world.width*this.anchorX) < this.border.x){
+			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this.border.width + this._dx - (this._world.width*this.anchorX), this._dy - (this._world.height*this.anchorY), this._world.width, this._world.height);
+		}
+		if((this._dx + this._world.width) > this.border.width){
+			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._world.width*this.anchorX) -this.border.width, this._dy - (this._world.height*this.anchorY), this._world.width, this._world.height); 
+		}
+	}
 	if (this.loop.length) {
 		this.updateFrame();
 	}
@@ -124,7 +132,7 @@ Studio.SpriteAnimation.prototype.setSlice = function() {
 Studio.SpriteAnimation.prototype.updateFrame = function() {
 	this.myTime += Studio.delta;
 
-	this.frame = (((this.myTime - this.startTime) * this._speed) / (1000 / this.fps)) | 0;
+	this.frame = (((this.myTime - this.startTime) * this._world.speed) / (1000 / this.fps)) | 0;
 
 	if (this.frame >= this.loop.length) {
 		this.startTime = this.myTime;

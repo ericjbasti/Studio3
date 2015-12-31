@@ -80,17 +80,3 @@ Studio.Rect.prototype.draw = function(ctx) {
 		ctx.fillRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 	}
 };
-
-Studio.difference = {};
-
-Studio.Rect.prototype.hitTestRect = function(b) {
-	Studio.difference.height = this._world.height + b._world.height;
-	Studio.difference.width = this._world.width + b._world.width;
-	Studio.difference.x = this._world.x - (this._world.width * this.anchorX) - b._world.x - (b._world.width * b.anchorX);
-	Studio.difference.y = this._world.y - (this._world.height * this.anchorY) - b._world.y - (b._world.height * b.anchorY);
-	stage.ctx.strokeRect(Studio.difference.x,Studio.difference.y,Studio.difference.width,Studio.difference.height)
-	if (Studio.difference.x < 0 && Studio.difference.y <= 0 && Studio.difference.height + Studio.difference.y >= 0 && Studio.difference.width + Studio.difference.x >= 0) {
-		return true;
-	}
-	return false;
-};
