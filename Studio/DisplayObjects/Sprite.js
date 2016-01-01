@@ -16,7 +16,7 @@ Studio.extend(Studio.Sprite, Studio.Rect);
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
-	ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, 0, 0, this.width, this.height);
+	ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height,  - (this.width * this.anchorX), - (this.height * this.anchorY), this.width, this.height);
 	ctx.restore();
 };
 
@@ -32,7 +32,7 @@ Studio.Sprite.prototype.draw = function(ctx) {
 		this.drawAngled(ctx);
 	} else {
 
-		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height, this._dx, this._dy, this._world.width, this._world.height);
+		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height,this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 	}
 };
 
@@ -55,7 +55,7 @@ Studio.extend(Studio.ImageSlice, Studio.Sprite);
 Studio.ImageSlice.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
-	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, 0, 0, this.width, this.height);
+	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, - (this.width * this.anchorX), - (this.height * this.anchorY), this.width, this.height);
 	ctx.restore();
 };
 
@@ -70,8 +70,7 @@ Studio.ImageSlice.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
-
-		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx, this._dy, this._world.width, this._world.height);
+		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
 	}
 };
 
