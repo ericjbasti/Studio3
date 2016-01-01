@@ -115,7 +115,7 @@ if (!window.Studio) {
 		temp: {},
 		info: {displayObjects: 0},
 		active: true,
-		cap: 34,
+		cap: 1000/20, // don't let the true frame rate go below 20fps, prevent huge frame skips
 		draws: 0,
 		loaded: true,
 		version: '0.5.1',
@@ -188,7 +188,7 @@ Studio.uncapped = function(time_stamp) {
 	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
-Studio.tick = Studio.uncapped;
+Studio.tick = Studio.capped;
 
 Studio.stopTime = function() {
 	//this.time = this.now();
