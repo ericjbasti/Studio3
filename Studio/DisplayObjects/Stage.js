@@ -231,6 +231,9 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 	this._scaleY  = this.scaleY;
 	this._speed = this.camera.speed;
 	this.update_visibility();
+
+
+
 	if (Studio.progress === 2) {
 		if (this.activeScene) {
 			this.activeScene.update(ratio, delta);
