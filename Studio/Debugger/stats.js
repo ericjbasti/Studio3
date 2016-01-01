@@ -110,6 +110,11 @@ var STATS = new Studio.Plugin({
 			this._tick = 0;
 		}
 		this.displayFPS(this.buffer.ctx);
+		if(window.performance){
+			if(window.performance.memory){
+				this.drawMemory(this.buffer.ctx);
+			}
+		}
 		if (!this.options.external) {
 			a.ctx.drawImage(this.buffer, 0, this.options.position);
 		}
@@ -137,6 +142,13 @@ var STATS = new Studio.Plugin({
 			this[this.options.clear_mode](ctx);
 		}
 		Studio.draws = 0;
+	},
+	drawMemory: function(ctx){
+		var heapSize = window.memory.usedJSHeapSize;
+		var heapSizeLimit = window.memory.jsHeapSizeLimit;
+
+		mem = Math.round( heapSize * 0.000000954 );
+		ctx.fillRect(this.step,this.half,2,mem);
 	},
 	displayDraws: function(ctx) {
 		ctx.fillStyle = 'rgba(0,0,0,.8)';
