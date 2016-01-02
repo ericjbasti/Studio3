@@ -117,16 +117,20 @@ Studio.Stage.prototype.allowPlugins = function() {
 };
 
 Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
-	this.height = this.canvas.height;
-	this.width = this.canvas.width;
+	this.height = this.canvas.height || this.height;
+	this.width = this.canvas.width || this.width;
 	this.canvas.style.height = this.height + 'px';
 	this.canvas.style.width = this.width + 'px';
 	this._scaleRatio = 1;
-	if (fullscreen) {
+	if (fullscreen == 1) {
 		this.width = window.innerWidth;
 		this.height = window.innerHeight;
 		this.canvas.style.height = '100%';
 		this.canvas.style.width = '100%';
+	}
+	if (fullscreen == 2) {
+		this.canvas.style.width = window.innerWidth + 'px';
+		this.canvas.style.height = window.innerHeight + 'px';
 	}
 };
 
@@ -231,8 +235,6 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 	this._scaleY  = this.scaleY;
 	this._speed = this.camera.speed;
 	this.update_visibility();
-
-
 
 	if (Studio.progress === 2) {
 		if (this.activeScene) {
