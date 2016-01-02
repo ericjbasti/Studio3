@@ -24,7 +24,7 @@ Studio.Stage = function(domID, attr) {
 	this.dur = 1000 / 60;
 	this._d = 0;
 	this.resolution = window.devicePixelRatio; // defaults to device setting.
-
+	this.interpolate = true;
 	if (attr) {
 		this.apply(attr);
 	}
@@ -203,7 +203,7 @@ Studio.Stage.prototype.update_children = function(ratio, delta) {
 Studio.Stage.prototype.render_children = function(lag) {
 	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
 		if (this.children[this.i].active) {
-			this.children[this.i].render(this, lag);
+			this.children[this.i].render(this, lag, this.interpolate);
 		}
 	}
 };
@@ -245,7 +245,7 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 		}
 		if (this.hasChildren || this._watching) {
 			// if(!this._watching){
-			this.update_children();
+			this.update_children(this.interpolate);
 			// }else{
 			// 	this.hasChildren=this._watching.hasChildren;
 			// }

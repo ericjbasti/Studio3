@@ -34,9 +34,9 @@ Studio.Stage.prototype.CANVAS = {
 
 Studio.fixedTimeStep = function(delta) {
 	this.step(delta);
+	this.render(this._lag);
 	this.fixedStep();
 	this._timebased_updates(delta);
-	this.render(this._lag);
 };
 
 Studio.simple = function() {

@@ -168,14 +168,14 @@ Studio.DisplayObject.prototype = {
 			}
 		}
 	},
-	render_children: function(stage, ratio) {
+	render_children: function(stage, ratio, interpolate) {
 		if (this.hasChildren) {
 			for (var i = 0; i !== this.hasChildren; i++) {
-				this.children[i].render(stage, ratio);
+				this.children[i].render(stage, ratio, interpolate);
 			}
 		}
 	},
-	render: function(stage, ratio) {
+	render: function(stage, ratio, interpolate) {
 		if (this._visible) {
 			// Studio.objectDraw++;
 			// if((this._x + (this._width*this.anchorX) >= 0) ||
@@ -183,13 +183,17 @@ Studio.DisplayObject.prototype = {
 			// 	(this._y + (this._height*this.anchorY) >= 0) ||
 			// 	(this._y - (this._height*this.anchorY) <= stage.height)
 			// 	){
-			this._delta(ratio);
+			if(interpolate){
+				this._delta(ratio);
+			}else{
+				this._dset();
+			}
 			if (stage.snap) {
 				this.snapPixels();
 			}
 			this.draw(stage.ctx);
 			// }
-			this.render_children(stage, ratio);
+			this.render_children(stage, ratio, interpolate);
 		}
 		if (this.onExitFrame) {
 			this.onExitFrame();
@@ -277,6 +281,14 @@ Studio.DisplayObject.prototype = {
 		}
 
 	},
+	_dset: function() {
+		this._dx = this._world.x;
+		this._dy = this._world.y;
+		if (this._world.rotation) {
+			this._dAngle = this.angle;
+		}
+
+	},
 	_snapback: function() {
 		this.force_update();
 	},
@@ -289,7 +301,7 @@ Studio.DisplayObject.prototype = {
 		this.update_xy();
 		this.snapshot();
 	},
-	_update: function() {
+	_update: function(interpolate) {
 		if (this.__update_ALPHA) {
 			this.update_visibility();
 		}
@@ -309,15 +321,15 @@ Studio.DisplayObject.prototype = {
 			if (this.__update_XY) {
 				this.update_xy();
 			}
-			this.update_children();
+			this.update_children(interpolate);
 		}
 	},
-	update_children: function() {
+	update_children: function(interpolate) {
 		if (!this.hasChildren) {
 			return;
 		}
 		for (var i = 0; i !== this.hasChildren; i++) {
-			this.children[i].update();
+			this.children[i].update(interpolate);
 		}
 	},
 	logic_children: function() {
@@ -335,9 +347,11 @@ Studio.DisplayObject.prototype = {
 		this.logic_children();
 	},
 
-	update: function() {
-		this.snapshot();
+	update: function( interpolate ) {
+		if ( interpolate ){
+			this.snapshot();
+		}
 		this.logic();
-		this._update();
+		this._update(interpolate);
 	},
 };
