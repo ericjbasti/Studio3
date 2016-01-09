@@ -7,8 +7,8 @@ Studio.Cache = function(width, height, resolution) {
 	this.width = width;
 	this.height = height;
 	this.ready = false;
-	this.buffer = this.image.getContext('2d');
-	this.buffer.scale(resolution, resolution);
+	this.ctx = this.image.getContext('2d');
+	this.ctx.scale(resolution, resolution);
 };
 
 Studio.extend(Studio.Cache, Studio.Image);

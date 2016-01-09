@@ -7,8 +7,8 @@ Studio.TextBox = function(width, height, stage) {
 	this.shadowColor = 'rgba(0,0,0,0.5)';
 	this.cache = new Studio.Cache(width,height, stage.resolution);
 
-	this.cache.buffer.textBaseline = 'top';
-	this.cache.buffer.font = this.font;
+	this.cache.ctx.textBaseline = 'top';
+	this.cache.ctx.font = this.font;
 
 	this.text = '';
 	this.color = '#fff';
@@ -38,7 +38,7 @@ Studio.TextBox.prototype.setColor = function(color) {
 };
 
 Studio.TextBox.prototype.setFont = function(font) {
-	this.cache.buffer.font = this.font = font;
+	this.cache.ctx.font = this.font = font;
 	return this;
 };
 
@@ -48,17 +48,17 @@ Studio.TextBox.prototype.finish = function() {
 };
 
 Studio.TextBox.prototype.reset = function() {
-	this.cache.buffer.clearRect(0, 0, this.width, this.height);
-	this.cache.buffer.font = this.font;
+	this.cache.ctx.clearRect(0, 0, this.width, this.height);
+	this.cache.ctx.font = this.font;
 };
 
 Studio.TextBox.prototype.writeLine = function(text, x, y) {
 	if (this.shadow) {
-		this.cache.buffer.fillStyle = this.shadowColor;
-		this.cache.buffer.fillText(text, x + 1 + this.shadow, y + this.shadow);
+		this.cache.ctx.fillStyle = this.shadowColor;
+		this.cache.ctx.fillText(text, x + 1 + this.shadow, y + this.shadow);
 	}
-	this.cache.buffer.fillStyle = this.color;
-	this.cache.buffer.fillText(text, x + 1, y);
+	this.cache.ctx.fillStyle = this.color;
+	this.cache.ctx.fillText(text, x + 1, y);
 };
 
 Studio.TextBox.prototype.wrapText = function() {
@@ -69,10 +69,10 @@ Studio.TextBox.prototype.wrapText = function() {
 		var line = '';
 		for (var n = 0; n < words.length; n++) {
 			var testLine = line + words[n] + ' ';
-			var metrics = this.cache.buffer.measureText(testLine);
+			var metrics = this.cache.ctx.measureText(testLine);
 			var testWidth = metrics.width;
 			if (testWidth > this.width && n > 0) {
-				testWidth = this.cache.buffer.measureText(line).width;
+				testWidth = this.cache.ctx.measureText(line).width;
 				// We want to avoid any off pixel font rendering so we use | 0 to prevent floats
 				// also offset everything by 2px because it helps with the centering of text
 				this.writeLine(line, 2 + (this.width - testWidth) * this.horizontal_align | 0 , y);
@@ -82,7 +82,7 @@ Studio.TextBox.prototype.wrapText = function() {
 				line = testLine;
 			}
 		}
-		this.writeLine(line, 2 + (this.width - this.cache.buffer.measureText(line).width) * this.horizontal_align | 0, y);
+		this.writeLine(line, 2 + (this.width - this.cache.ctx.measureText(line).width) * this.horizontal_align | 0, y);
 		this._wrap_height = y + this.lineHeight;
 		if (i !== paragraphs.length - 1) {
 			y += this.lineHeight;
@@ -113,7 +113,7 @@ Studio.TextBox.prototype.drawAngled = function(ctx) {
 
 Studio.TextBox.prototype.draw = function(ctx) {
 	this.setAlpha(ctx);
-	// since we don't resize the buffer, we need to compensate based on the differences of the buffer height and text height
+	// since we don't resize the ctx, we need to compensate based on the differences of the ctx height and text height
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
