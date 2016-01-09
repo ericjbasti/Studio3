@@ -6,7 +6,7 @@ var LinkedList = function() {
 
 LinkedList.prototype = {
 	add: function(who) {
-		who.parent = this.parent;
+		// who.parent = this.parent;
 
 		this.length++; // add to our length so we can easily tell how big our list is.
 		if (this.length <= 1 && this.first === null && this.last === null) {
@@ -16,6 +16,7 @@ LinkedList.prototype = {
 			this.length = 1;
 			return who;
 		}
+		// this.first.prev = who;
 		this.last.next = who; // we add the new item to the previously last item.
 		who.prev = this.last; // we mark the new items previous to be the last item in the list.
 		this.last = who; // we have a new last item now.

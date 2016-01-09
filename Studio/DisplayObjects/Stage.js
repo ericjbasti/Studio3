@@ -22,7 +22,7 @@ Studio.Stage = function(domID, attr) {
 	this._count = 0;
 	this._maxCount = 16050;
 	this.dur = 1000 / 60;
-	this._d = 0;
+	this._d = this.dur/2;
 	this.resolution = window.devicePixelRatio; // defaults to device setting.
 	this.interpolate = true;
 	if (attr) {
@@ -196,10 +196,10 @@ Studio.Stage.prototype.addButton = function(who) {
 	this.buttons.unshift(who);
 };
 
-Studio.Stage.prototype.update_children = function(ratio, delta) {
+Studio.Stage.prototype.update_children = function(ratio, delta, interpolate) {
 	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
 		if (this.children[this.i].active) {
-			this.children[this.i].update(ratio, delta);
+			this.children[this.i].update(ratio, delta, interpolate);
 		}
 	}
 };

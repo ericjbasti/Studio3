@@ -33,10 +33,10 @@ Studio.Stage.prototype.CANVAS = {
 };
 
 Studio.fixedTimeStep = function(delta) {
+	this.fixedStep(delta);
+	this._timebased_updates(delta);
 	this.step(delta);
 	this.render(this._lag);
-	this.fixedStep();
-	this._timebased_updates(delta);
 };
 
 Studio.simple = function() {
@@ -51,10 +51,14 @@ Studio.Stage.prototype.fixedStep = function() {
 		this._d -= this.dur;
 		this.update(); // update by a fixed amount.
 	}
+	if(this._d < 1){
+		this._d = 1.5;
+	}
 };
 
 Studio.Stage.prototype.step = function(delta) {
 	this._d += delta;
+	
 	this._lag = this._d / this.dur;
 	if (this._lag > 1) {
 		this._lag = 1;

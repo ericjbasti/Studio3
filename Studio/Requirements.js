@@ -80,8 +80,8 @@ if (typeof Object.create !== 'function') {
 		console.warn('This browser does not support requestAnimationFrame() . Using setTimeout() instead.');
 		window.requestAnimationFrame = function(callback) {
 			var id = window.setTimeout(function() {
-				callback(Date.now());
-			}, 1000 / 30);
+				callback(performance.now());
+			}, 1000 / 60);
 			return id;
 		};
 	}

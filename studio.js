@@ -34,8 +34,6 @@
 // @codekit-append "Studio/Input/Keyboard.js"
 // @codekit-append "Studio/Input/Touch.js"
 
-
-
 'use strict';
 
 // Copyright  Vincent Piel 2013.
@@ -115,7 +113,7 @@ if (!window.Studio) {
 		temp: {},
 		info: {displayObjects: 0},
 		active: true,
-		cap: 1000/20, // don't let the true frame rate go below 20fps, prevent huge frame skips
+		cap: 1000 / 20, // don't let the true frame rate go below 20fps, prevent huge frame skips
 		draws: 0,
 		loaded: true,
 		version: '0.5.1',
@@ -161,8 +159,6 @@ Studio.start = function(time_stamp) {
 };
 
 Studio.loop = function(time_stamp) {
-	Studio.RAF = requestAnimationFrame(Studio.loop);
-
 	Studio.tick(time_stamp);
 	Studio.draws = 0;
 
@@ -172,23 +168,29 @@ Studio.loop = function(time_stamp) {
 	Studio.stage.loop(Studio.delta);
 	// }
 	// }
+	Studio.RAF = requestAnimationFrame(Studio.loop);
+};
+
+//?? what? Something is up with the time_stamp... seems like the float gets all out of whack eventually (floats suck).
+// So to get the 60fps that you know is possible (check this before hand), setting the tick to be 60fps, we manage to match
+// what the console (in this case Apple TV 4) is actually outputting. Quite amazed by this really.
+Studio.console = function(time_stamp) {
+	this.delta = 16.6666666;
+	this.now += this.delta;
 };
 
 Studio.capped = function(time_stamp) {
-	// var time_stamp = Date.now();
-	this.delta      = time_stamp - this.now;
-	this.now       = time_stamp;
+	this.delta = time_stamp - this.now;
+	this.now = time_stamp;
 	this.delta = this.cap > this.delta ? this.delta : this.cap;
-	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
 };
 
 Studio.uncapped = function(time_stamp) {
-	this.delta      = time_stamp - this.now;
-	this.now       = time_stamp;
-	// this.frameRatio = this.delta/16.666666666666668; // vs 60fps
+	this.delta = time_stamp - this.now;
+	this.now = time_stamp;
 };
 
-Studio.tick = Studio.capped;
+Studio.tick = Studio.uncapped;
 
 Studio.stopTime = function() {
 	//this.time = this.now();
