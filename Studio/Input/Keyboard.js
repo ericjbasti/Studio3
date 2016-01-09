@@ -1,4 +1,9 @@
 Studio.Stage.prototype.enableKeyboardInput = function() {
+	// if we've already enabled keys we should abort.
+	if(this.keys) {
+		console.warn('Keyboard events are already enabled.');
+		return;
+	}
 	var me = this;
 
 	this.keys = {};

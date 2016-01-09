@@ -1,4 +1,10 @@
 Studio.Stage.prototype.enableTouchEvents = function() {
+	// if we've already enabled touch/mouse events we should abort
+	if(this.mouse) {
+		console.warn('Touch/Mouse events are already enabled.');
+		return;
+	}
+
 	var me = this;
 
 	// TYPES of EVENTS
