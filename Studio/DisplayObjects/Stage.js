@@ -114,6 +114,7 @@ Studio.Stage.prototype.allowPlugins = function() {
 	this.plugins.input = [];
 	this.plugins.effect = [];
 	this._effects = 0;
+	this._inputs = 0;
 };
 
 Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
@@ -153,8 +154,13 @@ Studio.Stage.prototype.fillScreen = function() {
 	// this.canvas.style.width = (this.width*this._scaleRatio) +'px';
 
 };
-Studio.Stage.prototype.addInput = function(fn) {
+Studio.Stage.prototype.addInput = function(fn, options) {
+	if (options) {
+		fn._options(options);
+	}
+	fn.init(this);
 	this.plugins.input.push(fn);
+	this._inputs++;
 };
 
 Studio.Stage.prototype.addEffect = function(fn, options) {
@@ -242,6 +248,9 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 	this.update_visibility();
 
 	if (Studio.progress === 2) {
+		if (this._inputs) {
+			this.runInputs(delta);
+		}
 		if (this.activeScene) {
 			this.activeScene.update(ratio, delta);
 		}
@@ -270,7 +279,19 @@ Studio.Stage.prototype.runEffects = function() {
 	// this.setAlpha(this.ctx);
 	// this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
 	for (this.i = 0; this.i !== this._effects; this.i++) {
-		this.plugins.effect[this.i].action(this);
+		if(this.plugins.effect[this.i].active){
+			this.plugins.effect[this.i].action(this);
+		}
+	}
+};
+
+Studio.Stage.prototype.runInputs = function() {
+	// this.setAlpha(this.ctx);
+	// this.ctx.setTransform(this.resolution, 0, 0,this.resolution,0,0);
+	for (this.i = 0; this.i !== this._inputs; this.i++) {
+		if(this.plugins.input[this.i].active){
+			this.plugins.input[this.i].action(this);
+		}	
 	}
 };
 
