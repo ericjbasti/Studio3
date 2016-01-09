@@ -128,10 +128,15 @@ Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
 		this.canvas.style.height = '100%';
 		this.canvas.style.width = '100%';
 	}
-	if (fullscreen == 2) {
-		this.canvas.style.width = window.innerWidth + 'px';
-		this.canvas.style.height = window.innerHeight + 'px';
-	}
+	if (fullscreen >= 2) {
+ 		this.canvas.style.width = window.innerWidth + 'px';
+		this.canvas.style.height = 'auto';
+		this._scaleRatio = window.innerWidth/this.width;
+		if(fullscreen == 3){
+			this.canvas.style.height = window.innerHeight + 'px';
+		}
+ 	}
+
 };
 
 Studio.Stage.prototype.pauseButtons = function(a) {
