@@ -25,8 +25,12 @@ Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	// gl._count +=8;
 };
 
-Studio.Rect.prototype.buildElement = function(gl, ratio) {
-	this._delta(ratio);
+Studio.Rect.prototype.buildElement = function(gl, ratio, interpolate) {
+	if(interpolate){
+		this._delta(ratio);
+	}else{
+		this._dset();
+	}
 	this._boundingBox.get_bounds(this);
 	this.addVert(gl, this._boundingBox.left, this._boundingBox.top, this._world.z, this.slice.left, this.slice.top);
 	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.slice.right, this.slice.top);

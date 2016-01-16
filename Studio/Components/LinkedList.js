@@ -22,6 +22,11 @@ LinkedList.prototype = {
 		this.last = who; // we have a new last item now.
 		return who;
 	},
+	addItems: function(who){
+		for (var i = 0; i !== arguments.length; i++) {
+			this.add(arguments[i]);
+		}
+	},
 	insert: function(a, b) {
 		this.length++;
 		a.prev = b;

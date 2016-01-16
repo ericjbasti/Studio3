@@ -160,10 +160,10 @@ Studio.DisplayObject.prototype = {
 		}
 		return false;
 	},
-	vertex_children: function(stage, ratio) {
+	vertex_children: function(stage, ratio, interpolate) {
 		if (this.hasChildren) {
 			for (var i = 0; i !== this.hasChildren; i++) {
-				this.children[i].buildElement(stage, ratio);
+				this.children[i].buildElement(stage, ratio, interpolate);
 				// this.children[i].buildTriangles(stage,ratio);
 			}
 		}
