@@ -248,6 +248,7 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 	this.update_visibility();
 
 	if (Studio.progress === 2) {
+
 		if (this._inputs) {
 			this.runInputs(delta);
 		}
@@ -270,8 +271,8 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 			this.beforeDraw();
 		}
 	}
-	if (this.onExitFrame) {
-		this.onExitFrame();
+	if (this.logic) {
+		this.logic();
 	}
 };
 

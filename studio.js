@@ -190,7 +190,7 @@ Studio.uncapped = function(time_stamp) {
 	this.now = time_stamp;
 };
 
-Studio.tick = Studio.uncapped;
+Studio.tick = Studio.capped;
 
 Studio.stopTime = function() {
 	//this.time = this.now();

@@ -337,12 +337,17 @@ Studio.DisplayObject.prototype = {
 			return;
 		}
 		for (var i = 0; i !== this.hasChildren; i++) {
-			this.children[i].logic();
+			if(this.children[i].logic){
+				this.children[i].logic();
+			}	
 		}
 	},
-	logic: function(){
+	_logic: function(){
 		if (this.onEnterFrame) {
 			this.onEnterFrame();
+		}
+		if(this.logic){
+			this.logic();
 		}
 		this.logic_children();
 	},
@@ -351,7 +356,7 @@ Studio.DisplayObject.prototype = {
 		if ( interpolate ){
 			this.snapshot();
 		}
-		this.logic();
+		this._logic();
 		this._update(interpolate);
 	},
 };
