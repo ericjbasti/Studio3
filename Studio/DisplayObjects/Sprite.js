@@ -70,7 +70,7 @@ Studio.ImageSlice.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
-		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
+		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY)-2, this._world.width, this._world.height);
 	}
 };
 
@@ -85,6 +85,8 @@ Studio.SpriteAnimation = function(attr) {
 	this.frame = 0;
 	this.sliceX = 0;
 	this.sliceY = 0;
+	this.offsetY = 0;
+	this.offsetX = 0;
 	this.repeat = true;
 	this.startTime = 0;
 	if (attr) {
@@ -124,8 +126,8 @@ Studio.SpriteAnimation.prototype.draw = function(ctx) {
 };
 
 Studio.SpriteAnimation.prototype.setSlice = function() {
-	this.sliceX = this.loop[this.frame][0];
-	this.sliceY = this.loop[this.frame][1];
+	this.sliceX = this.loop[this.frame][0]+this.offsetX;
+	this.sliceY = this.loop[this.frame][1]+this.offsetY;
 };
 
 Studio.SpriteAnimation.prototype.updateFrame = function() {
