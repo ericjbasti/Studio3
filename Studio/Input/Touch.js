@@ -138,6 +138,11 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 		mouse.y = scaledMouse.clientY + me.camera.y;
 		mouse.dx = mouse.dy = 0;
 		me.mouse_onDown(mouse, me);
+		if(me.activeScene){
+			if(me.activeScene.active){
+				me.mouse_onDown(mouse, me.activeScene);
+			}
+		}
 	}
 	var mouse_move = function(event) {
 		ratioEvent(event);
@@ -146,9 +151,20 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 		mouse.x = scaledMouse.clientX + me.camera.x;
 		mouse.y = scaledMouse.clientY + me.camera.y;
 		me.mouse_onMove(mouse, me);
+		if(me.activeScene){
+			if(me.activeScene.active){
+				me.mouse_onMove(mouse, me.activeScene);
+			}
+		}
+
 	}
 	var mouse_release = function(event) {
 		me.mouse_onUp(mouse, me);
+		if(me.activeScene){
+			if(me.activeScene.active){
+				me.mouse_onUp(mouse, me.activeScene);
+			}
+		}
 		mouse.id = 0;
 	}
 	if (this._mouseWindow) {
@@ -172,43 +188,60 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 	var length = 0;
 
 	var finger_press = function(event) {
-	event.preventDefault();
-	length =  event.targetTouches.length
-	for (var i = 0; i != length; i++) {
-		touchID = event.targetTouches[i].identifier;
-		ratioEvent(event.targetTouches[i]);
-		touches[touchID] = {};
-		touches[touchID].id = touchID; // so we can allow multiple drags at once, without requiring a hit (for fast drags that cause the user to outrun the button)
-		touches[touchID].x = scaledMouse.clientX + me.camera.x;
-		touches[touchID].y = scaledMouse.clientY + me.camera.y;
-		touches[touchID].dx = 0;
-		touches[touchID].dy = 0;
-		me.mouse_onDown(touches[touchID], me);
-	}
-}
-	var finger_move = function(event) {
-	event.preventDefault();
-	length =  event.targetTouches.length
-	for (var i = 0; i != length; i++) {
-		touchID = event.targetTouches[i].identifier;
-		ratioEvent(event.targetTouches[i]);
-		touches[touchID].dx = touches[touchID].x - scaledMouse.clientX;
-		touches[touchID].dy = touches[touchID].y - scaledMouse.clientY;
-		touches[touchID].x = scaledMouse.clientX + me.camera.x;
-		touches[touchID].y = scaledMouse.clientY + me.camera.y;
-		me.mouse_onMove(touches[touchID], me);
-	}
-}
-	var finger_release = function(event) {
-	event.preventDefault();
-	length =  event.changedTouches.length
-	for (var i = 0; i != length; i++) {
-		touchID = event.changedTouches[i].identifier;
-		me.mouse_onUp(touches[touchID], me);
-		delete touches[touchID];
+		event.preventDefault();
+		length =  event.targetTouches.length
+		for (var i = 0; i != length; i++) {
+			touchID = event.targetTouches[i].identifier;
+			ratioEvent(event.targetTouches[i]);
+			touches[touchID] = {};
+			touches[touchID].id = touchID; // so we can allow multiple drags at once, without requiring a hit (for fast drags that cause the user to outrun the button)
+			touches[touchID].x = scaledMouse.clientX + me.camera.x;
+			touches[touchID].y = scaledMouse.clientY + me.camera.y;
+			touches[touchID].dx = 0;
+			touches[touchID].dy = 0;
+			me.mouse_onDown(touches[touchID], me);
+			if(me.activeScene){
+				if(me.activeScene.active){
+					me.mouse_onDown(touches[touchID], me.activeScene);
+				}
+			}
+		}
 	}
 
-}
+	var finger_move = function(event) {
+		event.preventDefault();
+		length =  event.targetTouches.length
+		for (var i = 0; i != length; i++) {
+			touchID = event.targetTouches[i].identifier;
+			ratioEvent(event.targetTouches[i]);
+			touches[touchID].dx = touches[touchID].x - scaledMouse.clientX;
+			touches[touchID].dy = touches[touchID].y - scaledMouse.clientY;
+			touches[touchID].x = scaledMouse.clientX + me.camera.x;
+			touches[touchID].y = scaledMouse.clientY + me.camera.y;
+			me.mouse_onMove(touches[touchID], me);
+			if(me.activeScene){
+				if(me.activeScene.active){
+					me.mouse_onMove(touches[touchID], me.activeScene);
+				}
+			}
+		}
+	}
+	
+	var finger_release = function(event) {
+		event.preventDefault();
+		length =  event.changedTouches.length
+		for (var i = 0; i != length; i++) {
+			touchID = event.changedTouches[i].identifier;
+			me.mouse_onUp(touches[touchID], me);
+			if(me.activeScene){
+				if(me.activeScene.active){
+					me.mouse_onUp(touches[touchID], me.activeScene);
+				}
+			}
+			delete touches[touchID];
+		}
+
+	}
 
 	if (!window.ejecta) {
 		this.canvas.addEventListener("touchstart", finger_press, false);
