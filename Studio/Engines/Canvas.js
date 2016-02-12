@@ -19,15 +19,15 @@ Studio.Stage.prototype.CANVAS = {
 			if (this.activeScene.beforeDraw) {
 				this.activeScene.beforeDraw();
 			}
-			this.activeScene.render(this , lag);
+			this.activeScene.render(this , lag, this.interpolate);
 		}
 		if (this.previousScene) {
 			if (this.previousScene.active) {
-				this.previousScene.render(this , lag);
+				this.previousScene.render(this , lag, this.interpolate);
 			}
 		}
 		if (this.hasChildren) {
-			this.render_children(lag);
+			this.render_children(this, lag);
 		}
 	},
 };
@@ -39,8 +39,9 @@ Studio.fixedTimeStep = function(delta) {
 	this.render(this._lag);
 };
 
-Studio.simple = function() {
-	this.update();
+Studio.simple = function(delta) {
+	this.update(this.interpolate);
+	this._timebased_updates(delta);
 	this.render(1);
 };
 
@@ -49,7 +50,7 @@ Studio.Stage.prototype.timeStep = Studio.fixedTimeStep;
 Studio.Stage.prototype.fixedStep = function() {
 	while (this._d >= this.dur) {
 		this._d -= this.dur;
-		this.update(); // update by a fixed amount.
+		this.update(this.interpolate); // update by a fixed amount.
 	}
 	if(this._d < 1){
 		this._d = 1.5;
