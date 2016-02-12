@@ -1,6 +1,6 @@
 Studio.Stage.prototype.update_tweens = function(global_delta) {
 	var i,j = 0;
-	var tween,key, delta;
+	var tween, key, delta;
 	for (i in this.tweens) {
 		tween = this.tweens[i];
 		if (tween.actor._world) {
@@ -63,7 +63,8 @@ Studio.Stage.prototype.update_tweens = function(global_delta) {
 					this.tweens[i] = null;
 					delete this.tweens[i];
 				}
-			}}
+			}
+		}
 	}
 };
 
