@@ -38,7 +38,7 @@ Studio.DisplayList.prototype.updateElement = function(who) {
 };
 
 Studio.DisplayList.prototype.clearCachedElement = function(who) {
-	this.ctx.clearRect(who._x - who.width / 2, who._y - who.height / 2, who.width, who.height);
+	this.ctx.clearRect(who._world.x - who.width / 2, who._world.y - who.height / 2, who.width, who.height);
 };
 
 Studio.DisplayList.prototype.markedForRemoval = function(who) {
@@ -84,8 +84,8 @@ Studio.DisplayList.prototype.update = function() {
 
 Studio.DisplayList.prototype.render = function(stage, ratio) {
 	if (this.cached) {
-		if (this._alpha !== stage.ctx.globalAlpha) {
-			stage.ctx.globalAlpha = this._alpha;
+		if (this._world.alpha !== stage.ctx.globalAlpha) {
+			stage.ctx.globalAlpha = this._world.alpha;
 		}
 		this.draw(stage.ctx);
 	} else {
@@ -118,7 +118,7 @@ Studio.DisplayList.prototype.add = function(who) {
 };
 
 Studio.DisplayList.prototype.draw = function(ctx) {
-	ctx.drawImage(this.cache, 0, 0, this.cache.width, this.cache.height, this._x, this._y, this._width, this._height);
+	ctx.drawImage(this.cache, 0, 0, this.cache.width, this.cache.height, this._world.x, this._world.y, this._world.width, this._world.height);
 };
 
 Studio.addTo(Studio.DisplayList.prototype, LinkedList.prototype);
