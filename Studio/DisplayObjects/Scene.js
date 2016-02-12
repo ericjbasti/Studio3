@@ -28,6 +28,15 @@ Studio.Scene.prototype.loadAssets = function() {
 	}
 };
 
+
+Studio.Scene.prototype.render_children = function(stage, lag) {
+	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
+		if (this.children[this.i].active) {
+			this.children[this.i].render(stage, lag, stage.interpolate);
+		}
+	}
+};
+
 Studio.Scene.prototype.setStyle = function(ctx) {
 	if (this.color !== ctx.fillStyle) {
 		ctx.fillStyle = this.color.style;

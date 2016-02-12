@@ -215,13 +215,6 @@ Studio.Stage.prototype.update_children = function(ratio, delta, interpolate) {
 	}
 };
 
-Studio.Stage.prototype.render_children = function(lag) {
-	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
-		if (this.children[this.i].active) {
-			this.children[this.i].render(this, lag, this.interpolate);
-		}
-	}
-};
 
 Studio.Stage.prototype.update_visibility = function() {
 	this._alpha = this.alpha;
