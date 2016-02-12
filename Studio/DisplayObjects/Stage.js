@@ -203,9 +203,6 @@ Studio.Stage.prototype.watch = function(who) {
 	this.hasChildren = who.hasChildren;
 };
 
-Studio.Stage.prototype.addButton = function(who) {
-	this.buttons.unshift(who);
-};
 
 Studio.Stage.prototype.update_children = function(ratio, delta, interpolate) {
 	for (this.i = 0; this.i !== this.hasChildren; this.i++) {

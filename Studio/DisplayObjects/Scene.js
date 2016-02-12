@@ -9,6 +9,7 @@ Studio.Scene = function(attr) {
 	this.loader = null;
 	this.assets = [];
 	this.children = [];
+	this.buttons = [];
 	if (attr) {
 		this.apply(attr);
 	}
@@ -28,6 +29,9 @@ Studio.Scene.prototype.loadAssets = function() {
 	}
 };
 
+Studio.Scene.prototype.addButton = function(who) {
+	this.buttons.unshift(who);
+};
 
 Studio.Scene.prototype.render_children = function(stage, lag) {
 	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
