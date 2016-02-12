@@ -163,8 +163,7 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 		this.canvas.addEventListener("mouseout", mouse_release, false);
 	}
 
-	/* touch events
-*/zxc
+	/* touch events*/
 	
 	var touches = {}
 	var touchID = 0;
