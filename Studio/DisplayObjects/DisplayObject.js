@@ -76,6 +76,7 @@ Studio.DisplayObject.prototype = {
 		}
 		if (!this.hasOwnProperty('_world')) {
 			this._world = new Studio.DisplayProperty();
+			this._initWorld();
 		}
 		if (!child.hasOwnProperty('_world')) {
 			// This child is missing _world = new Studio.DisplayProperty(); the code will still run, but it is very likely to act in unexpected ways. Lets fix this.
@@ -84,9 +85,23 @@ Studio.DisplayObject.prototype = {
 		child.parent = this._world;
 		this.children[this.hasChildren] = child;
 		this.hasChildren++;
-
-		// child.force_update();
+		child.force_update();
+		child._dset();
 		return this;
+	},
+	_initWorld: function(){
+		this._world.x = this.x;
+		this._world.y = this.y;
+		this._world.y = this.y;
+		this._world.z = this.z;
+		this._world.height = this.height;
+		this._world.width = this.width;
+		this._world.scaleX = this.scaleX;
+		this._world.scaleY = this.scaleY;
+		this._world.rotation = this.rotation;
+		this._world.angle = this.angle;
+		this._world.alpha = this.alpha;
+		this._world.speed = this.speed;
 	},
 	addChildren: function() {
 		// This will take a series of objects and add them to this object
@@ -285,9 +300,8 @@ Studio.DisplayObject.prototype = {
 		this._dx = this._world.x;
 		this._dy = this._world.y;
 		if (this._world.rotation) {
-			this._dAngle = this.angle;
+			this._dAngle = this.parent.angle+this.angle;
 		}
-
 	},
 	_snapback: function() {
 		this.force_update();
