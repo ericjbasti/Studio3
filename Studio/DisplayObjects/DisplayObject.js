@@ -281,6 +281,8 @@ Studio.DisplayObject.prototype = {
 	snapshot: function() {
 		this.__x = this._world.x;
 		this.__y = this._world.y;
+		this.__width = this._world.width;
+		this.__height = this._world.height;
 		if (this._world.rotation) {
 			this._world.angle = this.angle;
 		}
@@ -291,6 +293,8 @@ Studio.DisplayObject.prototype = {
 	_delta: function(ratio) {
 		this._dx = this.__delta(this.__x, this._world.x, ratio);
 		this._dy = this.__delta(this.__y, this._world.y, ratio);
+		this._dwidth = this.__delta(this.__width, this._world.width, ratio);
+		this._dheight = this.__delta(this.__height, this._world.height, ratio);
 		if (this._world.rotation) {
 			this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
 		}
@@ -299,6 +303,8 @@ Studio.DisplayObject.prototype = {
 	_dset: function() {
 		this._dx = this._world.x;
 		this._dy = this._world.y;
+		this._dwidth = this._world.width;
+		this._dheight = this._world.height;
 		if (this._world.rotation) {
 			this._dAngle = this.parent.angle+this.angle;
 		}

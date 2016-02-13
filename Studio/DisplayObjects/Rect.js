@@ -81,6 +81,6 @@ Studio.Rect.prototype.draw = function(ctx) {
 		this.drawAngled(ctx);
 	} else {
 		// ctx.strokeRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
-		ctx.fillRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
+		ctx.fillRect(this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight);
 	}
 };

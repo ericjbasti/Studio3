@@ -32,7 +32,7 @@ Studio.Sprite.prototype.draw = function(ctx) {
 		this.drawAngled(ctx);
 	} else {
 
-		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height,this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY), this._world.width, this._world.height);
+		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height,this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight);
 	}
 };
 
@@ -70,7 +70,7 @@ Studio.ImageSlice.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
-		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY)-2, this._world.width, this._world.height);
+		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY)-2, this._dwidth, this._dheight);
 	}
 };
 
@@ -111,13 +111,13 @@ Studio.SpriteAnimation.prototype.draw = function(ctx) {
 		return;
 	}
 	this.setAlpha(ctx);
-	ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorX), this._world.width, this._world.height);
+	ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight);
 	if(this.borderlap && this.border){
-		if(this._dx -  (this._world.width*this.anchorX) < this.border.x){
-			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this.border.width + this._dx - (this._world.width*this.anchorX), this._dy - (this._world.height*this.anchorY), this._world.width, this._world.height);
+		if(this._dx -  (this._dwidth*this.anchorX) < this.border.x){
+			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this.border.width + this._dx - (this._dwidth*this.anchorX), this._dy - (this._dheight*this.anchorY), this._dwidth, this._dheight);
 		}
 		if((this._dx + this._world.width) > this.border.width){
-			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._world.width*this.anchorX) -this.border.width, this._dy - (this._world.height*this.anchorY), this._world.width, this._world.height); 
+			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._dwidth*this.anchorX) -this.border.width, this._dy - (this._dheight*this.anchorY), this._dwidth, this._dheight); 
 		}
 	}
 	if (this.loop.length) {

@@ -117,6 +117,6 @@ Studio.TextBox.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
-		ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._world.height);
+		ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY) - this._vertical_align, this._dwidth, this._dheight);
 	}
 };
