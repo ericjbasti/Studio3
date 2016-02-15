@@ -41,6 +41,9 @@ Studio.Scene.prototype.render_children = function(stage, lag) {
 	}
 };
 
+Studio.Scene.prototype.close = function(stage){
+	this.active = false;
+}
 Studio.Scene.prototype.setStyle = function(ctx) {
 	if (this.color !== ctx.fillStyle) {
 		ctx.fillStyle = this.color.style;

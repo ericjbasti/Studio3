@@ -197,6 +197,18 @@ Studio.Stage.prototype.setScene = function(who) {
 	}
 };
 
+Studio.Stage.prototype.clearScene = function() {
+	if (this.activeScene) {
+		this.previousScene = this.activeScene;
+		this.activeScene = null;
+		if (this.previousScene.onDeactivate) {
+			this.previousScene.onDeactivate();
+		}else{
+			this.previousScene.active = false;
+		}
+	}
+};
+
 Studio.Stage.prototype.watch = function(who) {
 	this._watching = who;
 	this.children = who.children;
