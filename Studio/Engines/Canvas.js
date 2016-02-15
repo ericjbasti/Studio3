@@ -15,22 +15,25 @@ Studio.Stage.prototype.CANVAS = {
 		this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
 		this.draw(this.ctx);
 		this.camera.render(this,lag);
-		if (this.activeScene) {
-			if (this.activeScene.beforeDraw) {
-				this.activeScene.beforeDraw();
-			}
-			this.activeScene.render(this , lag, this.interpolate);
+
+		if(this.previousScene){
+			this._renderScene(this.previousScene , lag);
 		}
-		if (this.previousScene) {
-			if (this.previousScene.active) {
-				this.previousScene.render(this , lag, this.interpolate);
-			}
+		if(this.activeScene){
+			this._renderScene(this.activeScene , lag);
 		}
+		
 		if (this.hasChildren) {
 			this.render_children(this, lag);
 		}
 	},
 };
+
+Studio.Stage.prototype._renderScene = function( scene, lag){
+	if (scene.active) {
+		scene.render(this , lag, this.interpolate);
+	}
+}
 
 Studio.fixedTimeStep = function(delta) {
 	this.fixedStep(delta);

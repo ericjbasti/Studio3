@@ -242,27 +242,30 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 		if (this._inputs) {
 			this.runInputs(delta);
 		}
-		if (this.activeScene) {
-			this.activeScene.update(ratio, delta);
-		}
-		if (this.previousScene) {
-			if (this.previousScene.active) {
-				this.previousScene.update(ratio, delta);
-			}
-		}
-		if (this.hasChildren || this._watching) {
-			// if(!this._watching){
-			this.update_children(this.interpolate);
-			// }else{
-			// 	this.hasChildren=this._watching.hasChildren;
-			// }
-		}
+		this.updateScenes();
+
 		if (this.beforeDraw) {
 			this.beforeDraw();
 		}
 	}
 	if (this.logic) {
 		this.logic();
+	}
+};
+
+
+Studio.Stage.prototype._update_scene = function(scene){
+	if (!scene) return;
+	if (scene.active) {
+		scene.update(this.interpolate);
+	}
+}
+
+Studio.Stage.prototype.updateScenes = function(){
+	this._update_scene(this.activeScene);
+	this._update_scene(this.previousScene);
+	if (this.hasChildren || this._watching) {
+		this.update_children(this.interpolate);
 	}
 };
 
