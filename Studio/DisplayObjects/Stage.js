@@ -186,14 +186,14 @@ Studio.Stage.prototype.setScene = function(who) {
 	who.parent = this;
 	if (this.activeScene && Studio.progress === 2) {
 		if (this.activeScene.onDeactivate) {
-			this.activeScene.onDeactivate();
+			this.activeScene.onDeactivate(this);
 		}
 	}
 	this.previousScene = this.activeScene;
 	this.activeScene = who;
 	this.activeScene.active = true;
 	if (who.onActivate) {
-		who.onActivate();
+		who.onActivate(this);
 	}
 };
 
@@ -202,7 +202,7 @@ Studio.Stage.prototype.clearScene = function() {
 		this.previousScene = this.activeScene;
 		this.activeScene = null;
 		if (this.previousScene.onDeactivate) {
-			this.previousScene.onDeactivate();
+			this.previousScene.onDeactivate(this);
 		}else{
 			this.previousScene.active = false;
 		}
@@ -336,7 +336,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 				return; // lets check to see if we have a scene to draw. otherwise lets just draw the stage.
 			}
 			if (this.activeScene.onActivate) {
-				this.activeScene.onActivate();
+				this.activeScene.onActivate(this);
 			}
 		}
 	}

@@ -371,12 +371,15 @@ Studio.DisplayObject.prototype = {
 		}
 		this.logic_children();
 	},
-
+	setAnchor: function(x,y){
+		this.anchorX = x;
+		this.anchorY = y || x;
+	},
 	update: function( interpolate ) {
 		if ( interpolate ){
 			this.snapshot();
 		}
 		this._logic();
 		this._update(interpolate);
-	},
+	}
 };
