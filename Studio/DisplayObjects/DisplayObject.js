@@ -87,6 +87,9 @@ Studio.DisplayObject.prototype = {
 		this.hasChildren++;
 		child.force_update();
 		child._dset();
+		if(child.hasChildren){
+			child.force_update_children();
+		}
 		return this;
 	},
 	_initWorld: function(){
@@ -320,6 +323,14 @@ Studio.DisplayObject.prototype = {
 		this.update_rotation();
 		this.update_xy();
 		this.snapshot();
+	},
+	force_update_children: function(interpolate) {
+		for (var i = 0; i !== this.hasChildren; i++) {
+			this.children[i].force_update();
+		}
+		for (var i = 0; i !== this.hasChildren; i++) {
+			this.children[i]._dset();
+		}
 	},
 	_update: function(interpolate) {
 		if (this.__update_ALPHA) {
