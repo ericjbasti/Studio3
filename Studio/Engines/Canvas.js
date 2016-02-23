@@ -4,6 +4,9 @@ Studio.Stage.prototype.CANVAS = {
 		this.ctx = this.canvas.getContext('2d');
 	},
 	init: function() {
+		this.ctx.webkitImageSmoothingEnabled = this.smoothing;
+		this.ctx.mozImageSmoothingEnabled = this.smoothing;
+		this.ctx.imageSmoothingEnabled = this.smoothing;
 	},
 	prep: function() {
 	},

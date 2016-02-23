@@ -57,6 +57,10 @@ Studio.Ease.random = function() {
 	return Math.random();
 };
 
+Studio.Ease.shake = function() {
+	return Math.random()-.5;
+};
+
 Studio.Ease.quadIn = function(t) {
 	return t * t;
 };

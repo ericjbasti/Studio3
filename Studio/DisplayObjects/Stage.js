@@ -25,6 +25,8 @@ Studio.Stage = function(domID, attr) {
 	this._d = this.dur/2;
 	this.resolution = window.devicePixelRatio; // defaults to device setting.
 	this.interpolate = true;
+	this.smoothing = true;
+
 	if (attr) {
 		this.apply(attr);
 	}

@@ -12,9 +12,9 @@ Studio.Clip.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
-		ctx.rect(this._dx - (this._width * this.anchorX), this._dy - (this._height * this.anchorY), this._width, this._height);
+		ctx.rect(this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight);
 	}
-	ctx.stroke();
+	// ctx.stroke();
 	ctx.clip();
 };
 Studio.Clip.prototype.drawAngled = function(ctx) {
