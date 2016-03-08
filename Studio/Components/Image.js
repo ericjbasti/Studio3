@@ -2,14 +2,14 @@
  * Image
  */
 
-Studio.Image = function(path) {
+Studio.Image = function studio_image(path) {
 	this.image = null;
 	this.path = null;
 	if (path) {
 		this.loadImage(path);
 	}
 	this.slice = {
-		'full': {
+		'Full': {
 			x:0,
 			y:0,
 			width: 1,
@@ -25,7 +25,7 @@ Studio.Image.prototype.ready = false;
 Studio.Image.prototype.height = 1;
 Studio.Image.prototype.width = 1;
 
-Studio.Image.prototype.loadImage = function(who) {
+Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 	if (Studio.assets[who]) {
 		console.warn('Already loaded : ', who, Studio.assets[who]);
 		this.image = Studio.assets[who];
@@ -42,8 +42,8 @@ Studio.Image.prototype.loadImage = function(who) {
 			Studio.progress = Studio.queue / Studio.assets.length;
 			newAsset.ready = true;
 			newAsset.status.setStatus(newAsset.ready);
-			newAsset.slice['full'].height = this.height;
-			newAsset.slice['full'].width = this.width;
+			newAsset.slice['Full'].height = this.height;
+			newAsset.slice['Full'].width = this.width;
 
 			if (Studio.queue === Studio.assets.length) {
 				Studio.loaded = true;
@@ -54,3 +54,12 @@ Studio.Image.prototype.loadImage = function(who) {
 		this.image = Studio.assets[who];
 	}
 };
+
+Studio.Image.prototype.addSlice = function studio_image_addSlice(slices){
+	for(var i in slices){
+		if(this.slice[i]){
+			console.warn('Overiding image slice: '+i);
+		}
+		this.slice[i] = slices[i];
+	}
+}

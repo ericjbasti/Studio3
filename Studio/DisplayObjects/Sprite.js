@@ -4,7 +4,7 @@
 
 Studio.Sprite = function(attr) {
 	this.image = null;
-	this.slice = 'full';
+	this.slice = 'Full';
 	this.color = new Studio.Color(1, 1, 1, 1);
 	this._boundingBox = new Studio.Box();
 
@@ -18,6 +18,7 @@ Studio.extend(Studio.Sprite, Studio.Rect);
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
+	console.log(this.slice)
 	ctx.drawImage(this.image.image, 
 		this.image.slice[this.slice].x, 
 		this.image.slice[this.slice].y, 
@@ -31,7 +32,7 @@ Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.restore();
 };
 
-Studio.Sprite.prototype.draw = function(ctx) {
+Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
 	if (!this.image) {
 		return;
 	}
@@ -56,43 +57,7 @@ Studio.Sprite.prototype.draw = function(ctx) {
 	}
 };
 
-/**
- * ImageSlice
- */
 
-Studio.ImageSlice = function(attr) {
-	this.image = null;
-	this.color = new Studio.Color(1, 1, 1, 1);
-	this.rect = {x: 0, y: 0, height: 32, width: 32};
-	this._boundingBox = new Studio.Box();
-	if (attr) {
-		this.apply(attr);
-	}
-};
-
-Studio.extend(Studio.ImageSlice, Studio.Sprite);
-
-Studio.ImageSlice.prototype.drawAngled = function(ctx) {
-	ctx.save();
-	this.prepAngled(ctx);
-	ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, - (this.width * this.anchorX), - (this.height * this.anchorY), this.width, this.height);
-	ctx.restore();
-};
-
-Studio.ImageSlice.prototype.draw = function(ctx) {
-	if (!this.image) {
-		return;
-	}
-	if (!this.image.ready) {
-		return;
-	}
-	this.setAlpha(ctx);
-	if (this.angle) {
-		this.drawAngled(ctx);
-	} else {
-		ctx.drawImage(this.image.image, this.rect.x, this.rect.y, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY)-2, this._dwidth, this._dheight);
-	}
-};
 
 /**
  * SpriteAnimation --- just like a Sprite but uses a SpriteSheet to render, and as such has frames, framerates etc...
@@ -164,28 +129,3 @@ Studio.SpriteAnimation.prototype.updateFrame = function() {
 	}
 	this.setSlice();
 };
-
-Studio.SpriteSheet = function(path, attr) {
-	this.image = new Studio.Image();
-	this.rect = {height: 32, width: 32};
-	if (path) {
-		this.loadImage(path);
-	}
-	if (attr) {
-		this.apply(attr);
-	}
-};
-
-Studio.extend(Studio.SpriteSheet, Studio.Image);
-
-Studio.SpriteSheet.prototype.apply = function(obj) {
-	var keys = Object.keys(obj);
-	var i = keys.length;
-	var key;
-	while (i) {
-		key = keys[i - 1];
-		this[key] = obj[key];
-		i--;
-	}
-};
-
