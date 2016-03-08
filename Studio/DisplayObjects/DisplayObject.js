@@ -48,6 +48,8 @@ Studio.DisplayObject = function(attr) {
 	// set any of these to false if you know they will never be needed.
 	// this will increase performace, by reducing calculations done per object per frame.
 
+
+	// for interpolating fixed time steps
 	this.__x = this._world.x;
 	this.__y = this._world.y;
 	this._dx = this._world.x;
@@ -284,33 +286,58 @@ Studio.DisplayObject.prototype = {
 	snapshot: function() {
 		this.__x = this._world.x;
 		this.__y = this._world.y;
-		this.__width = this._world.width;
-		this.__height = this._world.height;
+		if(this.__update_DIMENSIONS){
+			this.__width = this._world.width;
+			this.__height = this._world.height;
+		}
 		if (this._world.rotation) {
 			this._world.angle = this.angle;
+		}
+	},
+	__deltaXY: function(ratio){
+		if (this.__update_XY) {
+			this._dx = this.__delta(this.__x, this._world.x, ratio);
+			this._dy = this.__delta(this.__y, this._world.y, ratio);
+		}
+	},
+	__deltaHW: function(ratio){
+		if(this.__update_DIMENSIONS){
+			this._dwidth = this.__delta(this.__width, this._world.width, ratio);
+			this._dheight = this.__delta(this.__height, this._world.height, ratio);
+		}
+	},
+	__deltaRotation: function(ratio){
+		if (this._world.rotation) {
+			this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
 		}
 	},
 	__delta: function(snap, cur, ratio) {
 		return snap + ((cur - snap) * ratio);
 	},
 	_delta: function(ratio) {
-		this._dx = this.__delta(this.__x, this._world.x, ratio);
-		this._dy = this.__delta(this.__y, this._world.y, ratio);
-		this._dwidth = this.__delta(this.__width, this._world.width, ratio);
-		this._dheight = this.__delta(this.__height, this._world.height, ratio);
-		if (this._world.rotation) {
-			this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
-		}
-
+		this.__deltaXY(ratio);
+		this.__deltaHW(ratio);
+		this.__deltaRotation(ratio);
 	},
-	_dset: function() {
-		this._dx = this._world.x;
-		this._dy = this._world.y;
+	__dsetXY: function(){
+		if (this.__update_XY) {
+			this._dx = this._world.x;
+			this._dy = this._world.y;
+		}
+	},
+	__dsetHW: function(){
 		this._dwidth = this._world.width;
 		this._dheight = this._world.height;
+	},
+	__dsetRotation: function(){
 		if (this._world.rotation) {
 			this._dAngle = this.parent.angle+this.angle;
 		}
+	},
+	_dset: function() {
+		this.__dsetXY();
+		this.__dsetHW();
+		this.__dsetRotation();
 	},
 	_snapback: function() {
 		this.force_update();

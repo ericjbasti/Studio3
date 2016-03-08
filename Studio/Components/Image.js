@@ -8,6 +8,14 @@ Studio.Image = function(path) {
 	if (path) {
 		this.loadImage(path);
 	}
+	this.slice = {
+		'full': {
+			x:0,
+			y:0,
+			width: 1,
+			height: 1
+		}
+	}
 	this.status = new Studio.Messanger();
 };
 
@@ -34,8 +42,8 @@ Studio.Image.prototype.loadImage = function(who) {
 			Studio.progress = Studio.queue / Studio.assets.length;
 			newAsset.ready = true;
 			newAsset.status.setStatus(newAsset.ready);
-			newAsset.height = this.height;
-			newAsset.width = this.width;
+			newAsset.slice['full'].height = this.height;
+			newAsset.slice['full'].width = this.width;
 
 			if (Studio.queue === Studio.assets.length) {
 				Studio.loaded = true;

@@ -4,8 +4,10 @@
 
 Studio.Sprite = function(attr) {
 	this.image = null;
+	this.slice = 'full';
 	this.color = new Studio.Color(1, 1, 1, 1);
 	this._boundingBox = new Studio.Box();
+
 	if (attr) {
 		this.apply(attr);
 	}
@@ -16,7 +18,16 @@ Studio.extend(Studio.Sprite, Studio.Rect);
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
-	ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height,  - (this.width * this.anchorX), - (this.height * this.anchorY), this.width, this.height);
+	ctx.drawImage(this.image.image, 
+		this.image.slice[this.slice].x, 
+		this.image.slice[this.slice].y, 
+		this.image.slice[this.slice].width, 
+		this.image.slice[this.slice].height, 
+		-(this.width * this.anchorX), 
+		-(this.height * this.anchorY),
+		this.width, 
+		this.height
+	);
 	ctx.restore();
 };
 
@@ -31,8 +42,17 @@ Studio.Sprite.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx);
 	} else {
-
-		ctx.drawImage(this.image.image, 0, 0, this.image.width, this.image.height,this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight);
+		ctx.drawImage(
+			this.image.image, 
+			this.image.slice[this.slice].x, 
+			this.image.slice[this.slice].y, 
+			this.image.slice[this.slice].width, 
+			this.image.slice[this.slice].height,
+			this._dx - (this._dwidth * this.anchorX), 
+			this._dy - (this._dheight * this.anchorY), 
+			this._dwidth, 
+			this._dheight
+		);
 	}
 };
 
