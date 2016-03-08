@@ -9,6 +9,7 @@ Studio.Pattern = function(attr, stage) {
 
 	this.cache = new Studio.Cache(this.width,this.height, stage.resolution);
 	this._cached = false;
+	this.image.status.addListener("onImageReady",this);
 	return this;
 };
 
@@ -23,7 +24,11 @@ Studio.Pattern.prototype.setPattern = function(width,height) {
 	return this;
 };
 
-
+Studio.Pattern.prototype.onImageReady = function(ready){
+	if(ready){
+		this.setPattern(96,96);
+	}
+}
 
 Studio.Pattern.prototype.debugDraw = function(ctx) {
 	ctx.strokeRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._wrap_height);

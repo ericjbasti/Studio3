@@ -270,17 +270,19 @@ Studio.Messanger = function() {
 	this.status = 0;
 };
 
-Studio.Messanger.prototype.addListener = function(callback) {
-	this.listeners.push(callback);
+Studio.Messanger.prototype.addListener = function(callback, who) {
+	this.listeners.push({callback:callback,who:who});
 	// reply back with current status when adding new listener.
-	callback(this.status);
+	who[callback].call(who,this.status);
 };
 
 Studio.Messanger.prototype.setStatus = function(message) {
 	this.status = message;
 	// now lets tell everyone that listens.
+	var who = null;
 	for (var i = 0; i < this.listeners.length; i++) {
-		this.listeners[i](this.status);
+		who = this.listeners[i].who;
+		who[this.listeners[i].callback].call(who,this.status);
 	}
 };
 
