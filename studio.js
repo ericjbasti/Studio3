@@ -25,6 +25,7 @@
 // @codekit-append "Studio/DisplayObjects/Stage.js"
 // @codekit-append "Studio/DisplayObjects/TextBox.js"
 // @codekit-append "Studio/DisplayObjects/Tween.js"
+// @codekit-append "Studio/DisplayObjects/Pattern.js"
 
 // @codekit-append "Studio/Effects/Standards.js"
 
