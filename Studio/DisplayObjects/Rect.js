@@ -4,7 +4,8 @@
 
 Studio.Rect = function(attr) {
 	this.color = new Studio.Color(1, 0, 0, 0);
-	this.slice = new Studio.Box(10, 0, 0, 0);
+	this.bounds = new Studio.Box(10, 0, 0, 0);
+	
 	if (attr) {
 		this.apply(attr);
 	}
@@ -20,8 +21,8 @@ Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	gl._batch[gl._count++] = this.color.g;
 	gl._batch[gl._count++] = this.color.b;
 	gl._batch[gl._count++] = this.color.a;
-	gl._batch[gl._count++] = (tx);
-	gl._batch[gl._count++] = (ty);
+	gl._batch[gl._count++] = tx;
+	gl._batch[gl._count++] = ty;
 	// gl._count +=8;
 };
 
@@ -32,21 +33,21 @@ Studio.Rect.prototype.buildElement = function(gl, ratio, interpolate) {
 		this._dset();
 	}
 	this._boundingBox.get_bounds(this);
-	this.addVert(gl, this._boundingBox.left, this._boundingBox.top, this._world.z, this.slice.left, this.slice.top);
-	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.slice.right, this.slice.top);
-	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.slice.left, this.slice.bottom);
-	this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.slice.right, this.slice.bottom);
+	this.addVert(gl, this._boundingBox.left, this._boundingBox.top, this._world.z, this.bounds.left, this.bounds.top);
+	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.bounds.right, this.bounds.top);
+	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.bounds.left, this.bounds.bottom);
+	this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.bounds.right, this.bounds.bottom);
 };
 
 Studio.Rect.prototype.buildTriangles = function(gl, ratio) {
 	this._delta(ratio);
 	this._boundingBox.get_bounds(this);
-	this.addVert(gl, this._boundingBox.left, this._boundingBox.top, this._world.z, this.slice.left, this.slice.top);
-	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.slice.right, this.slice.top);
-	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.slice.left, this.slice.bottom);
-	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.slice.right, this.slice.top);
-	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.slice.left, this.slice.bottom);
-	this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.slice.right, this.slice.bottom);
+	this.addVert(gl, this._boundingBox.left, this._boundingBox.top, this._world.z, this.bounds.left, this.bounds.top);
+	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.bounds.right, this.bounds.top);
+	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.bounds.left, this.bounds.bottom);
+	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.bounds.right, this.bounds.top);
+	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.bounds.left, this.bounds.bottom);
+	this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.bounds.right, this.bounds.bottom);
 };
 
 Studio.Rect.prototype.setStyle = function(ctx) {

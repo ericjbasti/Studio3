@@ -3,11 +3,11 @@
  */
 
 Studio.Image = function studio_image(path) {
-	this.image = null;
-	this.path = null;
-	if (path) {
-		this.loadImage(path);
-	}
+
+	this.image = null
+	this.width = 1
+	this.height = 1
+
 	this.slice = {
 		'Full': {
 			x:0,
@@ -16,50 +16,65 @@ Studio.Image = function studio_image(path) {
 			height: 1
 		}
 	}
-	this.status = new Studio.Messanger();
+
+	this.sliceGL = {}
+
+	this.status = new Studio.Messanger()
+
+	if (path) {
+		this.loadImage(path)
+	}
+	return this;
 };
 
 Studio.Image.prototype.constructor = Studio.Image;
 
-Studio.Image.prototype.ready = false;
-Studio.Image.prototype.height = 1;
-Studio.Image.prototype.width = 1;
+Studio.Image.prototype.ready = false
+Studio.Image.prototype.height = 1
+Studio.Image.prototype.width = 1
 
 Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 	if (Studio.assets[who]) {
-		console.warn('Already loaded : ', who, Studio.assets[who]);
-		this.image = Studio.assets[who];
-		this.ready = true;
-		this.status.setStatus(this.ready);
-		return this;
+		console.warn('Already loaded : ', who, Studio.assets[who])
+		this.image = Studio.assets[who]
+		this.ready = true
+		this.status.setStatus(this.ready)
+		return this
 	} else {
-		//Studio.loaded=Studio.loadOnDemand;
-		Studio.assets[who] = new Image();
-		Studio.assets.length++;
-		var newAsset = this;
-		Studio.assets[who].onload = function() { // could have Event passed in
-			Studio.queue++;
-			Studio.progress = Studio.queue / Studio.assets.length;
-			newAsset.ready = true;
-			newAsset.status.setStatus(newAsset.ready);
-			newAsset.slice['Full'].height = this.height;
-			newAsset.slice['Full'].width = this.width;
-
+		Studio.assets[who] = new Image()
+		Studio.assets.length++
+		var image = this
+		Studio.assets[who].onload = function image_onload() { // could have Event passed in
+			Studio.queue++
+			Studio.progress = Studio.queue / Studio.assets.length
+			image.ready = true
+			image.status.setStatus(image.ready)
+			image.slice['Full'].height = this.height
+			image.slice['Full'].width = this.width
+			image.width = this.width
+			image.height = this.height
 			if (Studio.queue === Studio.assets.length) {
-				Studio.loaded = true;
+				Studio.loaded = true
 			}
-			return newAsset;
+			image.addSlice(image.slice)
+			return image
 		};
-		Studio.assets[who].src = who;
-		this.image = Studio.assets[who];
+		Studio.assets[who].src = who
+		this.image = Studio.assets[who]
 	}
-};
+}
+Studio.Image.prototype.buildSliceForGL = function studio_buildSliceForGL(slice){
+	return {
+		x: slice.x/this.width,
+		y: slice.y/this.height,
+		width: slice.width/this.width,
+		height: slice.height/this.height
+	}
+}
 
 Studio.Image.prototype.addSlice = function studio_image_addSlice(slices){
 	for(var i in slices){
-		if(this.slice[i]){
-			console.warn('Overiding image slice: '+i);
-		}
-		this.slice[i] = slices[i];
+		this.slice[i] = slices[i]
+		this.sliceGL[i] = this.buildSliceForGL(slices[i])
 	}
 }

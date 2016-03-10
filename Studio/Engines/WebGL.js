@@ -51,7 +51,6 @@ Studio.Stage.prototype.WEBGL = {
 			stencil: this.WEBGL.stencil
 		});
 	},
-
 	init: function(gl) {
 		gl._count = 0;
 		gl._batch = new Float32Array(16355 * 32);
@@ -83,6 +82,25 @@ Studio.Stage.prototype.WEBGL = {
 		gl.useProgram(this.program);
 
 		this.buffer = gl.createBuffer();
+
+		this.prepTexture = function(gl){
+			this._texture = gl.createTexture();
+			gl.bindTexture(gl.TEXTURE_2D, stage._texture );
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+		}
+		this.setTexture = function(image, mipmap){
+			if(!this._texture) {
+				this.prepTexture(this.ctx);
+			}
+			this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, image.image);
+			if(mipmap){
+				this.ctx.generateMipmap(this.ctx.TEXTURE_2D);
+			}
+		}
 	},
 
 	prep: function(gl) {

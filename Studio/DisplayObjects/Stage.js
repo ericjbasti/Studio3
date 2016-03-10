@@ -20,7 +20,7 @@ Studio.Stage = function(domID, attr) {
 
 	this._getCanvasElement(domID);
 	this._count = 0;
-	this._maxCount = 16050;
+	this._maxCount = 16333;
 	this.dur = 1000 / 60;
 	this._d = this.dur/2;
 	this.resolution = window.devicePixelRatio; // defaults to device setting.

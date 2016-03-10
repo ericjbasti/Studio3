@@ -6,7 +6,6 @@ Studio.Sprite = function(attr) {
 	this.image = null;
 	this.slice = 'Full';
 	this.color = new Studio.Color(1, 1, 1, 1);
-	this._boundingBox = new Studio.Box();
 
 	if (attr) {
 		this.apply(attr);
@@ -18,7 +17,6 @@ Studio.extend(Studio.Sprite, Studio.Rect);
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save();
 	this.prepAngled(ctx);
-	console.log(this.slice)
 	ctx.drawImage(this.image.image, 
 		this.image.slice[this.slice].x, 
 		this.image.slice[this.slice].y, 
@@ -30,6 +28,20 @@ Studio.Sprite.prototype.drawAngled = function(ctx) {
 		this.height
 	);
 	ctx.restore();
+};
+
+
+Studio.Sprite.prototype.buildElement = function(gl, ratio, interpolate) {
+	if(interpolate){
+		this._delta(ratio);
+	}else{
+		this._dset();
+	}
+	this._boundingBox.get_bounds(this);
+	this.addVert(gl, this._boundingBox.left, this._boundingBox.top, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y);
+	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y);
+	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height);
+	this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height);
 };
 
 Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
