@@ -53,8 +53,7 @@ Studio.Stage.prototype.WEBGL = {
 	},
 	init: function(gl) {
 		gl._count = 0;
-		gl._batch = new Float32Array(16355 * 32);
-		// gl._batch = new Float32Array(62000*32);
+		gl._batch = new Float32Array(16384 * 32);
 		gl.clearColor(this.color.r, this.color.g, this.color.b, this.color.a);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 		this.vertexShader = gl.createShader(gl.VERTEX_SHADER);
