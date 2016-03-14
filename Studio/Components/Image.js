@@ -47,8 +47,6 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 		Studio.assets[who].onload = function image_onload() { // could have Event passed in
 			Studio.queue++
 			Studio.progress = Studio.queue / Studio.assets.length
-			image.ready = true
-			image.status.setStatus(image.ready)
 			image.slice['Full'].height = this.height
 			image.slice['Full'].width = this.width
 			image.width = this.width
@@ -57,6 +55,8 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 				Studio.loaded = true
 			}
 			image.addSlice(image.slice)
+			image.ready = true
+			image.status.setStatus(image.ready)
 			return image
 		};
 		Studio.assets[who].src = who
@@ -64,11 +64,13 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 	}
 }
 Studio.Image.prototype.buildSliceForGL = function studio_buildSliceForGL(slice){
+	var x = slice.x/this.width
+	var y = slice.y/this.height
 	return {
-		x: slice.x/this.width,
-		y: slice.y/this.height,
-		width: slice.width/this.width,
-		height: slice.height/this.height
+		x: x,
+		y: y,
+		width: slice.width/this.width + x,
+		height: slice.height/this.height + y
 	}
 }
 

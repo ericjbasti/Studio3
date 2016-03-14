@@ -83,7 +83,7 @@ Studio.Stage.prototype.WEBGL = {
 
 		this.buffer = gl.createBuffer();
 
-		this.prepTexture = function(gl){
+		this.prepTexture = function GL_prepTexture(gl){
 			this._texture = gl.createTexture();
 			gl.bindTexture(gl.TEXTURE_2D, stage._texture );
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -92,7 +92,7 @@ Studio.Stage.prototype.WEBGL = {
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
 			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
 		}
-		this.setTexture = function(image, mipmap){
+		this.setTexture = function GL_setTexture(image, mipmap){
 			if(!this._texture) {
 				this.prepTexture(this.ctx);
 			}

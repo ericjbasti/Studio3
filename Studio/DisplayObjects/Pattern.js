@@ -20,12 +20,19 @@
 Studio.Pattern = function(attr) {
 	this.height = 512
 	this.width = 512
+	this.overflowX = 0
+	this.overflowY = 0
 	this.resolution = 1;
 	this.image = null
+	this.slice = "Full"
+	this.offsetX = 0
+	this.offsetY = 0
 	// this.pattern = [{0,0,96,96}]
 	if (attr) {
 		this.apply(attr)
 	}
+	this.width = this.width+this.overflowX
+	this.height = this.height+this.overflowY
 	this.cache = new Studio.Cache(this.width, this.height, this.resolution)
 	this._cached = false
 	this.image.status.addListener("onImageReady", this)
@@ -38,15 +45,39 @@ Studio.extend(Studio.Pattern, Studio.Rect);
 	setPattern
 */
 
-Studio.Pattern.prototype.setPattern = function(width, height) {
+Studio.Pattern.prototype.setPattern = function() {
+	var slice = this.image.slice[this.slice];
+
+	var width = slice.width*this.scaleX || 0;
+	var height = slice.height*this.scaleY  || 0;
 	for (var x = 0; x < this.width; x += width) {
 		for (var y = 0; y < this.height; y += height) {
-			this.cache.ctx.drawImage(this.image.image, x, y, width, height)
+			if(this.offsetX+width>width){
+				this.offsetX -= width;
+			}
+			if(this.offsetY+height>height){
+				this.offsetY -= height;
+			}
+			this.cache.ctx.drawImage(this.image.image, slice.x, slice.y, slice.width, slice.height, x + this.offsetX,y + this.offsetY, width, height)
 		}
 	}
 	return this;
 };
 
+Studio.Pattern.prototype.checkOverflow = function(){
+	if(this.x>0){
+		this.x-=this.overflowX;
+	}
+	if(this.y>0){
+		this.y-=this.overflowY;
+	}
+	if(this.x<-this.overflowX){
+		this.x+=this.overflowX;
+	}
+	if(this.y<-this.overflowY){
+		this.y+=this.overflowY;
+	}
+}
 /*
 	onImageReady(
 		ready : Boolean		// value returned by image object
@@ -58,7 +89,7 @@ Studio.Pattern.prototype.setPattern = function(width, height) {
 
 Studio.Pattern.prototype.onImageReady = function(ready) {
 	if (ready) {
-		this.setPattern(96, 96)
+		this.setPattern()
 	}
 }
   
