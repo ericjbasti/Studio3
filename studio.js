@@ -239,6 +239,9 @@ Studio.apply = function(obj) { // Display Object and a few others share this fun
 	Studio.temp.keys = Object.keys(obj); // we use Studio.temp.keys to avoid creating more garbage.
 	Studio.temp.keys_i = Studio.temp.keys.length;
 	while (Studio.temp.keys_i) {
+		if(Studio.temp.key =='color_hex'){
+			this['color'].setFromHex(obj[Studio.temp.key]);
+		}
 		Studio.temp.key = Studio.temp.keys[Studio.temp.keys_i - 1];
 		this[Studio.temp.key] = obj[Studio.temp.key];
 		Studio.temp.keys_i--;
