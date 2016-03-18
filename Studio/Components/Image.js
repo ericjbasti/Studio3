@@ -3,7 +3,7 @@
  */
 
 Studio.Image = function studio_image(path) {
-
+	this.path = path;
 	this.image = null
 	this.width = 1
 	this.height = 1
