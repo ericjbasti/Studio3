@@ -2,7 +2,7 @@
  * Image
  */
 
-Studio.Image = function studio_image(path) {
+Studio.Image = function studio_image(path, slices) {
 	this.path = path;
 	this.image = null
 	this.width = 1
@@ -20,6 +20,9 @@ Studio.Image = function studio_image(path) {
 	this.sliceGL = {}
 
 	this.status = new Studio.Messanger()
+	if(slices){
+		this.addSlice(slices)
+	}
 
 	if (path) {
 		this.loadImage(path)

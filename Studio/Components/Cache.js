@@ -9,6 +9,7 @@ Studio.Cache = function(width, height, resolution) {
 	this.ready = false;
 	this.ctx = this.image.getContext('2d');
 	this.ctx.scale(resolution, resolution);
+	this.slice.Full = {x:0,y:0,width:this.image.width,height:this.image.height}
 };
 
 Studio.extend(Studio.Cache, Studio.Image);

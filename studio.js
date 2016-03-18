@@ -276,7 +276,11 @@ Studio.Messanger = function() {
 Studio.Messanger.prototype.addListener = function(callback, who) {
 	this.listeners.push({callback:callback,who:who});
 	// reply back with current status when adding new listener.
-	who[callback].call(who,this.status);
+	if(who){
+		who[callback].call(who,this.status)
+	}else{
+		callback(this.status)
+	}
 };
 
 Studio.Messanger.prototype.setStatus = function(message) {
@@ -285,7 +289,11 @@ Studio.Messanger.prototype.setStatus = function(message) {
 	var who = null;
 	for (var i = 0; i < this.listeners.length; i++) {
 		who = this.listeners[i].who;
-		who[this.listeners[i].callback].call(who,this.status);
+		if(who){
+			who[this.listeners[i].callback].call(who,this.status)
+		}else{
+			this.listeners[i].callback(this.status)
+		}
 	}
 };
 

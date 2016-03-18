@@ -126,8 +126,8 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 	var scaledMouse = {clientX: 0, clientY: 0}
 
 	var ratioEvent = function(event) {
-		scaledMouse.clientX = (event.clientX - me.canvas.offsetLeft) / me._scaleRatio;
-		scaledMouse.clientY = (event.clientY - me.canvas.offsetTop) / me._scaleRatio;
+		scaledMouse.clientX = (event.clientX - me.canvas.getBoundingClientRect().left) / me._scaleRatio;
+		scaledMouse.clientY = (event.clientY - me.canvas.getBoundingClientRect().top) / me._scaleRatio;
 		// return me.scaledMouse;
 	}
 
