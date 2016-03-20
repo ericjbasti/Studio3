@@ -59,6 +59,7 @@ Studio.TileMap.prototype = {
 		var sy = sy || 0;
 		var mX = mx || map.width-sx;
 		var mY = my || map.height-sy;
+
 		for(var y = 0; y !=mY; y++ ){
 			for(var x = 0; x!= mX; x++){
 				var i = (map.data[((y+sy)*map.width)+(x+sx)]) - set.firstgid;
@@ -74,10 +75,10 @@ Studio.TileMap.prototype = {
 	offsetMap : function offsetMap(dx,dy){
 		var dx = dx || 0;
 		var dy = dy || 0;
-		this.offsetX+=dx
-		this.offsetY+=dy
+		this.offsetX-=dx
+		this.offsetY-=dy
 		this.cache.ctx.clearRect(0,0,this.cache.width,this.cache.height)
-		this.cache.ctx.drawImage(this.buffer.image,dx*this.tileset.tilewidth,dy*this.tileset.tileheight)
+		this.cache.ctx.drawImage(this.buffer.image,dx*this.set.tilewidth,dy*this.set.tileheight)
 		for(var i in this.data.layers){
 			this.build( this.data.layers[i], this.tileset, this.offsetX, this.offsetY, dx, dy);
 		}
@@ -95,9 +96,9 @@ Studio.TileMap.prototype = {
 	},
 	onMapLoad : function(data){
 		this.data = data
-		var set = data.tilesets[0];
-		var setimage = new Studio.Image('assets/'+set.image);
-		this.tileset =  new Studio.TileSet( setimage, set.tilewidth, set.tileheight, set.imagewidth);
+		this.set = data.tilesets[0];
+		var setimage = new Studio.Image('assets/'+this.set.image);
+		this.tileset =  new Studio.TileSet( setimage, this.set.tilewidth, this.set.tileheight, this.set.imagewidth);
 		// change to addListenerFunction( function ) ... this explains what the variable needs to be.
 		setimage.status.addListener('_onLoad', this);
 	},
