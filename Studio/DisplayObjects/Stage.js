@@ -327,7 +327,8 @@ Studio.Stage.prototype.activeloop = function(delta) {
 		// 	this.draw(this.ctx);
 		// 	this.timeStep(delta);
 		// }
-		// if(!this.webgl) this.drawProgress(this.ctx,delta);
+
+		if(!this.webgl) this.drawProgress(this.ctx, delta);
 
 		if (Studio.progress === 1) {
 			if (this.onReady) {

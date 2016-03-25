@@ -72,11 +72,11 @@ Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
 
 
 /**
- * SpriteAnimation --- just like a Sprite but uses a SpriteSheet to render, and as such has frames, framerates etc...
+ * SpriteAnimation --- just like a Sprite but uses a Spriteimage to render, and as such has frames, framerates etc...
  */ 
 
 Studio.SpriteAnimation = function(attr) {
-	this.sheet = new Studio.SpriteSheet();
+	this.sheet = null;
 	this.loop = [[0, 0]];
 	this.fps = 12;
 	this.frame = 0;
@@ -108,13 +108,13 @@ Studio.SpriteAnimation.prototype.draw = function(ctx) {
 		return;
 	}
 	this.setAlpha(ctx);
-	ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight);
+	ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight);
 	if(this.borderlap && this.border){
 		if(this._dx -  (this._dwidth*this.anchorX) < this.border.x){
-			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this.border.width + this._dx - (this._dwidth*this.anchorX), this._dy - (this._dheight*this.anchorY), this._dwidth, this._dheight);
+			ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this.border.width + this._dx - (this._dwidth*this.anchorX), this._dy - (this._dheight*this.anchorY), this._dwidth, this._dheight);
 		}
 		if((this._dx + this._world.width) > this.border.width){
-			ctx.drawImage(this.sheet.image, this.sheet.rect.width * this.sliceX, this.sheet.rect.height * this.sliceY, this.sheet.rect.width, this.sheet.rect.height, this._dx - (this._dwidth*this.anchorX) -this.border.width, this._dy - (this._dheight*this.anchorY), this._dwidth, this._dheight); 
+			ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth*this.anchorX) -this.border.width, this._dy - (this._dheight*this.anchorY), this._dwidth, this._dheight); 
 		}
 	}
 	if (this.loop.length) {

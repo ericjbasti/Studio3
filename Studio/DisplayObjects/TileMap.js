@@ -41,6 +41,8 @@ Studio.TileMap = function(width, height, resolution, attr){
 	this.buffer = new Studio.Cache(width, height, resolution);
 	this.offsetX = 0;
 	this.offsetY = 0;
+	this.maxWidth = 0;
+	this.resolution = resolution || 1;
 	this.data = null
 	if (attr) {
 		this.apply(attr)
@@ -55,11 +57,12 @@ Studio.TileMap.prototype = {
 		var buffer = this.cache.ctx;
 		var width = set.tileWidth;
 		var height = set.tileHeight;
+		this.maxWidth = Math.floor(this.cache.width/width)/this.resolution;
 		var sx = sx || 0;
 		var sy = sy || 0;
-		var mX = mx || map.width-sx;
+		var mX = mx || this.maxWidth;
 		var mY = my || map.height-sy;
-
+		
 		for(var y = 0; y !=mY; y++ ){
 			for(var x = 0; x!= mX; x++){
 				var i = (map.data[((y+sy)*map.width)+(x+sx)]) - set.firstgid;
@@ -68,20 +71,28 @@ Studio.TileMap.prototype = {
 				buffer.drawImage(set.set.image, _x*set.tileWidth, _y*set.tileHeight, set.tileWidth, set.tileHeight, x*set.tileWidth, y*set.tileHeight, set.tileWidth, set.tileHeight)
 			}
 		}
+		
+		
+		this.buffer.ctx.clearRect(0,0,this.cache.width,this.cache.height)
 		this.buffer.ctx.drawImage(this.cache.image,0,0);
 		document.body.appendChild(this.buffer.image)
 		this.cache.ready = true;
 	},
-	offsetMap : function offsetMap(dx,dy){
-		var dx = dx || 0;
-		var dy = dy || 0;
-		this.offsetX-=dx
-		this.offsetY-=dy
-		this.cache.ctx.clearRect(0,0,this.cache.width,this.cache.height)
-		this.cache.ctx.drawImage(this.buffer.image,dx*this.set.tilewidth,dy*this.set.tileheight)
-		for(var i in this.data.layers){
-			this.build( this.data.layers[i], this.tileset, this.offsetX, this.offsetY, dx, dy);
+	offsetMap : function (x,y){
+		this.offsetX += x;
+		
+		if(this.offsetX<0){
+			this.offsetX = 0;
 		}
+		if(this.offsetX+this.maxWidth>this.data.width){
+			this.offsetX = this.data.width-this.maxWidth;
+		}
+		this.cache.ctx.clearRect(0,0,this.cache.width,this.cache.height);
+
+		for(var i in this.data.layers){
+			this.build( this.data.layers[i], this.tileset, this.offsetX, this.offsetY, this.maxWidth);
+		}
+
 	},
 	_onLoad : function test(result){
 		if (!result) {
