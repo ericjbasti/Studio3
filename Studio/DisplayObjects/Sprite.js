@@ -66,6 +66,34 @@ Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
 			this._dwidth, 
 			this._dheight
 		);
+		if(this.borderlap && this.border){
+			if(this._dx -  (this._dwidth*this.anchorX) < this.border.x){
+				ctx.drawImage(
+					this.image.image,
+					this.image.slice[this.slice].x, 
+					this.image.slice[this.slice].y, 
+					this.image.slice[this.slice].width, 
+					this.image.slice[this.slice].height,
+					this.border.width + this._dx - (this._dwidth*this.anchorX),
+					this._dy - (this._dheight*this.anchorY), 
+					this._dwidth, 
+					this._dheight
+				);
+			}
+			if((this._dx + this._world.width) > this.border.width){
+				ctx.drawImage(
+					this.image.image,
+					this.image.slice[this.slice].x, 
+					this.image.slice[this.slice].y, 
+					this.image.slice[this.slice].width, 
+					this.image.slice[this.slice].height,
+					this._dx - (this._dwidth*this.anchorX) -this.border.width,
+					this._dy - (this._dheight*this.anchorY), 
+					this._dwidth, 
+					this._dheight
+				); 
+			}
+		}
 	}
 };
 
@@ -108,7 +136,11 @@ Studio.SpriteAnimation.prototype.draw = function(ctx) {
 		return;
 	}
 	this.setAlpha(ctx);
+
 	ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight);
+
+	ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight);
+
 	if(this.borderlap && this.border){
 		if(this._dx -  (this._dwidth*this.anchorX) < this.border.x){
 			ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this.border.width + this._dx - (this._dwidth*this.anchorX), this._dy - (this._dheight*this.anchorY), this._dwidth, this._dheight);
