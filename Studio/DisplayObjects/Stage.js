@@ -98,8 +98,6 @@ Studio.Stage.prototype._init = function() {
 	this.activeScene = null;
 	this.previousScene = null;
 	this.camera = new Studio.Camera(this);
-	this.tweens = Object.create(null);
-	this.tween_length = 0;
 	this.nextID = 0;
 	this.anchorX = 0 ;
 	this.anchorY = 0 ;
@@ -237,6 +235,9 @@ Studio.Stage.prototype.update_visibility = function() {
  * Yet it should still update its private variables.
  */
 Studio.Stage.prototype._timebased_updates = function(delta) {
+	if (this.activeScene){
+		this.activeScene.update_tweens(delta);
+	}
 	this.update_tweens(delta);
 };
 

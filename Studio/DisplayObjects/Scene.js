@@ -10,6 +10,8 @@ Studio.Scene = function(attr) {
 	this.assets = [];
 	this.children = [];
 	this.buttons = [];
+	this.tweens = Object.create(null);
+	this.tween_length = 0;
 	if (attr) {
 		this.apply(attr);
 	}
