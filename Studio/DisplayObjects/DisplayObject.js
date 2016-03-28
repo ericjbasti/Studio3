@@ -396,18 +396,19 @@ Studio.DisplayObject.prototype = {
 		}
 		for (var i = 0; i !== this.hasChildren; i++) {
 			if(this.children[i].logic){
-				this.children[i].logic();
+				// this.children[i].logic();
 			}	
 		}
 	},
 	_logic: function(){
-		if (this.onEnterFrame) {
-			this.onEnterFrame();
-		}
 		if(this.logic){
 			this.logic();
 		}
 		this.logic_children();
+
+		if (this.onEnterFrame) {
+			this.onEnterFrame();
+		}
 	},
 	setAnchor: function(x,y){
 		this.anchorX = x;

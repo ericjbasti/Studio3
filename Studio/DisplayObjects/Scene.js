@@ -14,10 +14,10 @@ Studio.Scene = function(attr) {
 		this.apply(attr);
 	}
 	if (this.build) {
-		this.build.call(this);
+		this.build.call(this,this);
 	}
 	if (this.init) {
-		this.init.call(this);
+		this.init.call(this,this);
 	}
 };
 

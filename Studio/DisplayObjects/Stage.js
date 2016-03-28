@@ -111,7 +111,7 @@ Studio.Stage.prototype._init = function() {
 	return this;
 };
 
-Studio.Stage.prototype.allowPlugins = function() {
+Studio.Scene.prototype.allowPlugins = function() {
 	this.plugins = Object.create(null);
 	this.plugins.input = [];
 	this.plugins.effect = [];

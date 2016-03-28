@@ -1,4 +1,4 @@
-Studio.Stage.prototype.update_tweens = function(global_delta) {
+Studio.Scene.prototype.update_tweens = function(global_delta) {
 	var i,j = 0;
 	var tween, key, delta;
 	for (i in this.tweens) {
@@ -68,7 +68,7 @@ Studio.Stage.prototype.update_tweens = function(global_delta) {
 	}
 };
 
-Studio.Stage.prototype.update_property = function(tween, key, delta) {
+Studio.Scene.prototype.update_property = function(tween, key, delta) {
 	tween.actor[key] = tween.original[key] + (Studio.Ease[tween.ease](delta) * (tween.to[key] - tween.original[key]));
 };
 
@@ -116,7 +116,7 @@ Studio._tween_object.prototype.setActor = function(actor) {
 	return this;
 };
 
-Studio.Stage.prototype.createTween = function(who, ease, to, duration, callback, onstart) {
+Studio.Scene.prototype.createTween = function(who, ease, to, duration, callback, onstart) {
 	var temp = new Studio._tween_object(who, ease, to, duration, callback, onstart);
 	temp.id = this.nextID;
 
@@ -156,18 +156,18 @@ Studio._tween_object.prototype.completeLoop = function(who) {
 	return this.next;
 };
 
-Studio.Stage.prototype.createLoop = function(who, ease, to, duration, callback) {
+Studio.Scene.prototype.createLoop = function(who, ease, to, duration, callback) {
 	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback);
 	this.tweens[this.nextID - 1].loop = true;
 	return this.tweens[this.nextID - 1];
 };
 
-Studio.Stage.prototype.addTween = function(who, ease, to, duration, callback) {
+Studio.Scene.prototype.addTween = function(who, ease, to, duration, callback) {
 	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback);
 	return this.tweens[this.nextID - 1];
 };
 
-Studio.Stage.prototype.playTween = function(who) {
+Studio.Scene.prototype.playTween = function(who) {
 	who.cur = 0;
 	for (var j = 0; j !== who.keys.length; j++) {
 		who.original[who.keys[j]] = who.actor[who.keys[j]];
@@ -175,7 +175,7 @@ Studio.Stage.prototype.playTween = function(who) {
 	this.tweens[who.id] = who;
 };
 
-Studio.Stage.prototype.stopTween = function(who, snap, original) {
+Studio.Scene.prototype.stopTween = function(who, snap, original) {
 	if (this.tweens[who.id]) { // lets make sure the tween is active first
 		who.cur = 0;
 		who.dir = 0;
