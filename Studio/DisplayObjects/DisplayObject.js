@@ -394,11 +394,11 @@ Studio.DisplayObject.prototype = {
 		if (!this.hasChildren) {
 			return;
 		}
-		for (var i = 0; i !== this.hasChildren; i++) {
-			if(this.children[i].logic){
-				// this.children[i].logic();
-			}	
-		}
+		// for (var i = 0; i !== this.hasChildren; i++) {
+		// 	if(this.children[i].logic){
+		// 		this.children[i].logic();
+		// 	}	
+		// }
 	},
 	_logic: function(){
 		if(this.logic){

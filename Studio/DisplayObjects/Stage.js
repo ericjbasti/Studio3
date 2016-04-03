@@ -263,9 +263,10 @@ Studio.Stage.prototype.update = function(ratio, delta) {
 			this.beforeDraw();
 		}
 	}
-	if (this.logic) {
-		this.logic();
-	}
+	// if (this.logic) {
+	// 	this.logic();
+	// }
+	this._logic();
 };
 
 
