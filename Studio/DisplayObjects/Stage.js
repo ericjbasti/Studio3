@@ -2,6 +2,10 @@
  * Stage
  * Where everything plays out.
  */
+
+Studio.canWebGL = function(){
+	return document.createElement("canvas").getContext('webgl')!== null;
+}
 Studio.Stage = function(domID, attr) {
 
 	// a very basic check for webgl support.
@@ -33,8 +37,10 @@ Studio.Stage = function(domID, attr) {
 
 	this._sizeCanvas(this.fullscreen);
 	this.setPixelRatio();
-	if (this.webgl) {
+	if (this.webgl && Studio.canWebGL()) {
 		this.engine = Studio.Stage.prototype.WEBGL;
+	}else{
+		this.webgl = false;
 	}
 	this.allowPlugins();
 

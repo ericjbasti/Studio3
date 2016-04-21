@@ -240,14 +240,17 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 			}
 			delete touches[touchID];
 		}
-
 	}
+
 
 	if (!window.ejecta) {
 		this.canvas.addEventListener("touchstart", finger_press, false);
 		this.canvas.addEventListener("touchmove", finger_move, false);
 		this.canvas.addEventListener("touchend", finger_release, false);
 		this.canvas.addEventListener("touchcancel", finger_release, false);
+		this.canvas.addEventListener("pointerdown", mouse_down, false);
+		this.canvas.addEventListener("pointermove", mouse_move, false);
+		this.canvas.addEventListener("pointerup", mouse_release, false);
 		this.canvas.setAttribute('tabindex', '0');
 		this.canvas.focus();
 	} else {

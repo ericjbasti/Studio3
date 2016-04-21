@@ -38,66 +38,6 @@
 
 'use strict';
 
-// Copyright  Vincent Piel 2013.
-// https://github.com/gamealchemist/Javascript-Pooling
-// setupPool.
-// setup a pool on the function, add a pnew method to retrieve objects
-// from the pool, and add a hidden pdispose method to the instances so
-// they can be sent back on the pool.
-// use : MyPureJSClass.setupPool(100);
-// then : var myInstance = MyPureJSClass.pnew(23, 'arg 2', ..)
-function setupPool(newPoolSize) {
-	//debugger;
-	if (!(newPoolSize >= 0)) throw('setupPool takes a size >= 0 as argument.');
-	this.pool                = this.pool || []    ;
-	this.poolSize            = this.poolSize || 0 ;
-	this.pnew                = pnew               ;
-	if (Object.defineProperty) {
-		Object.defineProperty(this.prototype, 'pdispose', {value: pdispose}) ;
-	} else {
-		Object.prototype.pdispose = pdispose;
-	}
-	// pre-fill the pool.
-	while (this.poolSize < newPoolSize) { (new this()).pdispose(); }
-	// reduce the pool size if new size is smaller than previous size.
-	if (this.poolSize > newPoolSize) {
-		this.poolSize    =  newPoolSize ;
-		this.pool.length =  newPoolSize ; // allow for g.c.
-	}
-}
-
-// pnew : method of the constructor function.
-//        returns an instance, that might come from the pool
-//        if there was some instance left,
-//        or created new, if the pool was empty.
-// 		  instance is initialized the same way it would be when using new
-function  pnew() {
-	var pnewObj  = null     ;
-	if (this.poolSize !== 0) {              // the pool contains objects : grab one
-		this.poolSize--  ;
-		pnewObj = this.pool[this.poolSize];
-		this.pool[this.poolSize] = null   ;
-	} else {
-		pnewObj = new this() ;             // the pool is empty : create new object
-	}
-	this.apply(pnewObj, arguments);           // initialize object
-	return pnewObj;
-}
-
-// pdispose : release on object that will return in the pool.
-//            if a dispose method exists, it will get called.
-//            do not re-use a pdisposed object.
-function pdispose() {
-	var thisCttr = this.constructor;
-	if (this.dispose) this.dispose()          ;  // Call dispose if defined
-	thisCttr.pool[thisCttr.poolSize++] = this ;  // throw the object back in the pool
-}
-
-if (Object.defineProperty) {
-	Object.defineProperty(Function.prototype, 'setupPool', {value: setupPool});
-} else {
-	Function.prototype.setupPool = setupPool;
-}
 
 if (!window.Studio) {
 	window.Studio = {  // alt+S = ß just for those that hate writing things out.
@@ -297,6 +237,45 @@ Studio.Messanger.prototype.setStatus = function(message) {
 		}
 	}
 };
+
+
+
+
+Studio.createPool = function(who,size,fixed){
+	var pool = []
+	var poolSize = size || 0
+
+	if(who.constructor != who){
+		who.constructor = who
+	}
+
+	for(var i = 0; i!= poolSize; i++){
+		pool[i] = new who()
+		if(pool[i].init){
+			pool[i].init()
+		}
+	}
+
+	who.fromPool = function(properties){
+		var poolObject = pool[--poolSize]
+		if (!poolObject){
+			poolObject = new who()
+			poolSize++
+		}
+		pool[poolSize] = null
+		if(properties){
+			poolObject.apply(properties)
+		}
+		return poolObject
+	}
+
+	who.prototype.intoPool = function(){
+		pool[poolSize] = this
+		poolSize++
+	}
+}
+
+
 
 Studio.TOP = Studio.LEFT = 0;
 Studio.MIDDLE = Studio.CENTER = 0.5;
