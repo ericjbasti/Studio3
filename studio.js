@@ -269,7 +269,7 @@ Studio.createPool = function(who,size,fixed){
 		return poolObject
 	}
 
-	who.prototype.intoPull = function(){
+	who.prototype.intoPool = function(){
 		pool[poolSize] = this
 		poolSize++
 	}
