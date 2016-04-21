@@ -139,7 +139,6 @@ Studio.SpriteAnimation.prototype.draw = function(ctx) {
 
 	ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight);
 
-	ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight);
 
 	if(this.borderlap && this.border){
 		if(this._dx -  (this._dwidth*this.anchorX) < this.border.x){
