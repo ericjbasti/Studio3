@@ -94,6 +94,24 @@ Studio.DisplayObject.prototype = {
 		}
 		return this;
 	},
+	removeChildAtIndex: function(child_index){
+		var length = this.children.length-1;
+		for (var i = child_index; i < length; i++){
+			this.children[i] = this.children[i + 1];
+		}
+		this.children.length = length;
+		this.hasChildren = length;
+	},
+	removeChild: function(child){
+		var length = this.children.length-1;
+		for (var i = 0; i <= length; i++){
+			if(this.children[i]==child){
+				this.removeChildAtIndex(i);
+				return;
+			}
+		}
+		console.log('child not found.')
+	},
 	_initWorld: function(){
 		this._world.x = this.x;
 		this._world.y = this.y;
@@ -190,7 +208,7 @@ Studio.DisplayObject.prototype = {
 	},
 	render_children: function(stage, ratio, interpolate) {
 		if (this.hasChildren) {
-			for (var i = 0; i !== this.hasChildren; i++) {
+			for (var i = 0; i < this.hasChildren; i++) {
 				this.children[i].render(stage, ratio, interpolate);
 			}
 		}
@@ -352,10 +370,10 @@ Studio.DisplayObject.prototype = {
 		this.snapshot();
 	},
 	force_update_children: function(interpolate) {
-		for (var i = 0; i !== this.hasChildren; i++) {
+		for (var i = 0; i < this.hasChildren; i++) {
 			this.children[i].force_update();
 		}
-		for (var i = 0; i !== this.hasChildren; i++) {
+		for (var i = 0; i < this.hasChildren; i++) {
 			this.children[i]._dset();
 		}
 	},
@@ -386,25 +404,14 @@ Studio.DisplayObject.prototype = {
 		if (!this.hasChildren) {
 			return;
 		}
-		for (var i = 0; i !== this.hasChildren; i++) {
+		for (var i = 0; i < this.hasChildren; i++) {
 			this.children[i].update(interpolate);
-		}
-	},
-	logic_children: function() {
-		if (!this.hasChildren) {
-			return;
-		}
-		for (var i = 0; i !== this.hasChildren; i++) {
-			if(this.children[i].logic){
-				// this.children[i].logic();
-			}	
 		}
 	},
 	_logic: function(){
 		if(this.logic){
 			this.logic();
 		}
-		this.logic_children();
 
 		if (this.onEnterFrame) {
 			this.onEnterFrame();
