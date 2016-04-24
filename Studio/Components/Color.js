@@ -40,6 +40,7 @@ Studio.Color.prototype = {
 		return this;
 	},
 	setFromHex: function(hex) {
+		if(!hex) return;
 		// if the hex value comes in as shorthand '#333', we should double the values.
 		if (hex.length === 4) {
 			hex = hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3] + 'ff';

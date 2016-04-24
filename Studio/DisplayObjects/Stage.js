@@ -55,7 +55,7 @@ Studio.Stage = function(domID, attr) {
 	// One the basic are competed by the init we can apply more changes through
 	// a prep call. Again mainly used by webgl to create holders for buffers and such.
 	this.engine.prep.call(this, this.ctx);
-
+	Studio.stages.push(this);
 	this.render = this.engine.render;
 	// This is a universal init. These are items that need to be attached to the stage
 	// regardless of engine type. These include items like buttons, cameras, scenes etc...
@@ -68,8 +68,14 @@ Studio.Stage = function(domID, attr) {
 Studio.extend(Studio.Stage, Studio.Scene);
 
 Studio.Stage.prototype._getCanvasElement = function(domElementID) {
-
-	if (!domElementID) {
+	if(domElementID){
+		if (domElementID.toLowerCase() === 'build'){
+			this.canvas = document.createElement('canvas');
+			document.body.appendChild(this.canvas);
+			return;
+		}
+		this.canvas = document.getElementById(domElementID);
+	} else {
 		// If an ID is not passed to us.
 		// We will find the first Canvas element and use that.
 		var temp = document.body.getElementsByTagName('canvas');
@@ -81,10 +87,6 @@ Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 			// Otherwise we use the first one we see.
 			this.canvas = temp[0];
 		}
-	} else {
-		// this is the expected behavior, please provide an ID
-		// it gives you control of what happens.
-		this.canvas = document.getElementById(domElementID);
 	}
 };
 

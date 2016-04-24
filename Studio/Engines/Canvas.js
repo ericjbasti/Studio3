@@ -38,20 +38,27 @@ Studio.Stage.prototype._renderScene = function( scene, lag){
 	}
 }
 
-Studio.fixedTimeStep = function(delta) {
-	this.fixedStep(delta);
-	this.step(delta);
-	this._timebased_updates(delta);
-	this.render(this._lag);
-};
+Studio.timeStep = {
+	fixed: function(delta) {
+		this.fixedStep(delta);
+		this.step(delta);
+		this._timebased_updates(delta);
+		this.render(this._lag);
+		if (this.onExitFrame) {
+			this.onExitFrame();
+		}
+	},
+	simple: function(delta) {
+		this.update(this.interpolate);
+		this._timebased_updates(delta);
+		this.render(1);
+		if (this.onExitFrame) {
+			this.onExitFrame();
+		}
+	}
+}
 
-Studio.simple = function(delta) {
-	this.update(this.interpolate);
-	this._timebased_updates(delta);
-	this.render(1);
-};
-
-Studio.Stage.prototype.timeStep = Studio.fixedTimeStep;
+Studio.Stage.prototype.timeStep = Studio.timeStep.fixed;
 
 Studio.Stage.prototype.fixedStep = function() {
 	while (this._d >= this.dur) {
