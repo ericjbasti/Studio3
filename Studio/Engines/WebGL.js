@@ -150,7 +150,7 @@ Studio.Stage.prototype.WEBGL = {
 		this.ctx.bufferData(this.ctx.ARRAY_BUFFER, this.ctx._batch, this.ctx.DYNAMIC_DRAW);
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT);
 		// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);
-		this.ctx.drawElements(this.ctx.TRIANGLES, this.hasChildren * 6, this.ctx.UNSIGNED_SHORT, 0);
+		this.ctx.drawElements(this.ctx.TRIANGLES, this._hasChildren * 6, this.ctx.UNSIGNED_SHORT, 0);
 
 	}
 };

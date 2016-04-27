@@ -96,7 +96,7 @@ Studio.Stage.prototype.checkDataAttributes = function() {
 };
 
 Studio.Stage.prototype.setScene = function(who) {
-	who.parent = this;
+	who._parent = this;
 	if (this.activeScene && Studio.progress === 2) {
 		if (this.activeScene.onDeactivate) {
 			this.activeScene.onDeactivate();
@@ -113,7 +113,7 @@ Studio.Stage.prototype.setScene = function(who) {
 Studio.Stage.prototype.watch = function(who) {
 	this._watching = who;
 	this.children = who.children;
-	this.hasChildren = who.hasChildren;
+	this._hasChildren = who._hasChildren;
 };
 
 Studio.Stage.prototype.addButton = function(who) {
@@ -121,7 +121,7 @@ Studio.Stage.prototype.addButton = function(who) {
 };
 
 Studio.Stage.prototype.update_children = function() {
-	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
+	for (this.i = 0; this.i !== this._hasChildren; this.i++) {
 		if (this.children[this.i].active) {
 			this.children[this.i].update();
 		}
@@ -129,7 +129,7 @@ Studio.Stage.prototype.update_children = function() {
 };
 
 Studio.Stage.prototype.render_children = function() {
-	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
+	for (this.i = 0; this.i !== this._hasChildren; this.i++) {
 		if (this.children[this.i].active) {
 			this.children[this.i].render(this);
 		}
@@ -140,7 +140,7 @@ Studio.Stage.prototype.update_visibility = function() {
 }
 /**
  * stage.update
- * This is different from the displayObject.update() because a stage will never have a parent.
+ * This is different from the displayObject.update() because a stage will never have a _parent.
  * Yet it should still update its private variables.
  */
 Studio.Stage.prototype.update = function() {
@@ -167,11 +167,11 @@ Studio.Stage.prototype.update = function() {
 				this.previousScene.update();
 			}
 		}
-		if (this.hasChildren || this._watching) {
+		if (this._hasChildren || this._watching) {
 			if (!this._watching) {
 				this.update_children();
 			}else {
-				this.hasChildren = this._watching.hasChildren;
+				this._hasChildren = this._watching._hasChildren;
 			}
 		}
 		if (this.beforeDraw) {
@@ -202,7 +202,7 @@ Studio.Stage.prototype.render = function(ratio) {
 			this.previousScene.render(this);
 		}
 	}
-	if (this.hasChildren) {
+	if (this._hasChildren) {
 		this.render_children();
 	}
 }
@@ -460,11 +460,11 @@ Studio.Stage3d.prototype.update = function() {
 			this.previousScene.update();
 		}
 	}
-	if (this.hasChildren || this._watching) {
+	if (this._hasChildren || this._watching) {
 		if (!this._watching) {
 			this.update_children();
 		}else {
-			this.hasChildren = this._watching.hasChildren;
+			this._hasChildren = this._watching._hasChildren;
 		}
 	}
 	if (this.beforeDraw) {
@@ -481,7 +481,7 @@ Studio.Stage3d.prototype.setPixelRatio = function(pixelRatio) {
 };
 
 Studio.Stage3d.prototype.render_children = function() {
-	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
+	for (this.i = 0; this.i !== this._hasChildren; this.i++) {
 		if (this.children[this.i].active) {
 			this.children[this.i].render(this);
 		}
@@ -490,7 +490,7 @@ Studio.Stage3d.prototype.render_children = function() {
 Studio.Stage3d.prototype.render = function(gl) {
 
 	gl._count = 0;
-	if (this.hasChildren) {
+	if (this._hasChildren) {
 		this.render_children(gl);
 	}
 

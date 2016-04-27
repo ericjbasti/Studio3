@@ -10,8 +10,8 @@ Studio.Image = function studio_image(path, slices) {
 
 	this.slice = {
 		'Full': {
-			x:0,
-			y:0,
+			x: 0,
+			y: 0,
 			width: 1,
 			height: 1
 		}
@@ -20,7 +20,7 @@ Studio.Image = function studio_image(path, slices) {
 	this.sliceGL = {}
 
 	this.status = new Studio.Messanger()
-	if(slices){
+	if (slices) {
 		this.addSlice(slices)
 	}
 
@@ -66,19 +66,19 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 		this.image = Studio.assets[who]
 	}
 }
-Studio.Image.prototype.buildSliceForGL = function studio_buildSliceForGL(slice){
-	var x = slice.x/this.width
-	var y = slice.y/this.height
+Studio.Image.prototype.buildSliceForGL = function studio_buildSliceForGL(slice) {
+	var x = slice.x / this.width
+	var y = slice.y / this.height
 	return {
 		x: x,
 		y: y,
-		width: slice.width/this.width + x,
-		height: slice.height/this.height + y
+		width: slice.width / this.width + x,
+		height: slice.height / this.height + y
 	}
 }
 
-Studio.Image.prototype.addSlice = function studio_image_addSlice(slices){
-	for(var i in slices){
+Studio.Image.prototype.addSlice = function studio_image_addSlice(slices) {
+	for (var i in slices) {
 		this.slice[i] = slices[i]
 		this.sliceGL[i] = this.buildSliceForGL(slices[i])
 	}

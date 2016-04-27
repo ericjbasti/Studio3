@@ -36,7 +36,7 @@ Studio.Scene.prototype.addButton = function(who) {
 };
 
 Studio.Scene.prototype.render_children = function(stage, lag) {
-	for (this.i = 0; this.i < this.hasChildren; this.i++) {
+	for (this.i = 0; this.i < this._hasChildren; this.i++) {
 		if (this.children[this.i].active) {
 			this.children[this.i].render(stage, lag, stage.interpolate);
 		}

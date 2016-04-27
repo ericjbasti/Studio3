@@ -26,7 +26,7 @@ Studio.Stage.prototype.CANVAS = {
 			this._renderScene(this.activeScene , lag);
 		}
 		
-		if (this.hasChildren) {
+		if (this._hasChildren) {
 			this.render_children(this, lag);
 		}
 	},

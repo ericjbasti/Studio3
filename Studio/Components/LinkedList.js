@@ -6,7 +6,7 @@ var LinkedList = function() {
 
 LinkedList.prototype = {
 	add: function(who) {
-		// who.parent = this.parent;
+		// who._parent = this._parent;
 
 		this.length++; // add to our length so we can easily tell how big our list is.
 		if (this.length <= 1 && this.first === null && this.last === null) {

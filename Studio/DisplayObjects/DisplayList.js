@@ -101,7 +101,7 @@ Studio.DisplayList.prototype.render = function(stage, ratio) {
 };
 
 Studio.DisplayList.prototype.add = function(who) {
-	who.parent = this;
+	who._parent = this;
 
 	this.length++; // add to our length so we can easily tell how big our list is.
 	if (this.length <= 1 && this.first === null && this.last === null) {

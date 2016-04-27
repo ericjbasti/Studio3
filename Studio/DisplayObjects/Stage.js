@@ -195,7 +195,7 @@ Studio.Stage.prototype.checkDataAttributes = function() {
 };
 
 Studio.Stage.prototype.setScene = function(who) {
-	who.parent = this;
+	who._parent = this;
 	if (this.activeScene && Studio.progress === 2) {
 		if (this.activeScene.onDeactivate) {
 			this.activeScene.onDeactivate(this);
@@ -224,12 +224,12 @@ Studio.Stage.prototype.clearScene = function() {
 Studio.Stage.prototype.watch = function(who) {
 	this._watching = who;
 	this.children = who.children;
-	this.hasChildren = who.hasChildren;
+	this._hasChildren = who._hasChildren;
 };
 
 
 Studio.Stage.prototype.update_children = function(ratio, delta, interpolate) {
-	for (this.i = 0; this.i !== this.hasChildren; this.i++) {
+	for (this.i = 0; this.i !== this._hasChildren; this.i++) {
 		if (this.children[this.i].active) {
 			this.children[this.i].update(ratio, delta, interpolate);
 		}
@@ -243,7 +243,7 @@ Studio.Stage.prototype.update_visibility = function() {
 
 /**
  * stage.update
- * This is different from the displayObject.update() because a stage will never have a parent.
+ * This is different from the displayObject.update() because a stage will never have a _parent.
  * Yet it should still update its private variables.
  */
 Studio.Stage.prototype._timebased_updates = function(delta) {
@@ -292,7 +292,7 @@ Studio.Stage.prototype._update_scene = function(scene){
 Studio.Stage.prototype.updateScenes = function(){
 	this._update_scene(this.activeScene);
 	this._update_scene(this.previousScene);
-	if (this.hasChildren || this._watching) {
+	if (this._hasChildren || this._watching) {
 		this.update_children(this.interpolate);
 	}
 };
