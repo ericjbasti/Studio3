@@ -55,6 +55,18 @@ Studio.timeStep = {
 		if (this.onExitFrame) {
 			this.onExitFrame();
 		}
+	},
+	static_fixed: function(delta){
+		this.step(delta);
+		if (this._d >= this.dur) {
+			this._d -= this.dur;
+			this.update(this.interpolate);
+			this._timebased_updates(delta);
+			this.render(1);
+		}
+		if(this._d < 1){
+			this._d = 1.5;
+		}
 	}
 }
 
