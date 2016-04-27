@@ -1,12 +1,12 @@
 Studio.Stage.prototype.CANVAS = {
 	type: '2dContext',
 	getContext: function() {
-		this.ctx = this.canvas.getContext('2d');
+		this.ctx = this.canvas.getContext('2d')
 	},
 	init: function() {
-		this.ctx.webkitImageSmoothingEnabled = this.smoothing;
-		this.ctx.mozImageSmoothingEnabled = this.smoothing;
-		this.ctx.imageSmoothingEnabled = this.smoothing;
+		this.ctx.webkitImageSmoothingEnabled = this.smoothing
+		this.ctx.mozImageSmoothingEnabled = this.smoothing
+		this.ctx.imageSmoothingEnabled = this.smoothing
 	},
 	prep: function() {
 	},
@@ -15,83 +15,27 @@ Studio.Stage.prototype.CANVAS = {
 	// can worry about user input and tweens. This should help prevent certain
 	// situation that could cause the frames to drop.
 	render: function(lag) {
-		this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0);
-		this.draw(this.ctx);
-		this.camera.render(this,lag);
+		this.ctx.setTransform(this.resolution, 0, 0, this.resolution, 0, 0)
+		this.draw(this.ctx)
+		this.camera.render(this,lag)
 
-		if(this.previousScene){
-			this._renderScene(this.previousScene , lag);
+		if (this.previousScene) {
+			this._renderScene(this.previousScene , lag)
 		}
-		if(this.activeScene){
-			this._renderScene(this.activeScene , lag);
+		if (this.activeScene) {
+			this._renderScene(this.activeScene , lag)
 		}
-		
+
 		if (this._hasChildren) {
-			this.render_children(this, lag);
+			this.render_children(this, lag)
 		}
 	},
-};
+}
 
-Studio.Stage.prototype._renderScene = function( scene, lag){
+Studio.Stage.prototype._renderScene = function(scene, lag) {
 	if (scene.active) {
-		scene.render(this , lag, this.interpolate);
+		scene.render(this , lag, this.interpolate)
 	}
 }
 
-Studio.timeStep = {
-	fixed: function(delta) {
-		this.fixedStep(delta);
-		this.step(delta);
-		this._timebased_updates(delta);
-		this.render(this._lag);
-		if (this.onExitFrame) {
-			this.onExitFrame();
-		}
-	},
-	simple: function(delta) {
-		this.update(this.interpolate);
-		this._timebased_updates(delta);
-		this.render(1);
-		if (this.onExitFrame) {
-			this.onExitFrame();
-		}
-	},
-	static_fixed: function(delta){
-		this.step(delta);
-		if (this._d >= this.dur) {
-			this._d -= this.dur;
-			this.update(this.interpolate);
-			this._timebased_updates(delta);
-			this.render(1);
-		}
-		if(this._d < 1){
-			this._d = 1.5;
-		}
-	}
-}
-
-Studio.Stage.prototype.timeStep = Studio.timeStep.fixed;
-
-Studio.Stage.prototype.fixedStep = function() {
-	while (this._d >= this.dur) {
-		this._d -= this.dur;
-		this.update(this.interpolate); // update by a fixed amount.
-	}
-	if(this._d < 1){
-		this._d = 1.5;
-	}
-};
-
-Studio.Stage.prototype.step = function(delta) {
-	this._d += delta;
-	
-	this._lag = this._d / this.dur;
-	if (this._lag > 1) {
-		this._lag = 1;
-	}
-	if(this._lag < 0){
-		this._lag = 0;
-	}
-};
-
-Studio.Stage.prototype.engine = Studio.Stage.prototype.CANVAS;
+Studio.Stage.prototype.engine = Studio.Stage.prototype.CANVAS

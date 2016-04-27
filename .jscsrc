@@ -106,6 +106,7 @@
     },
     "disallowSpacesInCallExpression": true,
     "disallowSpaceAfterObjectKeys": true,
+    "disallowSemicolons": true,
     "requireSpaceBeforeObjectValues": true,
     "requireCapitalizedConstructors": true,
     "requireDotNotation": true,

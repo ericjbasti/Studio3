@@ -1,7 +1,7 @@
 // (function(){
 // 	// lets setup Studio to create our needed data
 // 	Studio.draws = 0;
-	
+
 // 	var Stats = document.createElement('canvas');
 // 		Stats.id = 'stats';
 // 		Stats.width = window.innerWidth;
@@ -45,7 +45,7 @@
 // 		stage.ctx.fillRect(step,half,2,Studio.draws);
 // 	}
 // 	stats.addEffect(displayDraws);
-		
+
 // 	stats.addEffect(displayFPS);
 // 	stats.ready=true;
 // })();
@@ -61,100 +61,100 @@ var STATS = new Studio.Plugin({
 		refresh: .5,
 	},
 	init: function(a) { // lets build out a canvas for the stats
-		this.buffer = document.createElement('canvas');
-		this.buffer.style.position = 'absolute';
+		this.buffer = document.createElement('canvas')
+		this.buffer.style.position = 'absolute'
 		this.buffer.id = '_stats_buffer'
-		this.buffer.width = this.options.width;
-		this.buffer.height = this.options.height;
-		this.half = this.buffer.height / 2;
+		this.buffer.width = this.options.width
+		this.buffer.height = this.options.height
+		this.half = this.buffer.height / 2
 		if (this.options.show_text) {
 			this.half = this.buffer.height
 		}
 
-		this.buffer.ctx = this.buffer.getContext('2d');
+		this.buffer.ctx = this.buffer.getContext('2d')
 		if (this.options.external) {
-			document.body.appendChild(this.buffer);
+			document.body.appendChild(this.buffer)
 		}
 
 		if (this.options.clear_mode == 'cover') {
-			this.buffer.ctx.fillStyle = 'rgba(0,0,0,.3)';
-			this.buffer.ctx.fillRect(0, 0, this.buffer.width, this.buffer.height);
+			this.buffer.ctx.fillStyle = 'rgba(0,0,0,.3)'
+			this.buffer.ctx.fillRect(0, 0, this.buffer.width, this.buffer.height)
 		}
 
-		this.step = 0;
-		this._time = 0;
-		this._tick = 0;
-		this._ratio = 0;
-		this._spikes = 0;
-		
+		this.step = 0
+		this._time = 0
+		this._tick = 0
+		this._ratio = 0
+		this._spikes = 0
+
 		// we rewrite these function just so we can track the draw count
-		Studio.draws = 0;
+		Studio.draws = 0
 		Studio.DisplayObject.prototype._delta = function(ratio) {
-			Studio.draws++;
-			this._dx = this.__delta(this.__x, this._world.x, ratio);
-			this._dy = this.__delta(this.__y, this._world.y, ratio);
+			Studio.draws++
+			this._dx = this.__delta(this.__x, this._world.x, ratio)
+			this._dy = this.__delta(this.__y, this._world.y, ratio)
 			if (this._world.rotation) {
-				this._dAngle = this.__delta(this._world.angle, this.angle, ratio);
+				this._dAngle = this.__delta(this._world.angle, this.angle, ratio)
 			}
-		};
+		}
 	},
 	action: function(a) {
-		this._time += Studio.delta;
-		this._tick++;
-		if (Studio.delta > 1000/15) {
-			this._spikes++;
+		this._time += Studio.delta
+		this._tick++
+		if (Studio.delta > 1000 / 15) {
+			this._spikes++
 		}
-		if(this.options.show_text && this._time>this.options.refresh*1000){
-			this.displayDraws(this.buffer.ctx);
-			this._time = 0;
-			this._tick = 0;
+		if (this.options.show_text && this._time > this.options.refresh * 1000) {
+			this.displayDraws(this.buffer.ctx)
+			this._time = 0
+			this._tick = 0
 		}
-		this.displayFPS(this.buffer.ctx);
-		if(window.performance){
-			if(window.performance.memory){
-				this.drawMemory(this.buffer.ctx);
+		this.displayFPS(this.buffer.ctx)
+		if (window.performance) {
+			if (window.performance.memory) {
+				this.drawMemory(this.buffer.ctx)
 			}
 		}
 		if (!this.options.external) {
-			a.ctx.drawImage(this.buffer, 0, this.options.position);
+			a.ctx.drawImage(this.buffer, 0, this.options.position)
 		}
 	},
 	cover: function(ctx) {
-		ctx.fillStyle = 'rgba(0,0,0,.3)';
-		ctx.fillRect(0, 12 * this.options.show_text, this.buffer.width, this.buffer.height);
+		ctx.fillStyle = 'rgba(0,0,0,.3)'
+		ctx.fillRect(0, 12 * this.options.show_text, this.buffer.width, this.buffer.height)
 	},
 	erase: function(ctx) {
-		ctx.clearRect(0, 0, this.buffer.width, this.buffer.height);
+		ctx.clearRect(0, 0, this.buffer.width, this.buffer.height)
 	},
 	displayFPS: function(ctx) {
-		if (Studio.delta > 1000/15) {
-			ctx.fillStyle = 'rgb(240,0,0)';
-		} else if (Studio.delta > 1000/30) {
-			ctx.fillStyle = 'rgb(240,220,0)';
+		if (Studio.delta > 1000 / 15) {
+			ctx.fillStyle = 'rgb(240,0,0)'
+		} else if (Studio.delta > 1000 / 30) {
+			ctx.fillStyle = 'rgb(240,220,0)'
 		} else {
-			ctx.fillStyle = 'rgb(20,245,0)';
+			ctx.fillStyle = 'rgb(20,245,0)'
 		}
-		
-		ctx.fillRect(this.step,this.half,2,-(Studio.delta/2));
-		this.step++;
-		if (this.step > this.buffer.width) {
-			this.step = 0;
-			this[this.options.clear_mode](ctx);
-		}
-		Studio.draws = 0;
-	},
-	drawMemory: function(ctx){
-		var heapSize = window.memory.usedJSHeapSize;
-		var heapSizeLimit = window.memory.jsHeapSizeLimit;
 
-		mem = Math.round( heapSize * 0.000000954 );
-		ctx.fillRect(this.step,this.half,2,mem);
+		ctx.fillRect(this.step,this.half,2,-(Studio.delta / 2))
+		this.step++
+		if (this.step > this.buffer.width) {
+			this.step = 0
+			this[this.options.clear_mode](ctx)
+		}
+		Studio.draws = 0
+	},
+	drawMemory: function(ctx) {
+		var heapSize = window.memory.usedJSHeapSize
+		var heapSizeLimit = window.memory.jsHeapSizeLimit
+
+		mem = Math.round(heapSize * 0.000000954)
+		ctx.fillRect(this.step,this.half,2,mem)
 	},
 	displayDraws: function(ctx) {
-		ctx.fillStyle = 'rgba(0,0,0,.8)';
-		ctx.fillRect(0, 0, this.buffer.width, 12);
-		ctx.fillStyle = 'rgb(255,255,255)';
-		ctx.fillText((this._tick/this.options.refresh | 0) + ' fps / ' + Studio.draws + ' draw / ' + this._spikes + ' spikes', 2, 10);
+		ctx.fillStyle = 'rgba(0,0,0,.8)'
+		ctx.fillRect(0, 0, this.buffer.width, 12)
+		ctx.fillStyle = 'rgb(255,255,255)'
+		ctx.fillText((this._tick / this.options.refresh | 0) + ' fps / ' + Studio.draws + ' draw / ' + this._spikes + ' spikes', 2, 10)
 	}
 
 })

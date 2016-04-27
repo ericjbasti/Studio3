@@ -48,15 +48,14 @@ Studio.DisplayObject = function(attr) {
 	// set any of these to false if you know they will never be needed.
 	// this will increase performace, by reducing calculations done per object per frame.
 
-
 	// for interpolating fixed time steps
 	this.__x = this._world.x
 	this.__y = this._world.y
 	this._dx = this._world.x
 	this._dy = this._world.y
-};
+}
 
-Studio.difference={};
+Studio.difference = {}
 
 Studio.DisplayObject.prototype = {
 	constructor: Studio.DisplayObject,
@@ -89,30 +88,30 @@ Studio.DisplayObject.prototype = {
 		this._hasChildren++
 		child.force_update()
 		child._dset()
-		if(child._hasChildren){
+		if (child._hasChildren) {
 			child.force_update_children()
 		}
 		return this
 	},
-	removeChildAtIndex: function(child_index){
-		var length = this.children.length-1;
-		for (var i = child_index; i < length; i++){
+	removeChildAtIndex: function(child_index) {
+		var length = this.children.length - 1
+		for (var i = child_index; i < length; i++) {
 			this.children[i] = this.children[i + 1]
 		}
 		this.children.length = length
 		this._hasChildren = length
 	},
-	removeChild: function(child){
-		var length = this.children.length-1
-		for (var i = 0; i <= length; i++){
-			if(this.children[i]==child){
+	removeChild: function(child) {
+		var length = this.children.length - 1
+		for (var i = 0; i <= length; i++) {
+			if (this.children[i] == child) {
 				this.removeChildAtIndex(i)
-				return;
+				return
 			}
 		}
 		console.log('child not found.')
 	},
-	_initWorld: function(){
+	_initWorld: function() {
 		this._world.x = this.x
 		this._world.y = this.y
 		this._world.y = this.y
@@ -142,7 +141,7 @@ Studio.DisplayObject.prototype = {
 				return this.children[i]
 			}
 		}
-		return null;
+		return null
 	},
 	_destroy: function() {
 		for (var i in this) {
@@ -152,7 +151,7 @@ Studio.DisplayObject.prototype = {
 		}
 	},
 	_order: function() {
-		this.children.sort(Studio.z_index);
+		this.children.sort(Studio.z_index)
 	},
 	draw: function() {
 	},
@@ -190,7 +189,7 @@ Studio.DisplayObject.prototype = {
 		Studio.difference.width = this._world.width + b._world.width
 		Studio.difference.x = this._world.x - (this._world.width * this.anchorX) - b._world.x - (b._world.width * b.anchorX)
 		Studio.difference.y = this._world.y - (this._world.height * this.anchorY) - b._world.y - (b._world.height * b.anchorY)
-		
+
 		// stage.ctx.strokeRect(Studio.difference.x,Studio.difference.y,Studio.difference.width,Studio.difference.height)
 
 		if (Studio.difference.x < 0 && Studio.difference.y <= 0 && Studio.difference.height + Studio.difference.y >= 0 && Studio.difference.width + Studio.difference.x >= 0) {
@@ -221,9 +220,9 @@ Studio.DisplayObject.prototype = {
 			// 	(this._y + (this._height*this.anchorY) >= 0) ||
 			// 	(this._y - (this._height*this.anchorY) <= stage.height)
 			// 	){
-			if(interpolate){
+			if (interpolate) {
 				this._delta(ratio)
-			}else{
+			} else {
 				this._dset()
 			}
 			if (stage.snap) {
@@ -289,7 +288,7 @@ Studio.DisplayObject.prototype = {
 		}
 	},
 	update_orbit_xy: function() {
-		this.orbitXY();
+		this.orbitXY()
 		this._world.x = this._orbitX + this._parent.x
 		this._world.y = this._orbitY + this._parent.y
 	},
@@ -304,7 +303,7 @@ Studio.DisplayObject.prototype = {
 	snapshot: function() {
 		this.__x = this._world.x
 		this.__y = this._world.y
-		if(this.__update_DIMENSIONS){
+		if (this.__update_DIMENSIONS) {
 			this.__width = this._world.width
 			this.__height = this._world.height
 		}
@@ -312,19 +311,19 @@ Studio.DisplayObject.prototype = {
 			this._world.angle = this.angle
 		}
 	},
-	__deltaXY: function(ratio){
+	__deltaXY: function(ratio) {
 		if (this.__update_XY) {
 			this._dx = this.__delta(this.__x, this._world.x, ratio)
 			this._dy = this.__delta(this.__y, this._world.y, ratio)
 		}
 	},
-	__deltaHW: function(ratio){
-		if(this.__update_DIMENSIONS){
+	__deltaHW: function(ratio) {
+		if (this.__update_DIMENSIONS) {
 			this._dwidth = this.__delta(this.__width, this._world.width, ratio)
 			this._dheight = this.__delta(this.__height, this._world.height, ratio)
 		}
 	},
-	__deltaRotation: function(ratio){
+	__deltaRotation: function(ratio) {
 		if (this._world.rotation) {
 			this._dAngle = this.__delta(this._world.angle, this.angle, ratio)
 		}
@@ -337,19 +336,19 @@ Studio.DisplayObject.prototype = {
 		this.__deltaHW(ratio)
 		this.__deltaRotation(ratio)
 	},
-	__dsetXY: function(){
+	__dsetXY: function() {
 		if (this.__update_XY) {
 			this._dx = this._world.x
 			this._dy = this._world.y
 		}
 	},
-	__dsetHW: function(){
+	__dsetHW: function() {
 		this._dwidth = this._world.width
 		this._dheight = this._world.height
 	},
-	__dsetRotation: function(){
+	__dsetRotation: function() {
 		if (this._world.rotation) {
-			this._dAngle = this._parent.angle+this.angle;
+			this._dAngle = this._parent.angle + this.angle
 		}
 	},
 	_dset: function() {
@@ -408,8 +407,8 @@ Studio.DisplayObject.prototype = {
 			this.children[i].update(interpolate)
 		}
 	},
-	_logic: function(){
-		if(this.logic){
+	_logic: function() {
+		if (this.logic) {
 			this.logic()
 		}
 
@@ -417,15 +416,15 @@ Studio.DisplayObject.prototype = {
 			this.onEnterFrame()
 		}
 	},
-	setAnchor: function(x,y){
+	setAnchor: function(x, y) {
 		this.anchorX = x
 		this.anchorY = y || x
 	},
-	update: function( interpolate ) {
-		if ( interpolate ){
+	update: function(interpolate) {
+		if (interpolate) {
 			this.snapshot()
 		}
 		this._logic()
 		this._update(interpolate)
 	}
-};
+}
