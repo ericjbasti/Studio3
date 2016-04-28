@@ -20,7 +20,7 @@ Studio.timeStep = {
 		this.step(delta)
 		if (this._d >= this.dur) {
 			this._d -= this.dur
-			this.update(this.interpolate)
+			this.update(false)
 			this._timebased_updates(delta)
 			this.render(1)
 		}

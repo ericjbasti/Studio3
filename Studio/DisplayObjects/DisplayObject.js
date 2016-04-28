@@ -270,8 +270,8 @@ Studio.DisplayObject.prototype = {
 	orbitXY: function() {
 		var x = this.x * this._world.scaleX
 		var y = this.y * this._world.scaleY
-		var sin = Studio.sin((this._parent.angle + this.orbit) * this.orbitSpeed)
-		var cos = Studio.cos((this._parent.angle + this.orbit) * this.orbitSpeed)
+		var sin = Math.sin((this._parent.angle + this.orbit) * this.orbitSpeed)
+		var cos = Math.cos((this._parent.angle + this.orbit) * this.orbitSpeed)
 		this._orbitX = (x * cos) - (y * sin)
 		this._orbitY = (x * sin) + (y * cos)
 	},

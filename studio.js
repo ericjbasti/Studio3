@@ -39,36 +39,27 @@
 // @codekit-append "Studio/Input/Keyboard.js"
 // @codekit-append "Studio/Input/Touch.js"
 
-'use strict'
 
-if (!window.Studio) {
-	window.Studio = {  // alt+S = ß just for those that hate writing things out.
-		stages: [],
-		stage: null,
-		tko: null,
-		assets: {length: 0},
-		queue: 0,
-		progress: 0,
-		sin: Math.sin,
-		cos: Math.cos,
-		random: Math.random,
-		abs: Math.abs,
-		my: {ratio: 1},
-		temp: {},
-		info: {displayObjects: 0},
-		active: true,
-		cap: 1000 / 20, // don't let the true frame rate go below 20fps, prevent huge frame skips
-		draws: 0,
-		loaded: true,
-		version: '0.5.1',
-		now: 0, // to get around Safari not supporting performance.now() you can pull in the timestap with this property.
-		delta: 0,
-	}
-	Studio.time = 1
-	Studio.interval = null
-	Studio.browser = navigator.userAgent.toLowerCase()
-	Studio.disableRAF = false
-	Studio.RAF
+var Studio = Studio || {
+	stages: [],
+	stage: null,
+	assets: {
+		length: 0
+	},
+	queue: 0,
+	progress: 0,
+	temp: {},
+	active: true,
+	cap: 1000 / 20, // don't let the true frame rate go below 20fps, prevent huge frame skips
+	draws: 0,
+	loaded: true,
+	version: '0.5.1',
+	now: 0, // to get around Safari not supporting performance.now() you can pull in the timestap with this property.
+	delta: 0,
+	canWebGL: document.createElement("canvas").getContext('webgl')!== null,
+	time: 1,
+	RAF: null,
+	browser: navigator.userAgent.toLowerCase(),
 }
 
 Studio.updateProgress = function() {
@@ -131,6 +122,8 @@ Studio.loopAll = function(time_stamp) {
 //?? what? Something is up with the time_stamp... seems like the float gets all out of whack eventually (floats suck).
 // So to get the 60fps that you know is possible (check this before hand), setting the tick to be 60fps, we manage to match
 // what the console (in this case Apple TV 4) is actually outputting. Quite amazed by this really.
+
+
 Studio.console = function(time_stamp) {
 	this.delta = 16.6666666
 	this.now += this.delta
@@ -191,6 +184,8 @@ Studio.round = function(x) {
 // apply(obj:Object)
 // this will modify or add the current object to contain the contents of the object (obj) being passed in.
 
+
+
 Studio.apply = function(obj) { // Display Object and a few others share this function. All children of displayObject inherit this function.
 	Studio.temp.keys = Object.keys(obj) // we use Studio.temp.keys to avoid creating more garbage.
 	Studio.temp.keys_i = Studio.temp.keys.length
@@ -205,6 +200,8 @@ Studio.apply = function(obj) { // Display Object and a few others share this fun
 	}
 	return this
 }
+
+
 
 // addTo()
 

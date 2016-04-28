@@ -1,3 +1,5 @@
+'use strict';
+
 // These are used to enable compatablity with older browsers.
 // The canvas rendering engine will even work on an original iPhone running iOS 3.1 (13 sprites / 24 fps)
 //
