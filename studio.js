@@ -39,6 +39,7 @@
 // @codekit-append "Studio/Input/Keyboard.js"
 // @codekit-append "Studio/Input/Touch.js"
 
+// @codekit-append "Studio/Components/Sound.js"
 
 var Studio = Studio || {
 	stages: [],
