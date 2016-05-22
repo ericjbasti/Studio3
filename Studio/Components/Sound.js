@@ -1,87 +1,76 @@
-
-
-// var create_snd = function(path) {
-// 	if (!SOUNDS[path]) {
-// 		var temp = document.createElement('audio');
-// 		temp.src = path;
-// 		temp.load();
-// 		SOUNDS[path] = temp;
-// 		return temp;
-// 	} else {
-// 		return SOUNDS[path];
-// 	}
-// }
-
-// var change_volume = function(val) {
-// 	for (var i in SOUNDS) {
-// 		SOUNDS[i].volume = val;
-// 	}
-// }
-var context;
-if (typeof AudioContext !== "undefined") {
-    context = new AudioContext();
-} else if (typeof webkitAudioContext !== "undefined") {
-    context = new webkitAudioContext();
-} else {
-    throw new Error('AudioContext not supported. :(');
+Studio.getAudioContext = function() {
+	if (typeof AudioContext !== "undefined") {
+		return new AudioContext();
+	} else if (typeof webkitAudioContext !== "undefined") {
+		return new webkitAudioContext();
+	} else {
+		return false;
+	}
 }
 
+Studio.Sounds = {
+	source: null,
+	assets: {},
+	context: Studio.getAudioContext(),
+	soundGraph: function soundGraph(snd) {
+		if (snd._time == Studio.now) {
 
+			//return;
+		} else {
+			snd._time = Studio.now;
+			Studio.Sounds.source = Studio.Sounds.context.createBufferSource();
+			Studio.Sounds.context.decodeAudioData(snd.data, function(soundBuffer) {
+				Studio.Sounds.source.buffer = soundBuffer;
+				Studio.Sounds.source.connect(Studio.Sounds.context.destination);
+				Studio.Sounds.source.start();
+			})
+		}
+	},
+}
 
-var SOUNDS = {};
-
-Studio.Sound = function(path){
-	this.snd = null;
+Studio.Sound = function(path) {
+	this.snd = {_time: 0, data: null};
 	this.load(path);
 }
 
-var soundSource, soundBuffer;
-function audioGraph(audioData) {
-    // create a sound source
-    soundSource = context.createBufferSource();
-
-    // The Audio Context handles creating source buffers from raw binary
-    context.decodeAudioData(audioData, function(soundBuffer){
-        // Add the buffered data to our object
-        soundSource.buffer = soundBuffer;
-
-        // Plug the cable from one thing to the other
-        soundSource.connect(context.destination);
-        soundSource.start(context.currentTime);
-    }); 
-}
-
 Studio.Sound.prototype = {
-	load: function(path){
-		if (!SOUNDS[path]) {
-			// var temp = document.createElement('audio');
-			// temp.src = path;
-			// temp.load();
-			// SOUNDS[path] = temp;
-
-			var request = new XMLHttpRequest();
-			request.open("GET", path, true);
-			request.responseType = "arraybuffer";
-			 
-			// Our asynchronous callback
-			var me = this;
-			request.onload = function() {
-			    SOUNDS[path] = request.response;
-			    me.snd = SOUNDS[path];
-			};
-			request.send();
+	load: function(path) {
+		var me = this;
+		if (!Studio.Sounds.assets[path]) {
+			if (Studio.Sounds.context) {
+				var request = new XMLHttpRequest();
+				request.open("GET", path, true);
+				request.responseType = "arraybuffer";
+				request.onload = function() {
+					Studio.Sounds.assets[path] = request.response;
+					me.gainNode = Studio.Sounds.context.createGain();
+					
+					me.snd.data = Studio.Sounds.assets[path];
+				};
+				request.send();
+			} else {
+				var temp = document.createElement('audio');
+				temp.src = path;
+				temp.load();
+				Studio.Sounds.assets[path] = temp;
+				me.snd.data = Studio.Sounds.assets[path];
+			}
 		} else {
-			me.snd = SOUNDS[path];
+			me.snd.data = Studio.Sounds.assets[path];
 		}
 	},
-	play: function(){
-		// this.snd.play();
-		if(this.snd){
-			try{audioGraph(this.snd)}
-			catch(e){}
+	play: function() {
+		if (this.snd.data) {
+			if (Studio.Sounds.context) {
+				Studio.Sounds.soundGraph(this.snd)
+			} else {
+				this.snd.data.play();
+			}
 		}
 	},
+	volume : function( val ){
 
+	}
 }
 
 Studio.Sound.constructor = Studio.Sound;
