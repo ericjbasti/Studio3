@@ -50,11 +50,11 @@ Studio.Scene.prototype.update_tweens = function(global_delta) {
 					if (tween.reset) {
 						tween.actor.apply(tween.original)
 					} else {
-						tween.actor.apply(tween.to)
-						// for(j=0;j!==tween.keys.length;j++){
-						// 	key = tween.keys[j];
-						// 	tween.actor[key] = tween.to[key];
-						// }
+						// tween.actor.apply(tween.to)
+						for(j=0;j!==tween.keys.length;j++){
+							key = tween.keys[j];
+							tween.actor[key] = tween.to[key];
+						}
 					}
 					if (tween.onEnd) {
 						tween.onEnd.call(tween.actor)

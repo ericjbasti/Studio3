@@ -21,16 +21,30 @@ Studio.Sounds = {
 			snd._time = Studio.now;
 			this.source = this.context.createBufferSource();
 			this.source.buffer = snd.data;
-			this.source.connect(gainNode);
-			this.source.connect(this.context.destination);
+			this.source.connect(this._volume);
+			this._volume.connect(this.context.destination);
 			this.source.start(0);
 		}
 	},
+	init: function(){
+		if(this.context){
+			this._volume = this.context.createGain();
+			this.volume = this._volume.gain;
+			this.setVolume = function(vol){
+				this.volume.value = vol;
+			}
+		}else{
+			this.setVolume = function(vol){
+				if(vol>1) vol = 1
+				if(vol<0) vol = 0
+				for( var i in this.assets){
+					this.assets[i].volume = vol;
+				}
+			}
+		}
+	},
 }
-
-// var gainNode = Studio.Sounds.context.createGain()
-// gainNode.connect( Studio.Sounds.context.destination);
-// gainNode.gain.value = 0;
+Studio.Sounds.init();
 
 Studio.Sound = function(path) {
 	this.snd = {_time: 0, data: null};
@@ -40,7 +54,7 @@ Studio.Sound = function(path) {
 Studio.Sound.prototype = {
 	load: function(path) {
 		var me = this;
-		me.snd.gainNode = Studio.Sounds.context.createGain();
+		
 		if (!Studio.Sounds.assets[path]) {
 			if (Studio.Sounds.context) {
 				var request = new XMLHttpRequest();
