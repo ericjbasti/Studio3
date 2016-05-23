@@ -13,20 +13,24 @@ Studio.Sounds = {
 	assets: {},
 	context: Studio.getAudioContext(),
 	soundGraph: function soundGraph(snd) {
-		if (snd._time == Studio.now) {
-
-			//return;
+		if (snd._time == Studio.now ) {
+			// playing the same soundbuffer at the exact same time causes errors and horrible distortion
+			// we make sure not to let that happen.
+			return;
 		} else {
 			snd._time = Studio.now;
-			Studio.Sounds.source = Studio.Sounds.context.createBufferSource();
-			Studio.Sounds.context.decodeAudioData(snd.data, function(soundBuffer) {
-				Studio.Sounds.source.buffer = soundBuffer;
-				Studio.Sounds.source.connect(Studio.Sounds.context.destination);
-				Studio.Sounds.source.start();
-			})
+			this.source = this.context.createBufferSource();
+			this.source.buffer = snd.data;
+			this.source.connect(gainNode);
+			this.source.connect(this.context.destination);
+			this.source.start(0);
 		}
 	},
 }
+
+// var gainNode = Studio.Sounds.context.createGain()
+// gainNode.connect( Studio.Sounds.context.destination);
+// gainNode.gain.value = 0;
 
 Studio.Sound = function(path) {
 	this.snd = {_time: 0, data: null};
@@ -36,6 +40,7 @@ Studio.Sound = function(path) {
 Studio.Sound.prototype = {
 	load: function(path) {
 		var me = this;
+		me.snd.gainNode = Studio.Sounds.context.createGain();
 		if (!Studio.Sounds.assets[path]) {
 			if (Studio.Sounds.context) {
 				var request = new XMLHttpRequest();
@@ -43,9 +48,10 @@ Studio.Sound.prototype = {
 				request.responseType = "arraybuffer";
 				request.onload = function() {
 					Studio.Sounds.assets[path] = request.response;
-					me.gainNode = Studio.Sounds.context.createGain();
-					
-					me.snd.data = Studio.Sounds.assets[path];
+					me.snd._data = Studio.Sounds.assets[path];
+					Studio.Sounds.context.decodeAudioData(me.snd._data,function(soundBuffer){
+						me.snd.data = soundBuffer;
+					})
 				};
 				request.send();
 			} else {
