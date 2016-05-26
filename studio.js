@@ -67,18 +67,6 @@ Studio.updateProgress = function() {
 	this.progress = this.queue / this.assets.length
 }
 
-Studio.addAsset = function(path, Who) {
-	if (!this.assets[path]) {
-		this.assets.length += 1
-		this.assets[path] = new Who()
-		this.updateProgress()
-		return true
-	} else {
-		console.warn('Already loaded : ', path, Studio.assets[Who])
-		return false
-	}
-}
-
 Studio.start = function(time_stamp) {
 	if (Studio.queue === Studio.assets.length) {
 		Studio.progress = 1
@@ -156,6 +144,14 @@ Studio.resetTime = function() {
 	// console.log('START');
 }
 
+Studio._addingAsset = function(){
+	this.assets.length++;
+	this.updateProgress();
+}
+Studio._loadedAsset = function(){
+	this.queue++;
+	this.updateProgress();
+}
 Studio.handleVisibilityChange = function() {
 	if (document.hidden) {
 		console.log('%cStudio Paused (visibilitychange)', Studio.statStyle)

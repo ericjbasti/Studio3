@@ -45,18 +45,15 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 		return this
 	} else {
 		Studio.assets[who] = new Image()
-		Studio.assets.length++
+		Studio._addingAsset();
 		var image = this
 		Studio.assets[who].onload = function image_onload() { // could have Event passed in
-			Studio.queue++
 			Studio.progress = Studio.queue / Studio.assets.length
 			image.slice['Full'].height = this.height
 			image.slice['Full'].width = this.width
 			image.width = this.width
 			image.height = this.height
-			if (Studio.queue === Studio.assets.length) {
-				Studio.loaded = true
-			}
+			Studio._loadedAsset();
 			image.addSlice(image.slice)
 			image.ready = true
 			image.status.setStatus(image.ready)

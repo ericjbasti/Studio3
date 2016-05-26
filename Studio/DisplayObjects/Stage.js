@@ -315,9 +315,6 @@ Studio.Stage.prototype.loading = function(delta) {
 
 	if (Studio.loaded === true) { // BAD DESIGN! This should be based on each stage.
 		// as it stands loading an image for one canvas will cause all to pause. oops.
-		if (this.onReady) {
-			this.onReady(delta)
-		}
 		this.loop = this.activeloop
 	}
 }
@@ -342,6 +339,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 			if (this.onReady) {
 				this.onReady(delta)
 			}
+			
 			Studio.progress = 2 // we set this to 2 so we can fire this event once.
 			if (!this.activeScene) {
 				return // lets check to see if we have a scene to draw. otherwise lets just draw the stage.
@@ -355,13 +353,13 @@ Studio.Stage.prototype.activeloop = function(delta) {
 
 Studio.Stage.prototype.loop = Studio.Stage.prototype.loading
 
-Studio.Stage.prototype.drawProgress = function(ctx) {
+Studio.Scene.prototype.drawProgress = function(ctx) {
 	this.progressBar(ctx, Studio.progress)
 	ctx.restore()
 }
 
 // default progress bar. overwire this to create your own.
-Studio.Stage.prototype.progressBar = function(ctx, progress) {
+Studio.Scene.prototype.progressBar = function(ctx, progress) {
 	ctx.fillStyle = 'rgba(255,255,255,.8)'
 	ctx.fillRect((this.width - 202) / 2, (this.height - 22) / 2, 202, 22)
 	ctx.fillStyle = 'rgba(0,0,0,1)'
