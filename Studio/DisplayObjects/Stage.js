@@ -34,7 +34,7 @@ Studio.Stage = function(domID, attr) {
 
 	this._sizeCanvas(this.fullscreen)
 	this.setPixelRatio()
-	if (this.webgl && Studio.canWebGL) {
+	if (this.webgl && Studio.browser_info.webGL) {
 		this.engine = Studio.Stage.prototype.WEBGL
 	} else {
 		this.webgl = false

@@ -1,5 +1,4 @@
 Studio.getAudioContext = function() {
-	return false;
 	if (typeof AudioContext !== "undefined") {
 		return new AudioContext();
 	} else if (typeof webkitAudioContext !== "undefined") {
@@ -11,7 +10,6 @@ Studio.getAudioContext = function() {
 
 Studio.Sounds = {
 	source: null,
-	assets: {},
 	context: Studio.getAudioContext(),
 	soundGraph: function soundGraph(snd) {
 		if (snd._time == Studio.now ) {
@@ -44,12 +42,20 @@ Studio.Sounds = {
 				}
 			}
 		}
-	},
+		var mute = document.createElement('div')
+		mute.innerHTML = 'Enable Sound';
+		mute.ontouchend = function(){
+			song.play()
+		}
+		document.body.appendChild(mute);
+
+	}
 }
+
 Studio.Sounds.init();
 
 Studio.Sound = function(path) {
-	this.snd = {_time: 0, data: null, loop: false};
+	this.snd = {_time: 0, data: null, loop: false, volume: 1};
 	this.status = new Studio.Messenger()
 	this.load(path);
 }
@@ -59,14 +65,14 @@ Studio.Sound.prototype = {
 	load: function(path) {
 		var me = this;
 		
-		if (!Studio.Sounds.assets[path]) {
+		if (!Studio.assets[path]) {
 			if (Studio.Sounds.context) {
 				var request = new XMLHttpRequest();
 				request.open("GET", path, true);
 				request.responseType = "arraybuffer";
 				request.onload = function() {
-					Studio.Sounds.assets[path] = request.response;
-					me.snd._data = Studio.Sounds.assets[path];
+					Studio.assets[path] = request.response;
+					me.snd._data = Studio.assets[path];
 					Studio.Sounds.context.decodeAudioData(me.snd._data,function(soundBuffer){
 						me.snd.data = soundBuffer;
 						Studio._loadedAsset();
@@ -78,11 +84,11 @@ Studio.Sound.prototype = {
 				var temp = document.createElement('audio');
 				temp.src = path;
 				temp.load();
-				Studio.Sounds.assets[path] = temp;
-				me.snd.data = Studio.Sounds.assets[path];
+				Studio.assets[path] = temp;
+				me.snd.data = Studio.assets[path];
 			}
 		} else {
-			me.snd.data = Studio.Sounds.assets[path];
+			me.snd.data = Studio.assets[path];
 		}
 	},
 	play: function() {
@@ -99,6 +105,12 @@ Studio.Sound.prototype = {
 	},
 	volume : function( val ){
 
+	},
+	stop: function(){
+		
+	},
+	loop: function(set){
+		this.snd.loop = set;
 	}
 }
 
