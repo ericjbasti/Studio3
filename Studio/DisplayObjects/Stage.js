@@ -62,7 +62,7 @@ Studio.Stage = function(domID, attr) {
 	return this
 }
 
-Studio.extend(Studio.Stage, Studio.Scene)
+Studio.inherit(Studio.Stage, Studio.Scene)
 
 Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 	if (domElementID) {
@@ -286,7 +286,7 @@ Studio.Stage.prototype._update_scene = function(scene) {
 Studio.Stage.prototype.updateScenes = function() {
 	this._update_scene(this.activeScene)
 	this._update_scene(this.previousScene)
-	if (this._hasChildren || this._watching) {
+	if (this._hasChildren) {
 		this.update_children(this.interpolate)
 	}
 }

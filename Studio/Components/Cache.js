@@ -12,4 +12,4 @@ Studio.Cache = function(width, height, resolution) {
 	this.slice.Full = {x: 0,y: 0,width: this.image.width,height: this.image.height}
 }
 
-Studio.extend(Studio.Cache, Studio.Image)
+Studio.inherit(Studio.Cache, Studio.Image)

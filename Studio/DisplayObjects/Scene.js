@@ -23,7 +23,7 @@ Studio.Scene = function(attr) {
 	}
 }
 
-Studio.extend(Studio.Scene, Studio.DisplayObject)
+Studio.inherit(Studio.Scene, Studio.DisplayObject)
 
 Studio.Scene.prototype.loadAssets = function() {
 	for (var i = 0; i !== arguments.length; i++) {
@@ -63,6 +63,9 @@ Studio.Scene.prototype.draw = function(ctx) {
 		if (this.color.a === 0) {
 			ctx.clearRect(this._dx, this._dy, this.width, this.height)
 			return
+		}
+		if (this.color.a < 1) {
+			ctx.clearRect(this._dx, this._dy, this.width, this.height)
 		}
 		this.setStyle(ctx)
 		ctx.fillRect(this._dx, this._dy,  this.width, this.height)

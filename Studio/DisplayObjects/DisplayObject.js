@@ -41,7 +41,8 @@ Studio.DisplayObject = function(attr) {
 	// to save memory we don't include a default child container. This will be
 	// created if one is need.
 	this._parent = null
-	this._hasChildren = 0 // we use this as a quick flag to let us know if we
+	this._hasChildren = 0 
+	// we use this as a quick flag to let us know if we
 	// should even think about looking for children
 	// objects. It also stores our length.
 

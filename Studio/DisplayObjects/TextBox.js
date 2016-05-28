@@ -20,7 +20,7 @@ Studio.TextBox = function(width, height, stage) {
 	return this
 }
 
-Studio.extend(Studio.TextBox, Studio.Rect)
+Studio.inherit(Studio.TextBox, Studio.Rect)
 
 Studio.TextBox.prototype.setFont = function(font) {
 	this.font = font

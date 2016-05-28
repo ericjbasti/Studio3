@@ -5,14 +5,14 @@
 Studio.Sprite = function(attr) {
 	this.image = null
 	this.slice = 'Full'
-	this.color = new Studio.Color(1, 1, 1, 1)
+	this.color = Studio.WHITE
 
 	if (attr) {
 		this.apply(attr)
 	}
 }
 
-Studio.extend(Studio.Sprite, Studio.Rect)
+Studio.inherit(Studio.Sprite, Studio.Rect)
 
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save()
@@ -117,7 +117,7 @@ Studio.SpriteAnimation = function(attr) {
 	this.setStartingFrame(this.frame)
 }
 
-Studio.extend(Studio.SpriteAnimation, Studio.Rect)
+Studio.inherit(Studio.SpriteAnimation, Studio.Rect)
 
 Studio.SpriteAnimation.prototype.setStartingFrame = function(a) {
 	this.frame = a

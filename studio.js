@@ -191,19 +191,23 @@ Studio.apply = function(obj) { // Display Object and a few others share this fun
 
 // addTo()
 
-Studio.addTo = function(a, b) {
-	for (var attr in b) {
-		if (b.hasOwnProperty(attr) && !a.hasOwnProperty(attr)) {
-			a[attr] = b[attr]
+Studio.addTo = function(a) {
+	for (var i = 1; i < arguments.length; i++){
+		var b = arguments[i]
+		for (var attr in b) {
+			if (b.hasOwnProperty(attr) && !a.hasOwnProperty(attr)) {
+				a[attr] = b[attr]
+			}
 		}
 	}
+	return a
 }
 
-// Studio.extend(a,b)
+// Studio.inherit(a,b)
 // A : the New Class
 // B : Class to inherit attributes from.
 
-Studio.extend = function(A, B, properties) {
+Studio.inherit = function(A, B, properties) {
 	if (properties) {
 		A.prototype = new B(properties)
 	} else {
@@ -211,6 +215,8 @@ Studio.extend = function(A, B, properties) {
 	}
 	A.prototype.constructor = A
 }
+
+
 
 Studio.TOP = Studio.LEFT = 0
 Studio.MIDDLE = Studio.CENTER = 0.5

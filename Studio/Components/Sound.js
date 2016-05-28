@@ -58,65 +58,67 @@ Studio.Sounds.init()
 
 Studio.Sound = function(path) {
 	this.snd = {_time: 0, data: null, loop: false, volume: 1}
-	this.status = new Studio.Messenger()
-	this.load(path)
+	this.ready = false
+	if (path) {
+		this.load(path)
+	}
 }
 
-Studio.Sound.prototype = {
-	constructor: Studio.Sound,
-	load: function(path) {
-		var me = this
+Studio.inherit(Studio.Sound, Studio.Messenger)
 
-		if (!Studio.assets[path]) {
-			if (Studio.Sounds.context) {
-				var request = new XMLHttpRequest()
-				request.open('GET', path, true)
-				request.responseType = 'arraybuffer'
-				request.onload = function() {
-					Studio.assets[path] = request.response
-					me.snd._data = Studio.assets[path]
-					me.snd._volume = Studio.Sounds.context.createGain()
-					me.snd.volume = me.snd._volume.gain
-					me.snd.volume.value = 1
-					Studio.Sounds.context.decodeAudioData(me.snd._data,function(soundBuffer) {
-						me.snd.data = soundBuffer
-						Studio._loadedAsset()
-					})
-				}
-				Studio._addingAsset()
-				request.send()
-			} else {
-				var temp = document.createElement('audio')
-				temp.src = path
-				temp.load()
-				Studio.assets[path] = temp
-				me.snd.data = Studio.assets[path]
+Studio.Sound.prototype.load = function(path) {
+	var me = this
+
+	if (!Studio.assets[path]) {
+		if (Studio.Sounds.context) {
+			var request = new XMLHttpRequest()
+			request.open('GET', path, true)
+			request.responseType = 'arraybuffer'
+			request.onload = function() {
+				Studio.assets[path] = request.response
+				me.snd._data = Studio.assets[path]
+				me.snd._volume = Studio.Sounds.context.createGain()
+				me.snd.volume = me.snd._volume.gain
+				me.snd.volume.value = 1
+				Studio.Sounds.context.decodeAudioData(me.snd._data, function(soundBuffer) {
+					me.snd.data = soundBuffer
+					Studio._loadedAsset()
+					me.ready = true
+					me.sendMessage('ready', me.ready)
+				})
 			}
+			Studio._addingAsset()
+			request.send()
 		} else {
+			var temp = document.createElement('audio')
+			temp.src = path
+			temp.load()
+			Studio.assets[path] = temp
 			me.snd.data = Studio.assets[path]
 		}
-	},
-	play: function() {
-		if (this.snd.data) {
-			if (Studio.Sounds.context) {
-				Studio.Sounds.soundGraph(this.snd)
-			} else {
-				this.snd.data.play()
-				this.snd.data.loop = this.snd.loop
-			}
-		} else {
-			console.log('Sound file not ready.')
-		}
-	},
-	volume: function(val) {
-
-	},
-	stop: function() {
-
-	},
-	loop: function(set) {
-		this.snd.loop = set
+	} else {
+		me.snd.data = Studio.assets[path]
 	}
+}
+
+Studio.Sound.prototype.play = function() {
+	if (this.snd.data) {
+		if (Studio.Sounds.context) {
+			Studio.Sounds.soundGraph(this.snd)
+		} else {
+			this.snd.data.play()
+			this.snd.data.loop = this.snd.loop
+		}
+	} else {
+		console.log('Sound file not ready.')
+	}
+}
+
+Studio.Sound.prototype.volume = function(val) {
+
+}
+Studio.Sound.prototype.loop = function(set) {
+	this.snd.loop = set
 }
 
 // Studio.SoundManager = function(){

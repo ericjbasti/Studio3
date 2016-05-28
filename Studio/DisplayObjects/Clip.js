@@ -4,7 +4,7 @@ Studio.Clip = function(attr) {
 	}
 }
 
-Studio.extend(Studio.Clip, Studio.Rect)
+Studio.inherit(Studio.Clip, Studio.Rect)
 
 Studio.Clip.prototype.draw = function(ctx) {
 	ctx.save()

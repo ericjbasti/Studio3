@@ -30,7 +30,7 @@ Studio.Image = function studio_image(path, slices) {
 	return this
 }
 
-Studio.Image.prototype.constructor = Studio.Image
+Studio.inherit(Studio.Image,Studio.Messenger)
 
 Studio.Image.prototype.ready = false
 Studio.Image.prototype.height = 1
@@ -41,7 +41,7 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 		console.warn('Already loaded : ', who, Studio.assets[who])
 		this.image = Studio.assets[who]
 		this.ready = true
-		this.status.setStatus(this.ready)
+		this.sendMessage('ready',this.ready)
 		return this
 	} else {
 		Studio.assets[who] = new Image()
@@ -56,7 +56,7 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 			Studio._loadedAsset();
 			image.addSlice(image.slice)
 			image.ready = true
-			image.status.setStatus(image.ready)
+			image.sendMessage('ready',image.ready)
 			return image
 		}
 		Studio.assets[who].src = who

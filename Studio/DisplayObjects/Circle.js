@@ -5,7 +5,7 @@ Studio.Circle = function(attr) {
 	}
 }
 
-Studio.extend(Studio.Circle, Studio.Rect)
+Studio.inherit(Studio.Circle, Studio.Rect)
 
 Studio.Circle.prototype.draw = function(ctx) {
 	this.setStyle(ctx)

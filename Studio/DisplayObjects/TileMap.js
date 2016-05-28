@@ -104,7 +104,7 @@ Studio.TileMap.prototype = {
 		var setimage = new Studio.Image('assets/' + this.set.image)
 		this.tileset =  new Studio.TileSet(setimage, this.set.tilewidth, this.set.tileheight, this.set.imagewidth)
 		// change to addListenerFunction( function ) ... this explains what the variable needs to be.
-		setimage.status.addListener('_onLoad', this)
+		setimage.status.addListenerTo('ready','_onLoad', this)
 	},
 	load: function(asset, type) {
 		Studio.load(asset, type, this.onMapLoad, this)

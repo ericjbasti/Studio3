@@ -11,7 +11,7 @@ Studio.Rect = function(attr) {
 	}
 }
 
-Studio.extend(Studio.Rect, Studio.DisplayObject)
+Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
 Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	gl._batch[gl._count++] = x

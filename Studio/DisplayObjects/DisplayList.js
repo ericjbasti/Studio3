@@ -12,7 +12,8 @@ Studio.DisplayList = function(attr) {
 	}
 };
 
-Studio.extend(Studio.DisplayList,Studio.DisplayObject);
+Studio.inherit(Studio.DisplayList, Studio.DisplayObject);
+
 
 Studio.DisplayList.prototype.cacheAsBitmap = function(stage) {
 	this.cache = document.createElement('canvas');
@@ -26,12 +27,12 @@ Studio.DisplayList.prototype.cacheAsBitmap = function(stage) {
 Studio.DisplayList.prototype.updateCache = function() {
 	this.cached = false;
 	this.ctx.clearRect(0, 0, this.width, this.height);
-	this.render(this,1);
+	this.render(this, 1);
 	this.cached = true;
 };
 Studio.DisplayList.prototype._cacheIt = function() {
 	this.ctx.clearRect(0, 0, this.width, this.height);
-	this.render(this,1);
+	this.render(this, 1);
 };
 Studio.DisplayList.prototype.updateElement = function(who) {
 	who.render(this);

@@ -35,7 +35,7 @@ Studio.Pattern = function(attr) {
 	return this
 }
 
-Studio.extend(Studio.Pattern, Studio.Rect)
+Studio.inherit(Studio.Pattern, Studio.Rect)
 
 /*
 	setPattern

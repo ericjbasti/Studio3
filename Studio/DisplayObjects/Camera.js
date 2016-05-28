@@ -11,7 +11,7 @@ Studio.Camera = function(stage) {
 	this.active		= true
 }
 
-Studio.extend(Studio.Camera,Studio.DisplayObject)
+Studio.inherit(Studio.Camera, Studio.DisplayObject)
 
 Studio.Camera.prototype.updateRect = function() {
 	this.left	= -this.bound._world.x * this.scaleX
@@ -43,7 +43,7 @@ Studio.Camera.prototype.update = function(stage, ratio) {
 }
 
 Studio.Camera.prototype.render = function(stage, ratio) {
-	this.update(stage,ratio)
+	this.update(stage, ratio)
 	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) {
 		stage.ctx.setTransform(stage.resolution * this.scaleX, 0, 0, stage.resolution * this.scaleY, -this.x * stage.resolution, -this.y * stage.resolution)
 	}

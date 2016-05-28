@@ -61,3 +61,4 @@ Studio.Color.prototype = {
 Studio.RED = new Studio.Color(204, 0, 17, 1)
 Studio.YELLOW = new Studio.Color(255, 221, 34, 1)
 Studio.BLUE = new Studio.Color(51, 170, 255, 1)
+Studio.WHITE = new Studio.Color(255, 255, 255, 1)
