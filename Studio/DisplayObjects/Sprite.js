@@ -41,6 +41,7 @@ Studio.Sprite.prototype.buildElement = function(gl, ratio, interpolate) {
 	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
 	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
 	this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
+	// this.vertex_children(gl,ratio,interpolate)
 }
 
 Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {

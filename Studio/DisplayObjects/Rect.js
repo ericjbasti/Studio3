@@ -3,7 +3,7 @@
  */
 
 Studio.Rect = function(attr) {
-	this.color = new Studio.Color(1, 0, 0, 0)
+	this.color = new Studio.Color(255, 255, 255, 1)
 	this.bounds = new Studio.Box(10, 0, 0, 0)
 
 	if (attr) {
@@ -37,6 +37,7 @@ Studio.Rect.prototype.buildElement = function(gl, ratio, interpolate) {
 	this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.bounds.right, this.bounds.top)
 	this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.bounds.left, this.bounds.bottom)
 	this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.bounds.right, this.bounds.bottom)
+	// this.vertex_children(gl,ratio,interpolate)
 }
 
 Studio.Rect.prototype.buildTriangles = function(gl, ratio) {

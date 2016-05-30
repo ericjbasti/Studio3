@@ -156,6 +156,7 @@ Studio._tween_object.prototype.completeLoop = function(who) {
 	return this.next
 }
 
+
 Studio.Scene.prototype.createLoop = function(who, ease, to, duration, callback) {
 	this.tweens[this.nextID] = this.createTween(who,ease,to,duration,callback)
 	this.tweens[this.nextID - 1].loop = true

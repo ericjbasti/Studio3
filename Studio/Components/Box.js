@@ -9,17 +9,17 @@ Studio.Box = function(left, top, width, height) {
 Studio.Box.prototype = {
 	constructor: Studio.Box,
 	set: function(left, top, width, height) {
-		this.left = left || this.left
-		this.top = top || this.top
-		this.right = left + width || this.right
-		this.bottom = top + height || this.bottom
+		this.left = this._left = left || this.left
+		this.top = this._top = top || this.top
+		this.right = this._right = left + width || this.right
+		this.bottom = this._left = top + height || this.bottom
 	},
 	get_bounds: function(who) {
-		// if(who._rotation){
-		// this.get_rotated_bounds(who);
-		// }else{
-		this.get_straight_bounds(who)
-		// }
+		if(who._world.rotation){
+			this.get_rotated_bounds(who);
+		}else{
+			this.get_straight_bounds(who)
+		}
 	},
 	get_straight_bounds: function(who) {
 		this.left = who._dx - who._world.width * who.anchorX
@@ -28,9 +28,23 @@ Studio.Box.prototype = {
 		this.bottom = this.top + who._world.height
 	},
 	get_rotated_bounds: function(who) {
-		this.left = who._world.x - who._world.width * who.anchorX * 2
-		this.right = this.left + who._world.width * 3
-		this.top = who._world.y - who._world.height * who.anchorY * 3
-		this.bottom = this.top + who._world.height * 2
+		var sin = Math.sin(who.angle)
+		var cos = Math.cos(who.angle)
+		// this._orbitX = (x * cos) - (y * sin)
+		// this._orbitY = (x * sin) + (y * cos)
+
+		this._left = -(who._world.width * who.anchorX)
+		this._right = this._left + who._world.width
+		this._top = -(who._world.height * who.anchorY)
+		this._bottom = this._top + who._world.height
+
+		// this.left = (this._left * cos) - (this._top * sin)
+		// this.top = (this._left * sin) + (this._top * cos)
+		// this.right = (this._right * cos) - (this._bottom * sin)
+		// this.bottom = (this._right * sin) + (this._bottom * cos)
+		this.left = ((this._left * cos) - (this._top * sin)) + who._dx
+		this.right = ((this._right * cos) - (this._bottom * sin)) + who._dx
+		this.top = ((this._left * sin) + (this._top * cos)) + who._dy
+		this.bottom= ((this._right * sin) + (this._bottom * cos)) + who._dy
 	},
 }

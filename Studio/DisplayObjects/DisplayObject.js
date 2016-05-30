@@ -200,9 +200,10 @@ Studio.DisplayObject.prototype = {
 	},
 	vertex_children: function(stage, ratio, interpolate) {
 		if (this._hasChildren) {
-			for (var i = 0; i !== this._hasChildren; i++) {
+			for (var i = 0; i < this._hasChildren; i++) {
 				this.children[i].buildElement(stage, ratio, interpolate)
 				// this.children[i].buildTriangles(stage,ratio);
+				this.children[i].vertex_children(stage, ratio, interpolate)
 			}
 		}
 	},
