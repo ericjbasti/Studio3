@@ -1,41 +1,51 @@
 Studio.Box = function(left, top, width, height) {
-	this.left = left || 0
-	this.top = top || 0
-	this.right = left + width || 1
-	this.bottom = top + height || 1
-
-	this.TL = {x:left||0, y:top||0}
-	this.TR = {x:left+width||0, y:top||0}
-	this.BR = {x:left+width||0, y:top+height||0}
-	this.BL = {x:left||0, y:top+height||0}
+	this.TL = {x: left || 0, y: top || 0}
+	this.TR = {x: left + width || 0, y: top || 0}
+	this.BR = {x: left + width || 0, y: top + height || 0}
+	this.BL = {x: left || 0, y: top + height || 0}
+	this.a = 0
+	this.b = 0
+	this.rot = {sin:0,cos:0,a:0,b:0}
 	return this
 }
 
 Studio.Box.prototype = {
 	constructor: Studio.Box,
 	set: function(left, top, width, height) {
-		this.left = this._left = left || this.left
-		this.top = this._top = top || this.top
-		this.right = this._right = left + width || this.right
-		this.bottom = this._left = top + height || this.bottom
+		this.TL = {x: left, y: top}
+		this.TR = {x: left + width, y: top}
+		this.BR = {x: left + width, y: top + height}
+		this.BL = {x: left, y: top + height}
 	},
 	get_bounds: function(who) {
-		if(who._world.rotation){
-			this.get_rotated_bounds(who);
-		}else{
+		if (who._world.rotation) {
+			this.get_rotated_bounds(who)
+		} else {
 			this.get_straight_bounds(who)
 		}
 	},
 	get_straight_bounds: function(who) {
-		this.left = who._dx - who._world.width * who.anchorX
-		this.right = this.left + who._world.width
-		this.top = who._dy - who._world.height * who.anchorY
-		this.bottom = this.top + who._world.height
-
-		this.TL = {x:this.left , y:this.top}
-		this.TR = {x:this.right, y:this.top}
-		this.BR = {x:this.right, y:this.bottom}
-		this.BL = {x:this.left , y:this.bottom}
+		this.a = who._dx
+		this.b = who._dy
+		this.TL = {
+			x: this.a - who._world.width * who.anchorX,
+			y: this.b - who._world.width * who.anchorY
+		}
+		this.TR = {
+			x: this.TL.x + who._world.width,
+			y: this.TL.y
+		}
+		this.BR = {
+			x: this.TR.x,
+			y: this.TR.y + who._world.height
+		}
+		this.BL = {
+			x: this.TL.x,
+			y: this.BR.y
+		}
+	},
+	_buildPoint : function(who,x,y){
+		
 	},
 	get_rotated_bounds: function(who) {
 		var sin = Math.sin(who.angle)
@@ -49,18 +59,20 @@ Studio.Box.prototype = {
 		this.top = -b
 		this.bottom = this.top + who._world.height
 
+		this._buildPoint()
+		this.TL.x = who._dx + ((this.left * cos) - (this.top * sin))
+		this.TL.y = who._dy + ((this.left * sin) + (this.top * cos))
 
-		this.TL.x = who._dx + ((this.left * cos) - (this.top * sin)) 
-		this.TL.y = who._dy + ((this.left * sin) + (this.top * cos)) 
+		this.TR.x = who._dx + ((this.right * cos) - (this.top * sin))
+		this.TR.y = who._dy + ((this.right * sin) + (this.top * cos))
 
-		this.TR.x = who._dx + ((this.right * cos) - (this.top * sin)) 
-		this.TR.y =  who._dy + ((this.right * sin) + (this.top * cos)) 
+		this.BR.x = who._dx + ((this.right * cos) - (this.bottom * sin))
+		this.BR.y = who._dy + ((this.right * sin) + (this.bottom * cos))
 
-		this.BR.x = who._dx + ((this.right * cos) - (this.bottom * sin)) 
-		this.BR.y =  who._dy + ((this.right * sin) + (this.bottom * cos)) 
-
-		this.BL.x = who._dx + ((this.left * cos) - (this.bottom * sin)) 
-		this.BL.y =  who._dy + ((this.left * sin) + (this.bottom * cos)) 
+		this.BL.x = who._dx + ((this.left * cos) - (this.bottom * sin))
+		this.BL.y = who._dy + ((this.left * sin) + (this.bottom * cos))
 
 	},
 }
+
+Studio.RECT_BOX = new Studio.Box(10,0,0,0);
