@@ -37,15 +37,10 @@ Studio.Sprite.prototype.buildElement = function(gl, ratio, interpolate) {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	// this.addVert(gl, this._boundingBox.left, this._boundingBox.top, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
-	// this.addVert(gl, this._boundingBox.right, this._boundingBox.top, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
-	// this.addVert(gl, this._boundingBox.left, this._boundingBox.bottom, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
-	// this.addVert(gl, this._boundingBox.right, this._boundingBox.bottom, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
 	this.addVert(gl, this._boundingBox.TL.x, this._boundingBox.TL.y, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
 	this.addVert(gl, this._boundingBox.TR.x, this._boundingBox.TR.y, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
 	this.addVert(gl, this._boundingBox.BL.x, this._boundingBox.BL.y, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
 	this.addVert(gl, this._boundingBox.BR.x, this._boundingBox.BR.y, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
-	// this.vertex_children(gl,ratio,interpolate)
 }
 
 Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {

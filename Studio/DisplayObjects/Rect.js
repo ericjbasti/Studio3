@@ -4,8 +4,7 @@
 
 Studio.Rect = function(attr) {
 	this.color = new Studio.Color(255, 255, 255, 1)
-	this.bounds = new Studio.Box(10, 0, 0, 0)
-
+	// this.subBuffer = new Float32Array(8)
 	if (attr) {
 		this.apply(attr)
 	}
@@ -16,14 +15,25 @@ Studio.inherit(Studio.Rect, Studio.DisplayObject)
 Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	gl._batch[gl._count++] = x
 	gl._batch[gl._count++] = y
-	// gl._batch[gl._count+2] = 1;
+
 	gl._batch[gl._count++] = this.color.r
 	gl._batch[gl._count++] = this.color.g
 	gl._batch[gl._count++] = this.color.b
 	gl._batch[gl._count++] = this.color.a
 	gl._batch[gl._count++] = tx
 	gl._batch[gl._count++] = ty
-	// gl._count +=8;
+
+	// this.subBuffer[0] = x;
+	// this.subBuffer[1] = y
+	// this.subBuffer[2] = this.color.r
+	// this.subBuffer[3] = this.color.g
+	// this.subBuffer[4] = this.color.b
+	// this.subBuffer[5] = this.color.a
+	// this.subBuffer[6] = tx
+	// this.subBuffer[7] = ty
+
+	// gl.bufferSubData(gl.ARRAY_BUFFER, (gl._count-8)*4, this.subBuffer)
+	// gl._count+=8;
 }
 
 Studio.Rect.prototype.buildElement = function(gl, ratio, interpolate) {
@@ -33,10 +43,10 @@ Studio.Rect.prototype.buildElement = function(gl, ratio, interpolate) {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	this.addVert(gl, this._boundingBox.TL.x, this._boundingBox.TL.y, this._world.z, this.bounds.left, this.bounds.top)
-	this.addVert(gl, this._boundingBox.TR.x, this._boundingBox.TR.y, this._world.z, this.bounds.right, this.bounds.top)
-	this.addVert(gl, this._boundingBox.BL.x, this._boundingBox.BL.y, this._world.z, this.bounds.left, this.bounds.bottom)
-	this.addVert(gl, this._boundingBox.BR.x, this._boundingBox.BR.y, this._world.z, this.bounds.right, this.bounds.bottom)
+	this.addVert(gl, this._boundingBox.TL.x, this._boundingBox.TL.y, this._world.z, 10, 0)
+	this.addVert(gl, this._boundingBox.TR.x, this._boundingBox.TR.y, this._world.z, 10, 0)
+	this.addVert(gl, this._boundingBox.BL.x, this._boundingBox.BL.y, this._world.z, 10, 0)
+	this.addVert(gl, this._boundingBox.BR.x, this._boundingBox.BR.y, this._world.z, 10, 0)
 	// this.vertex_children(gl,ratio,interpolate)
 }
 
