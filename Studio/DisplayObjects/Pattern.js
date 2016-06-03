@@ -31,7 +31,7 @@ Studio.Pattern = function(attr) {
 	this.height = this.height + this.overflowY
 	this.cache = new Studio.Cache(this.width, this.height, this.resolution)
 	this._cached = false
-	this.image.status.addListener('onImageReady', this)
+	this.image.addListenerTo('ready','onImageReady', this)
 	return this
 }
 
