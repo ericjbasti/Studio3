@@ -18,7 +18,7 @@ Studio.Stage = function(domID, attr) {
 	if (attr) {
 		this.apply(attr)
 	}
-
+	this.tweens = Object.create(null)
 	this._getCanvasElement(domID)
 	this._count = 0
 	this._maxCount = 16333
@@ -220,8 +220,8 @@ Studio.Stage.prototype.clearScene = function() {
 
 Studio.Stage.prototype.watch = function(who) {
 	this._watching = who
-	this.children = who.children
-	this._hasChildren = who._hasChildren
+	// this.children = who.children
+	// this._hasChildren = who._hasChildren
 }
 
 Studio.Stage.prototype.update_children = function(ratio, delta, interpolate) {

@@ -129,7 +129,7 @@ Studio.Stage.prototype.WEBGL = {
 		gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 32, 24)
 
 		this._rect_index_buffer = gl.createBuffer()
-		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._rect_index_buffer)
+		// gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._rect_index_buffer)
 		this._rect_index = new Uint16Array(this._maxCount * 6)
 
 		for (var i = 0, j = 0; i < this._maxCount * 6; i += 6, j += 4) {
