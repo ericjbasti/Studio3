@@ -30,17 +30,18 @@ Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.restore()
 }
 
-Studio.Sprite.prototype.buildElement = function(gl, ratio, interpolate) {
+Studio.Sprite.prototype.buildElement = function(stage, ratio, interpolate) {
+	stage.draws++
 	if (interpolate) {
 		this._delta(ratio)
 	} else {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	this.addVert(gl, this._boundingBox.TL.x, this._boundingBox.TL.y, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
-	this.addVert(gl, this._boundingBox.TR.x, this._boundingBox.TR.y, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
-	this.addVert(gl, this._boundingBox.BL.x, this._boundingBox.BL.y, this._world.z, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
-	this.addVert(gl, this._boundingBox.BR.x, this._boundingBox.BR.y, this._world.z, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
+	this.addVert(stage.ctx, this._boundingBox.TL.x, this._boundingBox.TL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
+	this.addVert(stage.ctx, this._boundingBox.TR.x, this._boundingBox.TR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
+	this.addVert(stage.ctx, this._boundingBox.BL.x, this._boundingBox.BL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
+	this.addVert(stage.ctx, this._boundingBox.BR.x, this._boundingBox.BR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
 }
 
 Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {

@@ -87,11 +87,19 @@ Studio.DisplayObject.prototype = {
 		child._parent = this._world
 		this.children[this._hasChildren] = child
 		this._hasChildren++
+		// child.z = child._world.z = -this._hasChildren*.000001;
 		child.force_update()
 		child._dset()
+		// if(this.constructor == Studio.Stage){
+
+		// }else{
+		// 	child._world.z = (this.z*.000001)-(child.z*.000001)
+		// }
+		
 		if (child._hasChildren) {
 			child.force_update_children()
 		}
+
 		return this
 	},
 	removeChildAtIndex: function(child_index) {
@@ -325,11 +333,11 @@ Studio.DisplayObject.prototype = {
 			this._dheight = this.__delta(this.__height, this._world.height, ratio)
 		}
 	},
-	__deltaRotation: function(ratio) {
-		if (this._world.rotation) {
-			this._dAngle = this.__delta(this._world.angle, this.angle, ratio)
-		}
-	},
+	// __deltaRotation: function(ratio) {
+	// 	if (this._world.rotation) {
+	// 		this._dAngle = this.__delta(this._world.angle, this.angle, ratio)
+	// 	}
+	// },
 	__delta: function(snap, cur, ratio) {
 		return snap + ((cur - snap) * ratio)
 	},
@@ -350,7 +358,9 @@ Studio.DisplayObject.prototype = {
 	},
 	__dsetRotation: function() {
 		if (this._world.rotation) {
-			this._dAngle = this._parent.angle + this.angle
+			// this._dAngle = this._parent.angle + this.angle
+			this._dAngle = this._world.angle + this.angle
+			// console.log(this._parent.angle )
 		}
 	},
 	_dset: function() {

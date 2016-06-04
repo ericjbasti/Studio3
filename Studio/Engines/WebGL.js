@@ -66,8 +66,8 @@ Studio.Stage.prototype.WEBGL = {
 		// gl.shaderSource(this.fragmentShader,Studio.STANDARD_FRAG_SHADER)
 		gl.compileShader(this.fragmentShader)
 
-		// gl.enable(gl.DEPTH_TEST);
-		//    gl.depthFunc(gl.LESS);
+		gl.enable(gl.DEPTH_TEST);
+		gl.depthFunc(gl.LESS);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 		gl.enable(gl.BLEND)
 		// gl.disable(gl.DEPTH_TEST);
@@ -108,13 +108,12 @@ Studio.Stage.prototype.WEBGL = {
 		gl.enableVertexAttribArray(0)
 
 		gl.positionLocation = gl.getAttribLocation(this.program, 'a_position')
+		
 		gl.bindAttribLocation(this.program, 0, 'a_position')
 
 		gl.colorLocation = gl.getAttribLocation(this.program, 'a_color')
-		// gl.bindAttribLocation(this.program, 2, 'a_color');
 
 		gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
-		// gl.bindAttribLocation(this.program, 6, 'a_texture');
 
 		gl.uniform2f(gl.resolutionLocation, this.width, this.height)
 
@@ -124,15 +123,14 @@ Studio.Stage.prototype.WEBGL = {
 		gl.enableVertexAttribArray(gl.colorLocation)
 		gl.enableVertexAttribArray(gl.textureLocation)
 
-		gl.vertexAttribPointer(gl.positionLocation, 2, gl.FLOAT, false, 32, 0)
-		gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, false, 32, 8)
-		gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 32, 24)
+		gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, false, 36, 0)
+		gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, false, 36, (3)*4)
+		gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 36, (3+4)*4)
 
 		this._rect_index_buffer = gl.createBuffer()
-		// gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._rect_index_buffer)
-		this._rect_index = new Uint16Array(this._maxCount * 6)
+		this._rect_index = new Uint16Array(this._maxCount * 7)
 
-		for (var i = 0, j = 0; i < this._maxCount * 6; i += 6, j += 4) {
+		for (var i = 0, j = 0; i < this._maxCount * 7; i += 6, j += 4) {
 			this._rect_index[i + 0] = j + 0
 			this._rect_index[i + 1] = j + 1
 			this._rect_index[i + 2] = j + 2
@@ -142,16 +140,16 @@ Studio.Stage.prototype.WEBGL = {
 		}
 		gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this._rect_index_buffer)
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._rect_index, gl.STATIC_DRAW)
-		this._r_count = 0
 	},
 	render:  function(lag) {
 		this.ctx._count = 0
+		this.draws = 0
 		// this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
-		this.vertex_children(this.ctx, lag, this.interpolate)
+		this.vertex_children(this, lag, this.interpolate)
 		this.ctx.bufferData(this.ctx.ARRAY_BUFFER, this.ctx._batch, this.ctx.DYNAMIC_DRAW)
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
 		// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);
-		this.ctx.drawElements(this.ctx.TRIANGLES, (this.ctx._count/32) * 6, this.ctx.UNSIGNED_SHORT, 0)
+		this.ctx.drawElements(this.ctx.TRIANGLES, (this.ctx._count/36) * 6, this.ctx.UNSIGNED_SHORT, 0)
 
 	}
 }

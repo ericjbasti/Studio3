@@ -44,22 +44,18 @@ Studio.Box.prototype = {
 			y: this.BR.y
 		}
 	},
-	_buildPoint : function(who,x,y){
-		
-	},
 	get_rotated_bounds: function(who) {
-		var sin = Math.sin(who.angle)
-		var cos = Math.cos(who.angle)
+		var sin = Math.sin(who._dAngle)
+		var cos = Math.cos(who._dAngle)
 
 		var a = (who._world.width * who.anchorX)
 		var b = (who._world.height * who.anchorY)
 
-		this.left = -a
-		this.right = this.left + who._world.width
-		this.top = -b
+		this.left 	= -a
+		this.right 	= this.left + who._world.width
+		this.top 	= -b
 		this.bottom = this.top + who._world.height
 
-		this._buildPoint()
 		this.TL.x = who._dx + ((this.left * cos) - (this.top * sin))
 		this.TL.y = who._dy + ((this.left * sin) + (this.top * cos))
 

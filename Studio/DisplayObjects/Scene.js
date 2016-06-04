@@ -12,6 +12,7 @@ Studio.Scene = function(attr) {
 	this.buttons = []
 	this.tweens = Object.create(null)
 	this.tween_length = 0
+	this.trails = true
 	if (attr) {
 		this.apply(attr)
 	}
@@ -64,7 +65,7 @@ Studio.Scene.prototype.draw = function(ctx) {
 			ctx.clearRect(this._dx, this._dy, this.width, this.height)
 			return
 		}
-		if (this.color.a < 1) {
+		if (this.color.a < 1 && !this.trails) {
 			ctx.clearRect(this._dx, this._dy, this.width, this.height)
 		}
 		this.setStyle(ctx)

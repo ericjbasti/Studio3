@@ -15,11 +15,11 @@ Studio.inherit(Studio.Rect, Studio.DisplayObject)
 Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	gl._batch[gl._count++] = x
 	gl._batch[gl._count++] = y
-
+	gl._batch[gl._count++] = z
 	gl._batch[gl._count++] = this.color.r
 	gl._batch[gl._count++] = this.color.g
 	gl._batch[gl._count++] = this.color.b
-	gl._batch[gl._count++] = this.color.a
+	gl._batch[gl._count++] = this.color.a*this._world.alpha
 	gl._batch[gl._count++] = tx
 	gl._batch[gl._count++] = ty
 
@@ -36,17 +36,18 @@ Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
 	// gl._count+=8;
 }
 
-Studio.Rect.prototype.buildElement = function(gl, ratio, interpolate) {
+Studio.Rect.prototype.buildElement = function(stage, ratio, interpolate) {
+	stage.draws++
 	if (interpolate) {
 		this._delta(ratio)
 	} else {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	this.addVert(gl, this._boundingBox.TL.x, this._boundingBox.TL.y, this._world.z, 10, 0)
-	this.addVert(gl, this._boundingBox.TR.x, this._boundingBox.TR.y, this._world.z, 10, 0)
-	this.addVert(gl, this._boundingBox.BL.x, this._boundingBox.BL.y, this._world.z, 10, 0)
-	this.addVert(gl, this._boundingBox.BR.x, this._boundingBox.BR.y, this._world.z, 10, 0)
+	this.addVert(stage.ctx, this._boundingBox.TL.x, this._boundingBox.TL.y, stage.draws*-.0000001, 10, 0)
+	this.addVert(stage.ctx, this._boundingBox.TR.x, this._boundingBox.TR.y, stage.draws*-.0000001, 10, 0)
+	this.addVert(stage.ctx, this._boundingBox.BL.x, this._boundingBox.BL.y, stage.draws*-.0000001, 10, 0)
+	this.addVert(stage.ctx, this._boundingBox.BR.x, this._boundingBox.BR.y, stage.draws*-.0000001, 10, 0)
 	// this.vertex_children(gl,ratio,interpolate)
 }
 
