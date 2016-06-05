@@ -21,7 +21,7 @@ Studio.Stage = function(domID, attr) {
 	this.tweens = Object.create(null)
 	this._getCanvasElement(domID)
 	this._count = 0
-	this._maxCount = 16333
+	this._maxCount = 16383
 	this.dur = 1000 / 60
 	this._d = this.dur / 2
 	this.resolution = window.devicePixelRatio // defaults to device setting.

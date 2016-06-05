@@ -51,9 +51,12 @@ Studio.Stage.prototype.WEBGL = {
 			stencil: this.WEBGL.stencil
 		})
 	},
+	newBatch: function(gl,name){
+		gl._rects = new Float32Array(16384 * 32)
+	},
 	init: function(gl) {
 		gl._count = 0
-		gl._batch = new Float32Array(16384 * 32)
+		gl._batch = new Float32Array(16384 * 36)
 		gl.clearColor(this.color.r, this.color.g, this.color.b, this.color.a)
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		this.vertexShader = gl.createShader(gl.VERTEX_SHADER)
@@ -81,7 +84,6 @@ Studio.Stage.prototype.WEBGL = {
 		gl.useProgram(this.program)
 
 		this.buffer = gl.createBuffer()
-
 		this.prepTexture = function GL_prepTexture(gl) {
 			this._texture = gl.createTexture()
 			gl.bindTexture(gl.TEXTURE_2D, stage._texture)
@@ -103,6 +105,10 @@ Studio.Stage.prototype.WEBGL = {
 	},
 
 	prep: function(gl) {
+		this.texture_buffers = {
+
+		}
+
 		gl.resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
 
 		gl.enableVertexAttribArray(0)
