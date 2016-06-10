@@ -12,16 +12,54 @@ Studio.Rect = function(attr) {
 
 Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
-Studio.Rect.prototype.addVert = function(gl, x, y, z, tx, ty) {
-	gl._batch[gl._count++] = x
-	gl._batch[gl._count++] = y
-	gl._batch[gl._count++] = z
-	gl._batch[gl._count++] = this.color.r
-	gl._batch[gl._count++] = this.color.g
-	gl._batch[gl._count++] = this.color.b
-	gl._batch[gl._count++] = this.color.a*this._world.alpha
-	gl._batch[gl._count++] = tx
-	gl._batch[gl._count++] = ty
+
+Studio.BufferGL = function(image,size){
+	var size = size || 16384
+	this.data = new Float32Array(size * 36)
+	this.count = 0
+	this.texture = image;
+}
+Studio.BufferGL.prototype.constructor = Studio.BufferGL
+
+Studio.BufferGL.prototype.draw = function(gl){
+	if(this.texture){
+		this.setTexture(gl, 1)
+		gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
+		gl.drawElements(gl.TRIANGLES, (this.count/36) * 6, gl.UNSIGNED_SHORT, 0)
+	}
+	this.count = 0
+}
+
+Studio.BufferGL.prototype.prepTexture = function GL_prepTexture(gl) {
+	this._texture = gl.createTexture()
+	gl.bindTexture(gl.TEXTURE_2D, this._texture)
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
+
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+}
+Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
+	if (!this._texture) {
+		this.prepTexture(gl)
+	}
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.image)
+	if (mipmap) {
+		gl.generateMipmap(gl.TEXTURE_2D)
+	}
+}
+
+
+Studio.Rect.prototype.addVert = function(buffer, x, y, z, tx, ty) {
+	buffer.data[buffer.count++] = x
+	buffer.data[buffer.count++] = y
+	buffer.data[buffer.count++] = z
+	buffer.data[buffer.count++] = this.color.r
+	buffer.data[buffer.count++] = this.color.g
+	buffer.data[buffer.count++] = this.color.b
+	buffer.data[buffer.count++] = this.color.a*this._world.alpha
+	buffer.data[buffer.count++] = tx
+	buffer.data[buffer.count++] = ty
 
 	// this.subBuffer[0] = x;
 	// this.subBuffer[1] = y
@@ -44,10 +82,10 @@ Studio.Rect.prototype.buildElement = function(stage, ratio, interpolate) {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	this.addVert(stage.ctx, this._boundingBox.TL.x, this._boundingBox.TL.y, stage.draws*-.0000001, 10, 0)
-	this.addVert(stage.ctx, this._boundingBox.TR.x, this._boundingBox.TR.y, stage.draws*-.0000001, 10, 0)
-	this.addVert(stage.ctx, this._boundingBox.BL.x, this._boundingBox.BL.y, stage.draws*-.0000001, 10, 0)
-	this.addVert(stage.ctx, this._boundingBox.BR.x, this._boundingBox.BR.y, stage.draws*-.0000001, 10, 0)
+	this.addVert(stage.rect_buffer, this._boundingBox.TL.x, this._boundingBox.TL.y, stage.draws*-.0000001, 10, 0)
+	this.addVert(stage.rect_buffer, this._boundingBox.TR.x, this._boundingBox.TR.y, stage.draws*-.0000001, 10, 0)
+	this.addVert(stage.rect_buffer, this._boundingBox.BL.x, this._boundingBox.BL.y, stage.draws*-.0000001, 10, 0)
+	this.addVert(stage.rect_buffer, this._boundingBox.BR.x, this._boundingBox.BR.y, stage.draws*-.0000001, 10, 0)
 	// this.vertex_children(gl,ratio,interpolate)
 }
 

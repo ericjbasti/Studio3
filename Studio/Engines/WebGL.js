@@ -45,7 +45,7 @@ Studio.Stage.prototype.WEBGL = {
 	stencil: true,
 
 	getContext: function() {
-		this.ctx = this.canvas.getContext('webgl', {
+		this.ctx = this.canvas.getContext(Studio.browser_info.webGL, {
 			antialias: this.WEBGL.antialias ,
 			premultipliedAlpha: this.WEBGL.premultipliedAlpha ,
 			stencil: this.WEBGL.stencil
@@ -55,9 +55,9 @@ Studio.Stage.prototype.WEBGL = {
 		gl._rects = new Float32Array(16384 * 32)
 	},
 	init: function(gl) {
-		gl._count = 0
-		gl._batch = new Float32Array(16384 * 36)
-		gl.clearColor(this.color.r, this.color.g, this.color.b, this.color.a)
+		this._count = 0
+		this.rect_buffer = new Studio.BufferGL()
+		gl.clearColor(0,0,0,1)
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		this.vertexShader = gl.createShader(gl.VERTEX_SHADER)
 		this.loadShader(this.vertexShader , VERTEXSHADER)
@@ -84,31 +84,10 @@ Studio.Stage.prototype.WEBGL = {
 		gl.useProgram(this.program)
 
 		this.buffer = gl.createBuffer()
-		this.prepTexture = function GL_prepTexture(gl) {
-			this._texture = gl.createTexture()
-			gl.bindTexture(gl.TEXTURE_2D, stage._texture)
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
-			gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
-		}
-		this.setTexture = function GL_setTexture(image, mipmap) {
-			if (!this._texture) {
-				this.prepTexture(this.ctx)
-			}
-			this.ctx.texImage2D(this.ctx.TEXTURE_2D, 0, this.ctx.RGBA, this.ctx.RGBA, this.ctx.UNSIGNED_BYTE, image.image)
-			if (mipmap) {
-				this.ctx.generateMipmap(this.ctx.TEXTURE_2D)
-			}
-		}
 	},
 
 	prep: function(gl) {
-		this.texture_buffers = {
-
-		}
-
+		this.buffers = {};
 		gl.resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
 
 		gl.enableVertexAttribArray(0)
@@ -122,7 +101,6 @@ Studio.Stage.prototype.WEBGL = {
 		gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
 
 		gl.uniform2f(gl.resolutionLocation, this.width, this.height)
-
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
 
 		gl.enableVertexAttribArray(gl.positionLocation)
@@ -148,14 +126,16 @@ Studio.Stage.prototype.WEBGL = {
 		gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this._rect_index, gl.STATIC_DRAW)
 	},
 	render:  function(lag) {
-		this.ctx._count = 0
+		this._count = 0
 		this.draws = 0
 		// this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
 		this.vertex_children(this, lag, this.interpolate)
-		this.ctx.bufferData(this.ctx.ARRAY_BUFFER, this.ctx._batch, this.ctx.DYNAMIC_DRAW)
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
-		// gl.drawArrays(gl.TRIANGLES, 0, this.children.length*6);
-		this.ctx.drawElements(this.ctx.TRIANGLES, (this.ctx._count/36) * 6, this.ctx.UNSIGNED_SHORT, 0)
+		this.rect_buffer.draw(this.ctx);
+
+		for(var i in this.buffers){
+			this.buffers[i].draw(this.ctx)
+		}
 
 	}
 }

@@ -40,6 +40,19 @@
 
 // @codekit-append "Studio/Components/Sound.js"
 
+
+var getWebGLContextType = function(){
+	var canvas = document.createElement('canvas');
+	if(canvas.getContext('webgl')){
+		return 'webgl';
+	}
+	if(canvas.getContext('experimental-webgl')){
+		return 'experimental-webgl';
+	}
+	return false;
+
+}
+
 var Studio = Studio || {
 	stages: [],
 	_current_stage: null,
@@ -59,7 +72,7 @@ var Studio = Studio || {
 	RAF: null,
 	browser_info: {
 		type: navigator.userAgent.toLowerCase(),
-		webGL: document.createElement('canvas').getContext('webgl') !== null,
+		webGL: getWebGLContextType(),
 	},
 	_temp: {}
 }

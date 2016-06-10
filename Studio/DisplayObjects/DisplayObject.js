@@ -72,7 +72,6 @@ Studio.DisplayObject.prototype = {
 	__update_ROTATION: true,
 	addChild: function(child) {
 		// Adds a child to this object
-
 		if (!this.hasOwnProperty('children')) {
 			this.children = [] // if we didn't use 'hasOwnProperty', we would learn that JS treats [] like pointers and in this particular case will cause a crash.
 		}
@@ -333,11 +332,11 @@ Studio.DisplayObject.prototype = {
 			this._dheight = this.__delta(this.__height, this._world.height, ratio)
 		}
 	},
-	// __deltaRotation: function(ratio) {
-	// 	if (this._world.rotation) {
-	// 		this._dAngle = this.__delta(this._world.angle, this.angle, ratio)
-	// 	}
-	// },
+	__deltaRotation: function(ratio) {
+		if (this._world.rotation) {
+			this._dAngle = this.__delta(this._world.angle, this.angle, ratio)
+		}
+	},
 	__delta: function(snap, cur, ratio) {
 		return snap + ((cur - snap) * ratio)
 	},
