@@ -17,16 +17,22 @@ Studio.BufferGL = function(image,size){
 	var size = size || 16384
 	this.data = new Float32Array(size * 36)
 	this.count = 0
-	this.texture = image;
+	this.texture = image || null;
 }
 Studio.BufferGL.prototype.constructor = Studio.BufferGL
 
-Studio.BufferGL.prototype.draw = function(gl){
-	if(this.texture){
-		this.setTexture(gl, 1)
-		gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
-		gl.drawElements(gl.TRIANGLES, (this.count/36) * 6, gl.UNSIGNED_SHORT, 0)
+Studio.BufferGL.prototype.draw = function(gl, c){
+	if(!this.count){
+		return;
 	}
+	if(!this._texture){
+		this.setTexture(gl, 1)
+	}
+	if(this._texture){
+		gl.bindTexture(gl.TEXTURE_2D, this._texture)
+	}
+	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.STATIC_DRAW)
+	gl.drawElements(gl.TRIANGLES, (this.count/6), gl.UNSIGNED_SHORT, 0)
 	this.count = 0
 }
 
@@ -39,6 +45,7 @@ Studio.BufferGL.prototype.prepTexture = function GL_prepTexture(gl) {
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
 }
+
 Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 	if (!this._texture) {
 		this.prepTexture(gl)

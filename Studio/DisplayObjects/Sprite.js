@@ -33,11 +33,11 @@ Studio.Sprite.prototype.drawAngled = function(ctx) {
 Studio.Sprite.prototype.buildElement = function(stage, ratio, interpolate) {
 	if(!stage.buffers[this.image.path]){
 
-			stage.buffers[this.image.path] = new Studio.BufferGL(this.image);
+			stage.buffers[this.image.path] = new Studio.BufferGL(this.image,0,stage.ctx);
 		
 	}
-
 	stage.draws++
+
 	if (interpolate) {
 		this._delta(ratio)
 	} else {

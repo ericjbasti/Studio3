@@ -56,18 +56,15 @@ Studio.Stage.prototype.WEBGL = {
 	},
 	init: function(gl) {
 		this._count = 0
-		this.rect_buffer = new Studio.BufferGL()
+		this.rect_buffer = new Studio.BufferGL(null,0,gl)
 		gl.clearColor(0,0,0,1)
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		this.vertexShader = gl.createShader(gl.VERTEX_SHADER)
 		this.loadShader(this.vertexShader , VERTEXSHADER)
-		// gl.shaderSource(this.vertexShader,Studio.STANDARD_VERT_SHADER)
-		gl.compileShader(this.vertexShader)
+		
 
 		this.fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
 		this.loadShader(this.fragmentShader , FRAGMENTSHADER)
-		// gl.shaderSource(this.fragmentShader,Studio.STANDARD_FRAG_SHADER)
-		gl.compileShader(this.fragmentShader)
 
 		gl.enable(gl.DEPTH_TEST);
 		gl.depthFunc(gl.LESS);
@@ -79,15 +76,17 @@ Studio.Stage.prototype.WEBGL = {
 		gl.attachShader(this.program, this.vertexShader)
 		gl.attachShader(this.program, this.fragmentShader)
 
+		gl.compileShader(this.vertexShader)
+		gl.compileShader(this.fragmentShader)
+
 		gl.linkProgram(this.program)
 
 		gl.useProgram(this.program)
-
-		this.buffer = gl.createBuffer()
 	},
 
 	prep: function(gl) {
 		this.buffers = {};
+
 		gl.resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
 
 		gl.enableVertexAttribArray(0)
@@ -101,6 +100,8 @@ Studio.Stage.prototype.WEBGL = {
 		gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
 
 		gl.uniform2f(gl.resolutionLocation, this.width, this.height)
+
+		this.buffer = gl.createBuffer()
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
 
 		gl.enableVertexAttribArray(gl.positionLocation)
@@ -132,9 +133,10 @@ Studio.Stage.prototype.WEBGL = {
 		this.vertex_children(this, lag, this.interpolate)
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
 		this.rect_buffer.draw(this.ctx);
-
+		var c = 0;
 		for(var i in this.buffers){
-			this.buffers[i].draw(this.ctx)
+			this.buffers[i].draw(this.ctx,c)
+			c++
 		}
 
 	}
