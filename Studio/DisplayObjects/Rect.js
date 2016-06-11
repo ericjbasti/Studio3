@@ -14,7 +14,7 @@ Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
 
 Studio.BufferGL = function(image,size){
-	var size = size || 16384
+	var size = size || 6000
 	this.data = new Float32Array(size * 36)
 	this.count = 0
 	this.texture = image || null;
@@ -25,14 +25,21 @@ Studio.BufferGL.prototype.draw = function(gl, c){
 	if(!this.count){
 		return;
 	}
-	if(!this._texture){
+	if(!this._texture && this.texture){
 		this.setTexture(gl, 1)
 	}
 	if(this._texture){
 		gl.bindTexture(gl.TEXTURE_2D, this._texture)
 	}
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
+	gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, gl.FALSE, 36, 0)
+	gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, gl.FALSE, 36, (3)*4)
+	gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, gl.FALSE, 36, (3+4)*4)
+		
 	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.STATIC_DRAW)
-	gl.drawElements(gl.TRIANGLES, (this.count/6), gl.UNSIGNED_SHORT, 0)
+
+
+	gl.drawElements(gl.TRIANGLES, this.count/6, gl.UNSIGNED_SHORT, 0)
 	this.count = 0
 }
 
@@ -44,12 +51,16 @@ Studio.BufferGL.prototype.prepTexture = function GL_prepTexture(gl) {
 
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
 	gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
+
+
+	this.buffer = gl.createBuffer()
 }
 
 Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 	if (!this._texture) {
 		this.prepTexture(gl)
 	}
+	if(this.texture)
 	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.image)
 	if (mipmap) {
 		gl.generateMipmap(gl.TEXTURE_2D)
