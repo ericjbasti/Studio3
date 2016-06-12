@@ -132,7 +132,7 @@ Studio.Stage.prototype.WEBGL = {
 		// this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
 		this.vertex_children(this, lag, this.interpolate)
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
-		// this.rect_buffer.draw(this.ctx);
+		this.rect_buffer.draw(this.ctx);
 		for(var i in this.buffers){
 			this.buffers[i].draw(this.ctx)
 		}

@@ -5,6 +5,7 @@
 Studio.Rect = function(attr) {
 	this.color = new Studio.Color(255, 255, 255, 1)
 	// this.subBuffer = new Float32Array(8)
+	this.dirty = 0;
 	if (attr) {
 		this.apply(attr)
 	}
@@ -14,7 +15,7 @@ Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
 
 Studio.BufferGL = function(image,size){
-	var size = size || 6000
+	var size = size || 9000
 	this.data = new Float32Array(size * 36)
 	this.count = 0
 	this.texture = image || null;
@@ -31,14 +32,8 @@ Studio.BufferGL.prototype.draw = function(gl, c){
 	if(this._texture){
 		gl.bindTexture(gl.TEXTURE_2D, this._texture)
 	}
-	gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
-	gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, gl.FALSE, 36, 0)
-	gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, gl.FALSE, 36, (3)*4)
-	gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, gl.FALSE, 36, (3+4)*4)
-		
-	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.STATIC_DRAW)
-
-
+	//gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.data);
+	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
 	gl.drawElements(gl.TRIANGLES, this.count/6, gl.UNSIGNED_SHORT, 0)
 	this.count = 0
 }
@@ -54,6 +49,11 @@ Studio.BufferGL.prototype.prepTexture = function GL_prepTexture(gl) {
 
 
 	this.buffer = gl.createBuffer()
+	gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
+	gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, gl.FALSE, 36, 0)
+	gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, gl.FALSE, 36, (3)*4)
+	gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, gl.FALSE, 36, (3+4)*4)
+	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
 }
 
 Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
@@ -67,17 +67,40 @@ Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 	}
 }
 
+Studio.Rect.prototype.addXYZ = function(buffer,point){
+	buffer.data[buffer.count++] = point.x
+	buffer.data[buffer.count++] = point.y
+	buffer.data[buffer.count++] = stage.draws*-.00001
+}
 
-Studio.Rect.prototype.addVert = function(buffer, x, y, z, tx, ty) {
+Studio.Rect.prototype.addRGBA = function(buffer,color){
+	buffer.data[buffer.count++] = color.r
+	buffer.data[buffer.count++] = color.g
+	buffer.data[buffer.count++] = color.b
+	buffer.data[buffer.count++] = color.a*this._world.alpha
+}
+Studio.Rect.prototype.addTX = function(buffer,x,y){
 	buffer.data[buffer.count++] = x
 	buffer.data[buffer.count++] = y
-	buffer.data[buffer.count++] = z
-	buffer.data[buffer.count++] = this.color.r
-	buffer.data[buffer.count++] = this.color.g
-	buffer.data[buffer.count++] = this.color.b
-	buffer.data[buffer.count++] = this.color.a*this._world.alpha
-	buffer.data[buffer.count++] = tx
-	buffer.data[buffer.count++] = ty
+}
+
+Studio.Rect.prototype.addVert = function(buffer, point, tx,ty) {
+
+	// buffer.data[buffer.count++] = x
+	// buffer.data[buffer.count++] = y
+	// buffer.data[buffer.count++] = z
+	this.addXYZ(buffer,point)
+	this.addRGBA(buffer,this.color)
+	this.addTX(buffer,tx,ty)
+
+	// buffer.data[buffer.count++] = this.color.r
+	// buffer.data[buffer.count++] = this.color.g
+	// buffer.data[buffer.count++] = this.color.b
+	// buffer.data[buffer.count++] = this.color.a*this._world.alpha
+
+
+
+	// this.addTX(this.image.sliceGL[this.slice]);
 
 	// this.subBuffer[0] = x;
 	// this.subBuffer[1] = y
@@ -92,6 +115,20 @@ Studio.Rect.prototype.addVert = function(buffer, x, y, z, tx, ty) {
 	// gl._count+=8;
 }
 
+Studio.Rect.prototype.verts = function(box){
+	var buffer = stage.buffers[this.image.path];
+	var text = this.image.sliceGL[this.slice];
+	// this.addVert(stage.buffers[this.image.path], box.TL.x, box.TL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
+	// this.addVert(stage.buffers[this.image.path], box.TR.x, box.TR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
+	// this.addVert(stage.buffers[this.image.path], box.BL.x, box.BL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
+	// this.addVert(stage.buffers[this.image.path], box.BR.x, box.BR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
+	this.addVert(buffer,box.TL,text.x,text.y)
+	this.addVert(buffer,box.TR,text.width,text.y)
+	this.addVert(buffer,box.BL,text.x,text.height)
+	this.addVert(buffer,box.BR,text.width,text.height)
+}
+
+
 Studio.Rect.prototype.buildElement = function(stage, ratio, interpolate) {
 	stage.draws++
 	if (interpolate) {
@@ -100,11 +137,8 @@ Studio.Rect.prototype.buildElement = function(stage, ratio, interpolate) {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	this.addVert(stage.rect_buffer, this._boundingBox.TL.x, this._boundingBox.TL.y, stage.draws*-.0000001, 10, 0)
-	this.addVert(stage.rect_buffer, this._boundingBox.TR.x, this._boundingBox.TR.y, stage.draws*-.0000001, 10, 0)
-	this.addVert(stage.rect_buffer, this._boundingBox.BL.x, this._boundingBox.BL.y, stage.draws*-.0000001, 10, 0)
-	this.addVert(stage.rect_buffer, this._boundingBox.BR.x, this._boundingBox.BR.y, stage.draws*-.0000001, 10, 0)
-	// this.vertex_children(gl,ratio,interpolate)
+	
+	this.verts(this._boundingBox)
 }
 
 Studio.Rect.prototype.buildTriangles = function(gl, ratio) {

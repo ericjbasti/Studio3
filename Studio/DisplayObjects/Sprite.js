@@ -44,10 +44,8 @@ Studio.Sprite.prototype.buildElement = function(stage, ratio, interpolate) {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	this.addVert(stage.buffers[this.image.path], this._boundingBox.TL.x, this._boundingBox.TL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
-	this.addVert(stage.buffers[this.image.path], this._boundingBox.TR.x, this._boundingBox.TR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
-	this.addVert(stage.buffers[this.image.path], this._boundingBox.BL.x, this._boundingBox.BL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
-	this.addVert(stage.buffers[this.image.path], this._boundingBox.BR.x, this._boundingBox.BR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
+	
+	this.verts(this._boundingBox)
 }
 
 Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
