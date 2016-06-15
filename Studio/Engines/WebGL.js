@@ -40,7 +40,7 @@ Studio.Stage.prototype.WEBGL = {
 
 	type: 'webgl',
 
-	antialias: false,
+	antialias: true,
 	premultipliedAlpha: false,
 	stencil: true,
 

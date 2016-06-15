@@ -30,6 +30,19 @@ Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.restore()
 }
 
+Studio.Sprite.prototype.verts = function(box){
+	var buffer = stage.buffers[this.image.path];
+	var text = this.image.sliceGL[this.slice];
+	// this.addVert(stage.buffers[this.image.path], box.TL.x, box.TL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
+	// this.addVert(stage.buffers[this.image.path], box.TR.x, box.TR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
+	// this.addVert(stage.buffers[this.image.path], box.BL.x, box.BL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
+	// this.addVert(stage.buffers[this.image.path], box.BR.x, box.BR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
+	this.addVert(buffer,box.TL,text.x,text.y)
+	this.addVert(buffer,box.TR,text.width,text.y)
+	this.addVert(buffer,box.BL,text.x,text.height)
+	this.addVert(buffer,box.BR,text.width,text.height)
+}
+
 Studio.Sprite.prototype.buildElement = function(stage, ratio, interpolate) {
 	if(!stage.buffers[this.image.path]){
 

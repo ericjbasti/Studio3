@@ -15,24 +15,24 @@ Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
 
 Studio.BufferGL = function(image,size){
-	var size = size || 9000
+	var size = size || 3000
 	this.data = new Float32Array(size * 36)
 	this.count = 0
 	this.texture = image || null;
 }
 Studio.BufferGL.prototype.constructor = Studio.BufferGL
 
-Studio.BufferGL.prototype.draw = function(gl, c){
+Studio.BufferGL.prototype.draw = function(gl){
 	if(!this.count){
 		return;
 	}
 	if(!this._texture && this.texture){
 		this.setTexture(gl, 1)
 	}
-	if(this._texture){
+	if(this.texture){
 		gl.bindTexture(gl.TEXTURE_2D, this._texture)
 	}
-	//gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.data);
+	// gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.data);
 	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
 	gl.drawElements(gl.TRIANGLES, this.count/6, gl.UNSIGNED_SHORT, 0)
 	this.count = 0
@@ -60,10 +60,11 @@ Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 	if (!this._texture) {
 		this.prepTexture(gl)
 	}
-	if(this.texture)
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.image)
-	if (mipmap) {
-		gl.generateMipmap(gl.TEXTURE_2D)
+	if(this.texture){
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.image)
+		if (mipmap) {
+			gl.generateMipmap(gl.TEXTURE_2D)
+		}
 	}
 }
 
@@ -85,47 +86,17 @@ Studio.Rect.prototype.addTX = function(buffer,x,y){
 }
 
 Studio.Rect.prototype.addVert = function(buffer, point, tx,ty) {
-
-	// buffer.data[buffer.count++] = x
-	// buffer.data[buffer.count++] = y
-	// buffer.data[buffer.count++] = z
 	this.addXYZ(buffer,point)
 	this.addRGBA(buffer,this.color)
 	this.addTX(buffer,tx,ty)
-
-	// buffer.data[buffer.count++] = this.color.r
-	// buffer.data[buffer.count++] = this.color.g
-	// buffer.data[buffer.count++] = this.color.b
-	// buffer.data[buffer.count++] = this.color.a*this._world.alpha
-
-
-
-	// this.addTX(this.image.sliceGL[this.slice]);
-
-	// this.subBuffer[0] = x;
-	// this.subBuffer[1] = y
-	// this.subBuffer[2] = this.color.r
-	// this.subBuffer[3] = this.color.g
-	// this.subBuffer[4] = this.color.b
-	// this.subBuffer[5] = this.color.a
-	// this.subBuffer[6] = tx
-	// this.subBuffer[7] = ty
-
-	// gl.bufferSubData(gl.ARRAY_BUFFER, (gl._count-8)*4, this.subBuffer)
-	// gl._count+=8;
 }
 
 Studio.Rect.prototype.verts = function(box){
-	var buffer = stage.buffers[this.image.path];
-	var text = this.image.sliceGL[this.slice];
-	// this.addVert(stage.buffers[this.image.path], box.TL.x, box.TL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].y)
-	// this.addVert(stage.buffers[this.image.path], box.TR.x, box.TR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].y)
-	// this.addVert(stage.buffers[this.image.path], box.BL.x, box.BL.y, stage.draws*-.00001, this.image.sliceGL[this.slice].x, this.image.sliceGL[this.slice].height)
-	// this.addVert(stage.buffers[this.image.path], box.BR.x, box.BR.y, stage.draws*-.00001, this.image.sliceGL[this.slice].width, this.image.sliceGL[this.slice].height)
-	this.addVert(buffer,box.TL,text.x,text.y)
-	this.addVert(buffer,box.TR,text.width,text.y)
-	this.addVert(buffer,box.BL,text.x,text.height)
-	this.addVert(buffer,box.BR,text.width,text.height)
+	var buffer = stage.rect_buffer;
+	this.addVert(buffer,box.TL,10,0)
+	this.addVert(buffer,box.TR,10,0)
+	this.addVert(buffer,box.BL,10,0)
+	this.addVert(buffer,box.BR,10,10)
 }
 
 
