@@ -73,6 +73,7 @@ var Studio = Studio || {
 	browser_info: {
 		type: navigator.userAgent.toLowerCase(),
 		webGL: getWebGLContextType(),
+		iOS : (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream)
 	},
 	_temp: {}
 }

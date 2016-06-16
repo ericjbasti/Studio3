@@ -45,6 +45,11 @@ Studio.Stage.prototype.WEBGL = {
 	stencil: true,
 
 	getContext: function() {
+		if(Studio.browser_info.iOS){
+			this.WEBGL.antialias= true;
+		}else{
+			this.WEBGL.antialias= false;
+		}
 		this.ctx = this.canvas.getContext(Studio.browser_info.webGL, {
 			antialias: this.WEBGL.antialias ,
 			premultipliedAlpha: this.WEBGL.premultipliedAlpha ,
