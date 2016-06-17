@@ -1,6 +1,6 @@
 Studio.Cache = function(width, height, resolution) {
 	var resolution = resolution || 1
-
+	this.path = 'cache_'+parseInt(Math.random()*999999999)
 	this.image = document.createElement('canvas')
 	this.image.width = width * resolution || 512
 	this.image.height = height * resolution || 512
