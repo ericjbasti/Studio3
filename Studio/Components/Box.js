@@ -29,7 +29,7 @@ Studio.Box.prototype = {
 		this.b = who._dy
 		this.TL = {
 			x: this.a - who._world.width * who.anchorX,
-			y: this.b - who._world.width * who.anchorY
+			y: this.b - who._world.height * who.anchorY
 		}
 		this.TR = {
 			x: this.TL.x + who._world.width,
