@@ -4,23 +4,25 @@ Studio.TextBox = function(width, height, stage) {
 	this.height = height
 	this.width = width
 	this.shadow = 1
-	this.shadowColor = 'rgba(0,0,0,0.5)'
+	this.shadowColor = 'rgba(255,0,0,0.5)'
 	this.cache = new Studio.Cache(width,height, stage.resolution)
 
 	this.cache.ctx.textBaseline = 'top'
 	this.cache.ctx.font = this.font
 
 	this.text = ''
-	this.color = '#fff'
+	this.color = new Studio.Color(255,255,255,1)
+	this.fontColor = '#fff'
 	this._wrap_height = this.lineHeight
 	this.horizontal_align = Studio.LEFT
 	this.vertical_align = Studio.TOP
 	this._vertical_align = 0
 
+
 	return this
 }
 
-Studio.inherit(Studio.TextBox, Studio.Rect)
+Studio.inherit(Studio.TextBox, Studio.Sprite)
 
 Studio.TextBox.prototype.setFont = function(font) {
 	this.font = font
@@ -33,7 +35,7 @@ Studio.TextBox.prototype.setText = function(text) {
 }
 
 Studio.TextBox.prototype.setColor = function(color) {
-	this.color = color
+	this.fontColor = color
 	return this
 }
 
@@ -57,7 +59,7 @@ Studio.TextBox.prototype.writeLine = function(text, x, y) {
 		this.cache.ctx.fillStyle = this.shadowColor
 		this.cache.ctx.fillText(text, x + 1 + this.shadow, y + this.shadow)
 	}
-	this.cache.ctx.fillStyle = this.color
+	this.cache.ctx.fillStyle = this.fontColor
 	this.cache.ctx.fillText(text, x + 1, y)
 }
 
@@ -119,4 +121,28 @@ Studio.TextBox.prototype.draw = function(ctx) {
 	} else {
 		ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY) - this._vertical_align, this._dwidth, this._dheight)
 	}
+}
+
+Studio.TextBox.prototype.verts = function(box, buffer){
+	this.addVert(buffer,box.TL,0,0)
+	this.addVert(buffer,box.TR,1,0)
+	this.addVert(buffer,box.BL,0,1)
+	this.addVert(buffer,box.BR,1,1)
+}
+
+
+Studio.TextBox.prototype.buildElement = function(stage, ratio, interpolate) {
+	if(!stage.buffers[this.cache.path]){
+		stage.buffers[this.cache.path] = new Studio.BufferGL(this.cache,0,stage.ctx);
+	}
+	stage.draws++
+
+	if (interpolate) {
+		this._delta(ratio)
+	} else {
+		this._dset()
+	}
+	this._boundingBox.get_bounds(this)
+	
+	this.verts(this._boundingBox, stage.buffers[this.cache.path])
 }

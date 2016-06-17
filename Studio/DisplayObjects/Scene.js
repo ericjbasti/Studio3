@@ -13,6 +13,8 @@ Studio.Scene = function(attr) {
 	this.tweens = Object.create(null)
 	this.tween_length = 0
 	this.trails = true
+	this.anchorX = 0
+	this.anchorY = 0
 	if (attr) {
 		this.apply(attr)
 	}
@@ -24,7 +26,7 @@ Studio.Scene = function(attr) {
 	}
 }
 
-Studio.inherit(Studio.Scene, Studio.DisplayObject)
+Studio.inherit(Studio.Scene, Studio.Rect)
 
 Studio.Scene.prototype.loadAssets = function() {
 	for (var i = 0; i !== arguments.length; i++) {

@@ -134,9 +134,14 @@ Studio.Stage.prototype.WEBGL = {
 	render:  function(lag) {
 		this._count = 0
 		this.draws = 0
-		// this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
-		this.vertex_children(this, lag, this.interpolate)
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
+
+		// this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
+		if(this.activeScene){
+			this.activeScene.buildElement(this,lag,this.interpolate)
+			this.activeScene.vertex_children(this, lag, this.interpolate)
+		}
+		this.vertex_children(this, lag, this.interpolate)
 		this.rect_buffer.draw(this.ctx);
 		for(var i in this.buffers){
 			this.buffers[i].draw(this.ctx)
