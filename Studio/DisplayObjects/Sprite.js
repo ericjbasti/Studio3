@@ -17,7 +17,7 @@ Studio.inherit(Studio.Sprite, Studio.Rect)
 Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.save()
 	this.prepAngled(ctx)
-	ctx.drawImage(this.image.image,
+	ctx.drawImage(this.image.bitmap,
 		this.image.slice[this.slice].x,
 		this.image.slice[this.slice].y,
 		this.image.slice[this.slice].width,
@@ -65,7 +65,7 @@ Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
 		this.drawAngled(ctx)
 	} else {
 		ctx.drawImage(
-			this.image.image,
+			this.image.bitmap,
 			this.image.slice[this.slice].x,
 			this.image.slice[this.slice].y,
 			this.image.slice[this.slice].width,
@@ -78,7 +78,7 @@ Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
 		if (this.borderlap && this.border) {
 			if (this._dx -  (this._dwidth * this.anchorX) < this.border.x) {
 				ctx.drawImage(
-					this.image.image,
+					this.image.bitmap,
 					this.image.slice[this.slice].x,
 					this.image.slice[this.slice].y,
 					this.image.slice[this.slice].width,
@@ -91,7 +91,7 @@ Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
 			}
 			if ((this._dx + this._world.width) > this.border.width) {
 				ctx.drawImage(
-					this.image.image,
+					this.image.bitmap,
 					this.image.slice[this.slice].x,
 					this.image.slice[this.slice].y,
 					this.image.slice[this.slice].width,
@@ -111,7 +111,7 @@ Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
  */ 
 
 Studio.SpriteAnimation = function(attr) {
-	this.sheet = null
+	this.image = null
 	this.loop = [[0, 0]]
 	this.fps = 12
 	this.frame = 0
@@ -136,22 +136,22 @@ Studio.SpriteAnimation.prototype.setStartingFrame = function(a) {
 }
 
 Studio.SpriteAnimation.prototype.draw = function(ctx) {
-	if (!this.sheet) {
+	if (!this.image) {
 		return
 	}
-	if (!this.sheet.ready) {
+	if (!this.image.ready) {
 		return
 	}
 	this.setAlpha(ctx)
 
-	ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight)
+	ctx.drawImage(this.image.bitmap, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorX), this._dwidth, this._dheight)
 
 	if (this.borderlap && this.border) {
 		if (this._dx -  (this._dwidth * this.anchorX) < this.border.x) {
-			ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this.border.width + this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
+			ctx.drawImage(this.image.bitmap, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this.border.width + this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
 		}
 		if ((this._dx + this._world.width) > this.border.width) {
-			ctx.drawImage(this.sheet.image, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX) - this.border.width, this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
+			ctx.drawImage(this.image.bitmap, this.rect.width * this.sliceX, this.rect.height * this.sliceY, this.rect.width, this.rect.height, this._dx - (this._dwidth * this.anchorX) - this.border.width, this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
 		}
 	}
 	if (this.loop.length) {
@@ -177,4 +177,11 @@ Studio.SpriteAnimation.prototype.updateFrame = function() {
 		}
 	}
 	this.setSlice()
+}
+
+Studio.SpriteAnimation.prototype.verts = function(box, buffer){
+	this.addVert(buffer,box.TL,0,0)
+	this.addVert(buffer,box.TR,1,0)
+	this.addVert(buffer,box.BL,0,1)
+	this.addVert(buffer,box.BR,1,1)
 }

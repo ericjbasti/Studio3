@@ -15,7 +15,7 @@ Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
 
 Studio.BufferGL = function(image,size){
-	var size = size || 9000
+	var size = size || 100
 	this.data = new Float32Array(size * 36)
 	this.count = 0
 	this.texture = image || null;
@@ -61,10 +61,10 @@ Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 		this.prepTexture(gl)
 	}
 	if(this.texture){
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.image)
-		if (mipmap) {
-			gl.generateMipmap(gl.TEXTURE_2D)
-		}
+		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.bitmap)
+		// if (mipmap) {
+		// 	gl.generateMipmap(gl.TEXTURE_2D)
+		// }
 	}
 }
 

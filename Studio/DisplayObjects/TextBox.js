@@ -5,10 +5,10 @@ Studio.TextBox = function(width, height, stage) {
 	this.width = width
 	this.shadow = 1
 	this.shadowColor = 'rgba(255,0,0,0.5)'
-	this.cache = new Studio.Cache(width,height, stage.resolution)
+	this.image = new Studio.Cache(width,height, stage.resolution)
 
-	this.cache.ctx.textBaseline = 'top'
-	this.cache.ctx.font = this.font
+	this.image.ctx.textBaseline = 'top'
+	this.image.ctx.font = this.font
 
 	this.text = ''
 	this.color = new Studio.Color(255,255,255,1)
@@ -40,7 +40,7 @@ Studio.TextBox.prototype.setColor = function(color) {
 }
 
 Studio.TextBox.prototype.setFont = function(font) {
-	this.cache.ctx.font = this.font = font
+	this.image.ctx.font = this.font = font
 	return this
 }
 
@@ -50,17 +50,17 @@ Studio.TextBox.prototype.finish = function() {
 }
 
 Studio.TextBox.prototype.reset = function() {
-	this.cache.ctx.clearRect(0, 0, this.width, this.height)
-	this.cache.ctx.font = this.font
+	this.image.ctx.clearRect(0, 0, this.width, this.height)
+	this.image.ctx.font = this.font
 }
 
 Studio.TextBox.prototype.writeLine = function(text, x, y) {
 	if (this.shadow) {
-		this.cache.ctx.fillStyle = this.shadowColor
-		this.cache.ctx.fillText(text, x + 1 + this.shadow, y + this.shadow)
+		this.image.ctx.fillStyle = this.shadowColor
+		this.image.ctx.fillText(text, x + 1 + this.shadow, y + this.shadow)
 	}
-	this.cache.ctx.fillStyle = this.fontColor
-	this.cache.ctx.fillText(text, x + 1, y)
+	this.image.ctx.fillStyle = this.fontColor
+	this.image.ctx.fillText(text, x + 1, y)
 }
 
 Studio.TextBox.prototype.wrapText = function() {
@@ -71,10 +71,10 @@ Studio.TextBox.prototype.wrapText = function() {
 		var line = ''
 		for (var n = 0; n < words.length; n++) {
 			var testLine = line + words[n] + ' '
-			var metrics = this.cache.ctx.measureText(testLine)
+			var metrics = this.image.ctx.measureText(testLine)
 			var testWidth = metrics.width
 			if (testWidth > this.width && n > 0) {
-				testWidth = this.cache.ctx.measureText(line).width
+				testWidth = this.image.ctx.measureText(line).width
 				// We want to avoid any off pixel font rendering so we use | 0 to prevent floats
 				// also offset everything by 2px because it helps with the centering of text
 				this.writeLine(line, 2 + (this.width - testWidth) * this.horizontal_align | 0 , y)
@@ -84,7 +84,7 @@ Studio.TextBox.prototype.wrapText = function() {
 				line = testLine
 			}
 		}
-		this.writeLine(line, 2 + (this.width - this.cache.ctx.measureText(line).width) * this.horizontal_align | 0, y)
+		this.writeLine(line, 2 + (this.width - this.image.ctx.measureText(line).width) * this.horizontal_align | 0, y)
 		this._wrap_height = y + this.lineHeight
 		if (i !== paragraphs.length - 1) {
 			y += this.lineHeight
@@ -98,7 +98,7 @@ Studio.TextBox.prototype.wrapText = function() {
 }
 
 Studio.TextBox.prototype.fit = function() {
-	this.cache.height = this._wrap_height
+	this.image.height = this._wrap_height
 	this.wrapText()
 }
 
@@ -109,8 +109,17 @@ Studio.TextBox.prototype.debugDraw = function(ctx) {
 Studio.TextBox.prototype.drawAngled = function(ctx) {
 	ctx.save()
 	this.prepAngled(ctx)
-	ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, -(this.width * this.anchorX), -(this.height * this.anchorY) - this._vertical_align, this.width, this.height)
+	ctx.drawImage(this.image.bitmap, 0, 0, this.image.bitmap.width, this.image.bitmap.height, -(this.width * this.anchorX), -(this.height * this.anchorY) - this._vertical_align, this.width, this.height)
 	ctx.restore()
+}
+
+Studio.TextBox.prototype.update_xy= function() {
+	if (this.orbits && this._parent.angle) {
+		this.update_orbit_xy()
+	} else {
+		this._world.x  = ((this.x * this._parent.scaleX) + this._parent.x)
+		this._world.y  = ((this.y * this._parent.scaleY) + this._parent.y) - this._vertical_align 
+	}
 }
 
 Studio.TextBox.prototype.draw = function(ctx) {
@@ -119,7 +128,7 @@ Studio.TextBox.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx)
 	} else {
-		ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY) - this._vertical_align, this._dwidth, this._dheight)
+		ctx.drawImage(this.image.bitmap, 0, 0, this.image.bitmap.width, this.image.bitmap.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
 	}
 }
 
@@ -130,19 +139,3 @@ Studio.TextBox.prototype.verts = function(box, buffer){
 	this.addVert(buffer,box.BR,1,1)
 }
 
-
-Studio.TextBox.prototype.buildElement = function(stage, ratio, interpolate) {
-	if(!stage.buffers[this.cache.path]){
-		stage.buffers[this.cache.path] = new Studio.BufferGL(this.cache,0,stage.ctx);
-	}
-	stage.draws++
-
-	if (interpolate) {
-		this._delta(ratio)
-	} else {
-		this._dset()
-	}
-	this._boundingBox.get_bounds(this)
-	
-	this.verts(this._boundingBox, stage.buffers[this.cache.path])
-}

@@ -27,22 +27,24 @@ Studio.Pattern = function(attr) {
 	if (attr) {
 		this.apply(attr)
 	}
+	this.base_image = this.image;
+
+	this.base_image.addListenerTo('ready','onImageReady', this)
 	this.width = this.width + this.overflowX
 	this.height = this.height + this.overflowY
-	this.cache = new Studio.Cache(this.width, this.height, this.resolution)
-	this._cached = false
-	this.image.addListenerTo('ready','onImageReady', this)
+	this.image = new Studio.Cache(this.width, this.height, this.resolution)
+	this._imaged = false
 	return this
 }
 
-Studio.inherit(Studio.Pattern, Studio.Rect)
+Studio.inherit(Studio.Pattern, Studio.Sprite)
 
 /*
 	setPattern
 */
 
 Studio.Pattern.prototype.setPattern = function() {
-	var slice = this.image.slice[this.slice]
+	var slice = this.base_image.slice[this.slice]
 
 	var width = slice.width * this.scaleX || 0
 	var height = slice.height * this.scaleY  || 0
@@ -54,7 +56,7 @@ Studio.Pattern.prototype.setPattern = function() {
 			if (this.offsetY + height > height) {
 				this.offsetY -= height
 			}
-			this.cache.ctx.drawImage(this.image.image, slice.x, slice.y, slice.width, slice.height, x + this.offsetX,y + this.offsetY, width, height)
+			this.image.ctx.drawImage(this.base_image.bitmap, slice.x, slice.y, slice.width, slice.height, x + this.offsetX,y + this.offsetY, width, height)
 		}
 	}
 	return this
@@ -80,7 +82,7 @@ Studio.Pattern.prototype.checkOverflow = function() {
 	)
 
 	Once the image for this pattern is loaded we can create the pattern.
-	Otherwise the cache is never auto populated.
+	Otherwise the image is never auto populated.
 */
 
 Studio.Pattern.prototype.onImageReady = function(ready) {
@@ -96,7 +98,7 @@ Studio.Pattern.prototype.debugDraw = function(ctx) {
 Studio.Pattern.prototype.drawAngled = function(ctx) {
 	ctx.save()
 	this.prepAngled(ctx)
-	ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, -(this._dwidth * this.anchorX), -(this._dheight * this.anchorY), this._dwidth, this._dheight)
+	ctx.drawImage(this.image.bitmap, 0, 0, this.image.bitmap.width, this.image.bitmap.height, -(this._dwidth * this.anchorX), -(this._dheight * this.anchorY), this._dwidth, this._dheight)
 	ctx.restore()
 }
 
@@ -106,6 +108,12 @@ Studio.Pattern.prototype.draw = function(ctx) {
 	if (this.angle) {
 		this.drawAngled(ctx)
 	} else {
-		ctx.drawImage(this.cache.image, 0, 0, this.cache.image.width, this.cache.image.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
+		ctx.drawImage(this.image.bitmap, 0, 0, this.image.bitmap.width, this.image.bitmap.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
 	}
+}
+Studio.Pattern.prototype.verts = function(box, buffer){
+	this.addVert(buffer,box.TL,0,0)
+	this.addVert(buffer,box.TR,1,0)
+	this.addVert(buffer,box.BL,0,1)
+	this.addVert(buffer,box.BR,1,1)
 }

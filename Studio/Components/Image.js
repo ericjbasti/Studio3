@@ -4,7 +4,7 @@
 
 Studio.Image = function studio_image(path, slices) {
 	this.path = path
-	this.image = null
+	this.bitmap = null
 	this.width = 1
 	this.height = 1
 
@@ -39,7 +39,7 @@ Studio.Image.prototype.width = 1
 Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 	if (Studio.assets[who]) {
 		console.warn('Already loaded : ', who, Studio.assets[who])
-		this.image = Studio.assets[who]
+		this.bitmap = Studio.assets[who]
 		this.ready = true
 		this.sendMessage('ready',this.ready)
 		return this
@@ -60,7 +60,7 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 			return image
 		}
 		Studio.assets[who].src = who
-		this.image = Studio.assets[who]
+		this.bitmap = Studio.assets[who]
 	}
 }
 Studio.Image.prototype.buildSliceForGL = function studio_buildSliceForGL(slice) {
