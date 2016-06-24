@@ -127,7 +127,7 @@ Studio.SpriteAnimation = function(attr) {
 	this.setStartingFrame(this.frame)
 }
 
-Studio.inherit(Studio.SpriteAnimation, Studio.Rect)
+Studio.inherit(Studio.SpriteAnimation, Studio.Sprite)
 
 Studio.SpriteAnimation.prototype.setStartingFrame = function(a) {
 	this.frame = a
@@ -180,8 +180,18 @@ Studio.SpriteAnimation.prototype.updateFrame = function() {
 }
 
 Studio.SpriteAnimation.prototype.verts = function(box, buffer){
-	this.addVert(buffer,box.TL,0,0)
-	this.addVert(buffer,box.TR,1,0)
-	this.addVert(buffer,box.BL,0,1)
-	this.addVert(buffer,box.BR,1,1)
+	var width = this.rect.width/this.image.width
+	var height = this.rect.height/this.image.height
+
+	var left = this.sliceX * width
+	var top  = this.sliceY * height
+
+
+	this.addVert(buffer,box.TL,left,top)
+	this.addVert(buffer,box.TR,left+width,top)
+	this.addVert(buffer,box.BL,left,top+height)
+	this.addVert(buffer,box.BR,left+width,top+height)
+	if (this.loop.length) {
+		this.updateFrame()
+	}
 }

@@ -45,10 +45,10 @@ Studio.Stage.prototype.WEBGL = {
 	stencil: true,
 
 	getContext: function() {
-		if(Studio.browser_info.iOS){
-			this.WEBGL.antialias= true;
-		}else{
-			this.WEBGL.antialias= false;
+		if (Studio.browser_info.iOS) {
+			this.WEBGL.antialias = true
+		} else {
+			this.WEBGL.antialias = false
 		}
 		this.ctx = this.canvas.getContext(Studio.browser_info.webGL, {
 			antialias: this.WEBGL.antialias ,
@@ -56,7 +56,7 @@ Studio.Stage.prototype.WEBGL = {
 			stencil: this.WEBGL.stencil
 		})
 	},
-	newBatch: function(gl,name){
+	newBatch: function(gl, name) {
 		gl._rects = new Float32Array(16384 * 32)
 	},
 	init: function(gl) {
@@ -66,13 +66,12 @@ Studio.Stage.prototype.WEBGL = {
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		this.vertexShader = gl.createShader(gl.VERTEX_SHADER)
 		this.loadShader(this.vertexShader , VERTEXSHADER)
-		
 
 		this.fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
 		this.loadShader(this.fragmentShader , FRAGMENTSHADER)
 
-		gl.enable(gl.DEPTH_TEST);
-		gl.depthFunc(gl.LESS);
+		gl.enable(gl.DEPTH_TEST)
+		gl.depthFunc(gl.LESS)
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 		gl.enable(gl.BLEND)
 		// gl.disable(gl.DEPTH_TEST);
@@ -90,14 +89,14 @@ Studio.Stage.prototype.WEBGL = {
 	},
 
 	prep: function(gl) {
-		this.buffers = {};
+		this.buffers = {}
 
 		gl.resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
 
 		gl.enableVertexAttribArray(0)
 
 		gl.positionLocation = gl.getAttribLocation(this.program, 'a_position')
-		
+
 		gl.bindAttribLocation(this.program, 0, 'a_position')
 
 		gl.colorLocation = gl.getAttribLocation(this.program, 'a_color')
@@ -114,8 +113,8 @@ Studio.Stage.prototype.WEBGL = {
 		gl.enableVertexAttribArray(gl.textureLocation)
 
 		gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, false, 36, 0)
-		gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, false, 36, (3)*4)
-		gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 36, (3+4)*4)
+		gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, false, 36, (3) * 4)
+		gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 36, (3 + 4) * 4)
 
 		this._rect_index_buffer = gl.createBuffer()
 		this._rect_index = new Uint16Array(this._maxCount * 7)
@@ -137,13 +136,13 @@ Studio.Stage.prototype.WEBGL = {
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
 
 		// this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
-		if(this.activeScene){
-			this.activeScene.buildElement(this,lag,this.interpolate)
+		if (this.activeScene) {
+			this.activeScene.buildElement(this, lag, this.interpolate)
 			this.activeScene.vertex_children(this, lag, this.interpolate)
 		}
 		this.vertex_children(this, lag, this.interpolate)
-		this.rect_buffer.draw(this.ctx);
-		for(var i in this.buffers){
+		this.rect_buffer.draw(this.ctx)
+		for (var i in this.buffers) {
 			this.buffers[i].draw(this.ctx)
 		}
 
