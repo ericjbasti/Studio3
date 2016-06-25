@@ -15,8 +15,8 @@ Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
 
 Studio.BufferGL = function(image,size){
-	var size = size || 100
-	this.data = new Float32Array(size * 36)
+	this.size = size || 6000
+	this.data = new Float32Array(this.size * 36)
 	this.count = 0
 	this.texture = image || null;
 }

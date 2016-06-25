@@ -59,6 +59,7 @@ var Studio = Studio || {
 	assets: {
 		length: 0
 	},
+	asset_count: 0,
 	queue: 0,
 	progress: 0,
 	active: true,
@@ -158,6 +159,7 @@ Studio._addingAsset = function() {
 Studio._loadedAsset = function() {
 	this.queue++
 	this.updateProgress()
+	this.asset_count++
 }
 Studio.handleVisibilityChange = function() {
 	if (document.hidden) {

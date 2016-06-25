@@ -1,9 +1,5 @@
-/**
- * Image
- */
-
 Studio.Image = function studio_image(path, slices) {
-	this.path = path
+	this.path = path + '_'+ parseInt(Math.random()*999999)
 	this.bitmap = null
 	this.width = 1
 	this.height = 1
@@ -78,5 +74,11 @@ Studio.Image.prototype.addSlice = function studio_image_addSlice(slices) {
 	for (var i in slices) {
 		this.slice[i] = slices[i]
 		this.sliceGL[i] = this.buildSliceForGL(slices[i])
+	}
+}
+
+Studio.Image.prototype._rebuildGLSlices = function(){
+	for (var i in this.slice) {
+		this.sliceGL[i] = this.buildSliceForGL(this.slice[i])
 	}
 }
