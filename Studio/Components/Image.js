@@ -32,29 +32,43 @@ Studio.Image.prototype.ready = false
 Studio.Image.prototype.height = 1
 Studio.Image.prototype.width = 1
 
+Studio.Image.prototype._onImageLoad = function image_onload(image) { // could have Event passed in
+	Studio.progress = Studio.queue / Studio.assets.length
+	Studio._loadedAsset();
+	this._setWidthHeights(image)
+	return image
+}
+Studio.Image.prototype._setWidthHeights = function(image){
+	this.slice['Full'].height = image.height
+	this.slice['Full'].width = image.width
+	this.width = image.width
+	this.height = image.height
+	this.addSlice(this.slice)
+	this.ready = true
+	this.sendMessage('ready',this.ready)
+}
+
 Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
+	var image = this;
 	if (Studio.assets[who]) {
 		console.warn('Already loaded : ', who, Studio.assets[who])
 		this.bitmap = Studio.assets[who]
-		this.ready = true
-		this.sendMessage('ready',this.ready)
+		if(Studio.assets.width){
+			this.ready = true
+			this.sendMessage('ready',this.ready)
+		}else{
+			Studio.assets[who].addEventListener("load", function(e){
+				image._setWidthHeights(e.target)
+			} )
+		}
 		return this
 	} else {
 		Studio.assets[who] = new Image()
 		Studio._addingAsset();
-		var image = this
-		Studio.assets[who].onload = function image_onload() { // could have Event passed in
-			Studio.progress = Studio.queue / Studio.assets.length
-			image.slice['Full'].height = this.height
-			image.slice['Full'].width = this.width
-			image.width = this.width
-			image.height = this.height
-			Studio._loadedAsset();
-			image.addSlice(image.slice)
-			image.ready = true
-			image.sendMessage('ready',image.ready)
-			return image
-		}
+		Studio.assets[who].addEventListener("load", function(e){
+			image._onImageLoad(e.target)
+		} )
+
 		Studio.assets[who].src = who
 		this.bitmap = Studio.assets[who]
 	}
