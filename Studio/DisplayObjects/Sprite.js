@@ -35,6 +35,25 @@ Studio.Sprite.prototype.verts = function(box, buffer, texture){
 	this.addVert(buffer,box.TR,texture.width,texture.y)
 	this.addVert(buffer,box.BL,texture.x,texture.height)
 	this.addVert(buffer,box.BR,texture.width,texture.height)
+
+	if (this.borderlap && this.border) {
+		if (this._dx -  (this._dwidth * this.anchorX) < this.border.x) {
+			this._boundingBox.TL.x += this.border.width
+			this._boundingBox.TR.x += this.border.width
+			this._boundingBox.BR.x += this.border.width
+			this._boundingBox.BL.x += this.border.width
+		}
+		if ((this._dx + this._world.width) > this.border.width) {
+			this._boundingBox.TL.x -= this.border.width
+			this._boundingBox.TR.x -= this.border.width
+			this._boundingBox.BR.x -= this.border.width
+			this._boundingBox.BL.x -= this.border.width
+		}
+		this.addVert(buffer,box.TL,texture.x,texture.y)
+		this.addVert(buffer,box.TR,texture.width,texture.y)
+		this.addVert(buffer,box.BL,texture.x,texture.height)
+		this.addVert(buffer,box.BR,texture.width,texture.height)
+	}
 }
 
 Studio.Sprite.prototype.buildElement = function(stage, ratio, interpolate) {
@@ -180,8 +199,8 @@ Studio.SpriteAnimation.prototype.updateFrame = function() {
 }
 
 Studio.SpriteAnimation.prototype.verts = function(box, buffer){
-	var width = this.rect.width/this.image.width
-	var height = this.rect.height/this.image.height
+	var width = (this.rect.width/this.image.width)
+	var height = (this.rect.height/this.image.height)
 
 	var left = this.sliceX * width
 	var top  = this.sliceY * height
@@ -191,7 +210,30 @@ Studio.SpriteAnimation.prototype.verts = function(box, buffer){
 	this.addVert(buffer,box.TR,left+width,top)
 	this.addVert(buffer,box.BL,left,top+height)
 	this.addVert(buffer,box.BR,left+width,top+height)
+
+	if (this.borderlap && this.border) {
+		if (this._dx -  (this._dwidth * this.anchorX) < this.border.x) {
+			this._boundingBox.TL.x += this.border.width
+			this._boundingBox.TR.x += this.border.width
+			this._boundingBox.BR.x += this.border.width
+			this._boundingBox.BL.x += this.border.width
+		}
+		if ((this._dx + this._world.width) > this.border.width) {
+			this._boundingBox.TL.x -= this.border.width
+			this._boundingBox.TR.x -= this.border.width
+			this._boundingBox.BR.x -= this.border.width
+			this._boundingBox.BL.x -= this.border.width
+		}
+		this.addVert(buffer,box.TL,left,top)
+		this.addVert(buffer,box.TR,left+width,top)
+		this.addVert(buffer,box.BL,left,top+height)
+		this.addVert(buffer,box.BR,left+width,top+height)
+	}
+
 	if (this.loop.length) {
 		this.updateFrame()
 	}
 }
+
+
+
