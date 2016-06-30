@@ -136,6 +136,10 @@ Studio.Stage.prototype.WEBGL = {
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
 
 		// this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
+		if (this.previousScene) {
+			this.previousScene.buildElement(this, lag, this.interpolate)
+			this.previousScene.vertex_children(this, lag, this.interpolate)
+		}
 		if (this.activeScene) {
 			this.activeScene.buildElement(this, lag, this.interpolate)
 			this.activeScene.vertex_children(this, lag, this.interpolate)
