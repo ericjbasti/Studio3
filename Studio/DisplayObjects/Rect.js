@@ -31,8 +31,11 @@ Studio.BufferGL.prototype.draw = function(gl){
 	}
 	if(this.texture){
 		gl.bindTexture(gl.TEXTURE_2D, this._texture)
+		if(this.texture.dirty){
+			gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.bitmap);
+			this.texture.dirty = false
+		}
 	}
-	// gl.bufferSubData(gl.ARRAY_BUFFER, 0, this.data);
 	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
 	gl.drawElements(gl.TRIANGLES, this.count/6, gl.UNSIGNED_SHORT, 0)
 	this.count = 0
@@ -61,10 +64,13 @@ Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 		this.prepTexture(gl)
 	}
 	if(this.texture){
+		if(this.texture.updateGlTexture){
+			this.texture.updateGlTexture(gl)
+		}
 		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.bitmap)
-		// if (mipmap) {
-		// 	gl.generateMipmap(gl.TEXTURE_2D)
-		// }
+		if (mipmap) {
+			gl.generateMipmap(gl.TEXTURE_2D)
+		}
 	}
 }
 

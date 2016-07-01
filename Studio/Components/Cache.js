@@ -10,6 +10,7 @@ Studio.Cache = function(width, height, resolution) {
 	this.ctx = this.bitmap.getContext('2d')
 	this.ctx.scale(resolution, resolution)
 	this.slice.Full = {x: 0,y: 0,width: this.bitmap.width,height: this.bitmap.height}
+	this.sliceGL.Full = {x:0,y:0,width:1, height: 1}
 }
 
 Studio.inherit(Studio.Cache, Studio.Image)
