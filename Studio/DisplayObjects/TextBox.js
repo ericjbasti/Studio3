@@ -1,5 +1,24 @@
+Studio.Font = function(){
+	this.size = ''
+	this.family = ''
+	this.weight = ''
+	this.style = ''
+	this.varient = ''
+}
+
+Studio.Font.prototype = {
+	constructor : Studio.Font,
+	build: function(){
+		return (this.varient + this.style + this.weight + this.size + this.family)
+	}
+}
+
+
 Studio.TextBox = function(width, height, stage) {
-	this.font = '12px Arial'
+	this.font = new Studio.Font()
+	this.font.family = 'Arial'
+	this.font.size = '12px'
+
 	this.lineHeight = 14
 	this.height = height
 	this.width = width
@@ -15,8 +34,8 @@ Studio.TextBox = function(width, height, stage) {
 	this.vertical_align = Studio.TOP
 	this._vertical_align = 0
 	this.styles = {
-		bold: 'bold 16px Georgia',
-		italic: 'italic 16px Georgia'
+		b: {style: 'bold 12px Arial', color: 'red'},
+		i: {style: 'italic 12px Arial', color: 'yellow'}
 	}
 	// document.body.appendChild(this.image.bitmap)
 	return this
@@ -55,55 +74,87 @@ Studio.TextBox.prototype.reset = function() {
 	this.image.ctx.font = this.font
 }
 
-Studio.TextBox.prototype.writeLine = function(text, x, y) {
-	if (this.shadow) {
-		this.image.ctx.fillStyle = this.shadowColor
-		for(var i = 1; i<= this.shadow; i+=.5){
-			this.image.ctx.globalAlpha = this.shadow/i
-			this.image.ctx.fillText(text, x + 1 + i, y + i)
+Studio.TextBox.prototype.writeLine = function(text, x, y, styles) {
+	var style = styles.split(' ')
+	var nx = 0 
+	for(var i = 0; i!= style.length ; i++){
+		var word = style[i]
+		if(word[0]==='<' && word[word.length-1]==='>'){
+			var start = 1;
+			if(word[1]=='/'){
+				start = 2;
+			}
+			var tag = word.slice(start,word.length-1);
+			if(start>1){
+				this.image.ctx.font = '12px Arial'
+				this.image.ctx.fillStyle = this.fontColor;
+			}else{
+				this.image.ctx.font = this.styles[tag].style
+				this.image.ctx.fillStyle = this.styles[tag].color
+			}
+			
+		}else{
+			this.image.ctx.fillText(word, nx + x + 1, y)
+			nx += this.image.ctx.measureText(word+' ').width
 		}
 	}
-	this.image.ctx.fillStyle = this.fontColor
-	this.image.ctx.fillText(text, x + 1, y)
+
+	// if (this.shadow) {
+	// 	this.image.ctx.fillStyle = this.shadowColor
+	// 	for(var i = 1; i<= this.shadow; i+=.5){
+	// 		this.image.ctx.globalAlpha = this.shadow/i
+	// 		this.image.ctx.fillText(text, x + 1 + i, y + i)
+	// 	}
+	// }
+	// this.image.ctx.fillStyle = this.fontColor
+	// this.image.ctx.fillText(text, x + 1, y)
 }
 
 Studio.TextBox.prototype.wrapText = function() {
+	this.image.ctx.fillStyle = this.fontColor;
 	var paragraphs = this.text.split('\n')
 	var y = 0
+	var tag = 0
 	for (var i = 0; i !== paragraphs.length; i++) {
 		var words = paragraphs[i].split(' ')
 		var line = ''
+		var styleline = ''
 		for (var n = 0; n < words.length; n++) {
-			
-			
-				var word = words[n];
-				var testLine;
-				if(word[0]==='<' && word[word.length-1]==='>'){
-					var start = 1;
-					if(word[1]=='/'){
-						start = 2;
-					}
-					var tag = word.slice(start,word.length-1);
-					testLine = line
-					this.image.ctx.font = this.styles[tag]
-				}else{
-					testLine = line + word + ' '
-				}
-			
+			var word = words[n];
+			var testLine;
+			if(word[0]==='<' && word[word.length-1]==='>'){
+				tag++
+			}else{
+				testLine = line + word + ' '
+			}
 			var metrics = this.image.ctx.measureText(testLine)
 			var testWidth = metrics.width
 			if (testWidth > this.width && n > 0) {
+
 				testWidth = this.image.ctx.measureText(line).width
 				// We want to avoid any off pixel font rendering so we use | 0 to prevent floats
 				// also offset everything by 2px because it helps with the centering of text
-				this.writeLine(line, 2 + (this.width - testWidth) * this.horizontal_align | 0 , y)
-				line = words[n] + ' '
+				if(tag){
+					this.writeLine(line, 2 + (this.width - testWidth) * this.horizontal_align | 0 , y , styleline)
+					tag = 0
+				}else{
+					this.writeLine(line, 2 + (this.width - testWidth) * this.horizontal_align | 0 , y , line)
+				}
+				line = word + ' '
+				styleline = word + ' '
 				y += this.lineHeight
 			} else {
 				line = testLine
+				styleline = styleline + word + ' '
 			}
 		}
-		this.writeLine(line, 2 + (this.width - this.image.ctx.measureText(line).width) * this.horizontal_align | 0, y)
+		if(tag){
+			this.writeLine(line, 2 + (this.width - this.image.ctx.measureText(line).width) * this.horizontal_align | 0, y , styleline)
+			tag = 0
+		}else{
+			this.writeLine(line, 2 + (this.width - this.image.ctx.measureText(line).width) * this.horizontal_align | 0 , y , line)
+		}
+		
 		this._wrap_height = y + this.lineHeight
 		if (i !== paragraphs.length - 1) {
 			y += this.lineHeight
