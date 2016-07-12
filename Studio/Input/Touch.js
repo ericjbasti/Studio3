@@ -126,8 +126,8 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 	var scaledMouse = {clientX: 0, clientY: 0}
 
 	var ratioEvent = function(event) {
-		scaledMouse.clientX = (event.clientX - me.canvas.getBoundingClientRect().left) / me._scaleRatio;
-		scaledMouse.clientY = (event.clientY - me.canvas.getBoundingClientRect().top) / me._scaleRatio;
+		scaledMouse.clientX = (event.clientX - me.bitmap.getBoundingClientRect().left) / me._scaleRatio;
+		scaledMouse.clientY = (event.clientY - me.bitmap.getBoundingClientRect().top) / me._scaleRatio;
 		// return me.scaledMouse;
 	}
 
@@ -173,10 +173,10 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 		document.addEventListener("mouseup", mouse_release, false);
 		document.addEventListener("mouseout", mouse_release, false);
 	} else {
-		this.canvas.addEventListener("mousedown", mouse_down, false);
-		this.canvas.addEventListener("mousemove", mouse_move, false);
-		this.canvas.addEventListener("mouseup", mouse_release, false);
-		this.canvas.addEventListener("mouseout", mouse_release, false);
+		this.bitmap.addEventListener("mousedown", mouse_down, false);
+		this.bitmap.addEventListener("mousemove", mouse_move, false);
+		this.bitmap.addEventListener("mouseup", mouse_release, false);
+		this.bitmap.addEventListener("mouseout", mouse_release, false);
 	}
 
 	/* touch events*/
@@ -244,15 +244,15 @@ Studio.Stage.prototype.enableTouchEvents = function() {
 
 
 	if (!window.ejecta) {
-		this.canvas.addEventListener("touchstart", finger_press, false);
-		this.canvas.addEventListener("touchmove", finger_move, false);
-		this.canvas.addEventListener("touchend", finger_release, false);
-		this.canvas.addEventListener("touchcancel", finger_release, false);
-		this.canvas.addEventListener("pointerdown", mouse_down, false);
-		this.canvas.addEventListener("pointermove", mouse_move, false);
-		this.canvas.addEventListener("pointerup", mouse_release, false);
-		this.canvas.setAttribute('tabindex', '0');
-		this.canvas.focus();
+		this.bitmap.addEventListener("touchstart", finger_press, false);
+		this.bitmap.addEventListener("touchmove", finger_move, false);
+		this.bitmap.addEventListener("touchend", finger_release, false);
+		this.bitmap.addEventListener("touchcancel", finger_release, false);
+		this.bitmap.addEventListener("pointerdown", mouse_down, false);
+		this.bitmap.addEventListener("pointermove", mouse_move, false);
+		this.bitmap.addEventListener("pointerup", mouse_release, false);
+		this.bitmap.setAttribute('tabindex', '0');
+		this.bitmap.focus();
 	} else {
 		document.addEventListener("touchstart", finger_press, false);
 		document.addEventListener("touchmove", finger_move, false);

@@ -1,24 +1,24 @@
 Studio.TextBox = function(width, height, stage) {
 	this.font = '12px Arial'
-	this.lineHeight = 10
+	this.lineHeight = 14
 	this.height = height
 	this.width = width
 	this.shadow = 1
-	this.shadowColor = 'rgba(255,0,0,0.5)'
+	this.shadowColor = 'rgba(0,0,0,0.5)'
 	this.image = new Studio.Cache(width,height, stage.resolution)
-
 	this.image.ctx.textBaseline = 'top'
 	this.image.ctx.font = this.font
-
 	this.text = ''
-	this.color = new Studio.Color(255,255,255,1)
 	this.fontColor = '#fff'
 	this._wrap_height = this.lineHeight
 	this.horizontal_align = Studio.LEFT
 	this.vertical_align = Studio.TOP
 	this._vertical_align = 0
-
-
+	this.styles = {
+		bold: 'bold 16px Georgia',
+		italic: 'italic 16px Georgia'
+	}
+	// document.body.appendChild(this.image.bitmap)
 	return this
 }
 
@@ -57,7 +57,10 @@ Studio.TextBox.prototype.reset = function() {
 Studio.TextBox.prototype.writeLine = function(text, x, y) {
 	if (this.shadow) {
 		this.image.ctx.fillStyle = this.shadowColor
-		this.image.ctx.fillText(text, x + 1 + this.shadow, y + this.shadow)
+		for(var i = 1; i<= this.shadow; i+=.5){
+			this.image.ctx.globalAlpha = this.shadow/i
+			this.image.ctx.fillText(text, x + 1 + i, y + i)
+		}
 	}
 	this.image.ctx.fillStyle = this.fontColor
 	this.image.ctx.fillText(text, x + 1, y)
@@ -70,7 +73,22 @@ Studio.TextBox.prototype.wrapText = function() {
 		var words = paragraphs[i].split(' ')
 		var line = ''
 		for (var n = 0; n < words.length; n++) {
-			var testLine = line + words[n] + ' '
+			
+			
+				var word = words[n];
+				var testLine;
+				if(word[0]==='<' && word[word.length-1]==='>'){
+					var start = 1;
+					if(word[1]=='/'){
+						start = 2;
+					}
+					var tag = word.slice(start,word.length-1);
+					testLine = line
+					this.image.ctx.font = this.styles[tag]
+				}else{
+					testLine = line + word + ' '
+				}
+			
 			var metrics = this.image.ctx.measureText(testLine)
 			var testWidth = metrics.width
 			if (testWidth > this.width && n > 0) {

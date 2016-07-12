@@ -67,22 +67,22 @@ Studio.inherit(Studio.Stage, Studio.Scene)
 Studio.Stage.prototype._getCanvasElement = function(domElementID) {
 	if (domElementID) {
 		if (domElementID.toLowerCase() === 'build') {
-			this.canvas = document.createElement('canvas')
-			document.body.appendChild(this.canvas)
+			this.bitmap = document.createElement('canvas')
+			document.body.appendChild(this.bitmap)
 			return
 		}
-		this.canvas = document.getElementById(domElementID)
+		this.bitmap = document.getElementById(domElementID)
 	} else {
 		// If an ID is not passed to us.
 		// We will find the first Canvas element and use that.
 		var temp = document.body.getElementsByTagName('canvas')
 		if (!temp[0]) {
 			// If we can't find a Canvas element on the page, we create one.
-			this.canvas = document.createElement('canvas')
-			document.body.appendChild(this.canvas)
+			this.bitmap = document.createElement('canvas')
+			document.body.appendChild(this.bitmap)
 		} else {
 			// Otherwise we use the first one we see.
-			this.canvas = temp[0]
+			this.bitmap = temp[0]
 		}
 	}
 }
@@ -123,27 +123,27 @@ Studio.Scene.prototype.allowPlugins = function() {
 }
 
 Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
-	this.height = this.canvas.height || this.height
-	this.width = this.canvas.width || this.width
-	this.canvas.style.height = this.height + 'px'
-	this.canvas.style.width = this.width + 'px'
+	this.height = this.bitmap.height || this.height
+	this.width = this.bitmap.width || this.width
+	this.bitmap.style.height = this.height + 'px'
+	this.bitmap.style.width = this.width + 'px'
 	this._scaleRatio = 1
 	if (fullscreen == 1) {
 		this.width = window.innerWidth
 		this.height = window.innerHeight
-		this.canvas.style.height = '100%'
-		this.canvas.style.width = '100%'
+		this.bitmap.style.height = '100%'
+		this.bitmap.style.width = '100%'
 	}
 	if (fullscreen >= 2) {
 		var innerWidth = window.innerWidth
 		if (this.maxwidth && innerWidth > this.maxwidth) {
 			innerWidth = this.maxwidth
 		}
-		this.canvas.style.width = innerWidth + 'px'
-		this.canvas.style.height = 'auto'
+		this.bitmap.style.width = innerWidth + 'px'
+		this.bitmap.style.height = 'auto'
 		this._scaleRatio = innerWidth / this.width
 		if (fullscreen == 3) {
-			this.canvas.style.height = window.innerHeight + 'px'
+			this.bitmap.style.height = window.innerHeight + 'px'
 		}
 	}
 
@@ -154,8 +154,8 @@ Studio.Stage.prototype.pauseButtons = function(a) {
 }
 
 Studio.Stage.prototype.setPixelRatio = function() {
-	this.canvas.width = this.width * this.resolution
-	this.canvas.height = this.height * this.resolution
+	this.bitmap.width = this.width * this.resolution
+	this.bitmap.height = this.height * this.resolution
 }
 Studio.Stage.prototype.fillScreen = function() {
 	// this._scaleRatio = window.innerHeight/this.height;
@@ -224,13 +224,13 @@ Studio.Stage.prototype.watch = function(who) {
 	// this._hasChildren = who._hasChildren
 }
 
-Studio.Stage.prototype.update_children = function(ratio, delta, interpolate) {
-	for (this.i = 0; this.i !== this._hasChildren; this.i++) {
-		if (this.children[this.i].active) {
-			this.children[this.i].update(ratio, delta, interpolate)
-		}
-	}
-}
+// Studio.Stage.prototype.update_children = function(ratio, delta, interpolate) {
+// 	for (this.i = 0; this.i < this._hasChildren; this.i++) {
+// 		if (this.children[this.i].active) {
+// 			this.children[this.i].update(ratio, delta, interpolate)
+// 		}
+// 	}
+// }
 
 Studio.Stage.prototype.update_visibility = function() {
 	this._alpha = this.alpha
@@ -322,9 +322,6 @@ Studio.Stage.prototype.loading = function(delta) {
 Studio.Stage.prototype.activeloop = function(delta) {
 	if (Studio.progress === 2) {
 		this.timeStep(delta)
-		if (this._effects) {
-			this.runEffects(delta)
-		}
 		return
 	} else {
 		// if(this.overlay_progress){

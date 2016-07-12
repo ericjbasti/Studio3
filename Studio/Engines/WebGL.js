@@ -50,7 +50,7 @@ Studio.Stage.prototype.WEBGL = {
 		} else {
 			this.WEBGL.antialias = false
 		}
-		this.ctx = this.canvas.getContext(Studio.browser_info.webGL, {
+		this.ctx = this.bitmap.getContext(Studio.browser_info.webGL, {
 			antialias: this.WEBGL.antialias ,
 			premultipliedAlpha: this.WEBGL.premultipliedAlpha ,
 			stencil: this.WEBGL.stencil

@@ -1,7 +1,7 @@
 Studio.Stage.prototype.CANVAS = {
 	type: '2dContext',
 	getContext: function() {
-		this.ctx = this.canvas.getContext('2d')
+		this.ctx = this.bitmap.getContext('2d')
 	},
 	init: function() {
 		this.ctx.webkitImageSmoothingEnabled = this.smoothing
@@ -27,10 +27,16 @@ Studio.Stage.prototype.CANVAS = {
 		}
 		if (this._hasChildren) {
 			this.render_children(this, lag)
+			if (this._effects) {
+				this.runEffects()
+			}
 			return
 		}
 		if(this._watching){
 			this._watching.render_children(this,lag)
+			if (this._effects) {
+				this.runEffects()
+			}
 		}
 	},
 }

@@ -30,7 +30,7 @@ Studio.timeStep = {
 	}
 }
 
-Studio.Stage.prototype.timeStep = Studio.timeStep.fixed
+Studio.Stage.prototype.timeStep = Studio.timeStep.static_fixed
 
 Studio.Stage.prototype.fixedStep = function() {
 	while (this._d >= this.dur) {

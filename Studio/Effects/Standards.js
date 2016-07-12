@@ -8,11 +8,12 @@ Studio.Effect.BillAtkinsonDither_BW = new Studio.Plugin({
 		this.oldpixel = 1;
 		this.newpixel = 1;
 		this.qerror = 1;
+		this.active = true;
 	},
 	action: function(a) {
-		var pixels = a.ctx.getImageData(0,0,a.canvas.width,a.canvas.height);
+		var pixels = a.ctx.getImageData(0,0,a.bitmap.width,a.bitmap.height);
 		var pixeldata = pixels.data;
-		var width = parseInt(a.canvas.width*4)
+		var width = parseInt(a.bitmap.width*4)
 		var length = pixeldata.length;
 
 		for (var i=0; i < length; i+=4) {
@@ -22,6 +23,11 @@ Studio.Effect.BillAtkinsonDither_BW = new Studio.Plugin({
 			this.newpixel *= 255;
 
 			pixeldata[i] = pixeldata[i+1] = pixeldata[i+2] = this.newpixel;
+			if(pixeldata[i+3]>20){
+				pixeldata[i+3] = 255;
+			}else{
+				pixeldata[i+3] = 0
+			}
 
 			this.qerror = (this.oldpixel - this.newpixel) * .15;
 
@@ -40,7 +46,6 @@ Studio.Effect.BillAtkinsonDither_BW = new Studio.Plugin({
 	}
 })
 
-
 Studio.Effect.Posterize = new Studio.Plugin({
 	options: {
 
@@ -50,11 +55,12 @@ Studio.Effect.Posterize = new Studio.Plugin({
 		this.oldpixel = 1;
 		this.newpixel = 1;
 		this.qerror = 1;
+		this.active = true
 	},
 	action: function(a) {
-		var pixels = a.ctx.getImageData(0,0,a.canvas.width,a.canvas.height);
+		var pixels = a.ctx.getImageData(0,0,a.bitmap.width,a.bitmap.height);
 		var pixeldata = pixels.data;
-		var width = a.canvas.width*4;
+		var width = a.bitmap.width*4;
 		var length = pixeldata.length;
 
 		for (var i=0; i < length; i++) {
@@ -64,8 +70,6 @@ Studio.Effect.Posterize = new Studio.Plugin({
 			this.newpixel *= 255;
 
 			pixeldata[i] = this.newpixel;
-
-
 		}
 		a.ctx.putImageData(pixels,0,0);
 	}
@@ -94,29 +98,24 @@ Studio.Effect.Replicator = new Studio.Plugin({
 	}
 })
 
-Studio.Effect.Bloom = new Studio.Plugin({
+
+Studio.Effect.Blur = new Studio.Plugin({
 	options: {
+		x: 3,
+		y: 3,
 	},
 	init: function(a) {
-		this.height = (a.canvas.height/2)*a.resolution;
-		this.width = (a.canvas.width/2)*a.resolution;
-		this.cache = new Studio.Cache(this.width,this.height);
-		// this.cache.buffer.strokeStyle = '#fff';
-		// this.cache.buffer.strokeRect( 10, 10, this.width-20, this.height-20);
-		// this.cache.buffer.strokeRect( 15, 15, this.width-30, this.height-30);
-		// this.cache.buffer.fillStyle = "rgba(200,0,0,.5)";
-		// this.cache.buffer.fillRect( 25, this.height-25-this.height/4, this.width/4, this.height/4);
-		this.cache.buffer.globalAlpha = .25
+		this.cache = new Studio.Cache();
+		this.active = true
 	},
 	action: function(a) {
-		this.cache.buffer.globalCompositeOperation = "source-over"
-		this.cache.buffer.fillStyle="rgba(0,0,0,.35)";
-		this.cache.buffer.fillRect( 0,0,this.width, this.height);
-		this.cache.buffer.globalCompositeOperation = "lighten"
-		this.cache.buffer.drawImage(a.canvas,0,0, a.width, a.height)
-		a.ctx.globalCompositeOperation = 'lighten';
-		a.ctx.drawImage(this.cache.image, 0, 0, a.canvas.width, a.canvas.height)
-		a.ctx.globalCompositeOperation = 'source-over';
+		var width = a.bitmap.width/2;
+		var height = a.bitmap.height/2;
+		console.log(this.cache)
+		this.cache.bitmap.width = width;
+		this.cache.bitmap.height = height;
+		this.cache.ctx.drawImage(a.bitmap,0,0, width, height);
+		a.ctx.drawImage(this.cache.bitmap, 0 , 0, a.width ,a.height)
 	}
 })
 
@@ -125,7 +124,7 @@ Studio.Effect.Cursor = new Studio.Plugin({
 	},
 	init: function(a) {
 		this.cursor = new Studio.Image('assets/cursor.png');
-		a.canvas.style.cursor = 'none';
+		a.bitmap.style.cursor = 'none';
 	},
 	action: function(a) {
 		a.ctx.drawImage(this.cursor.image, a.mouse.x-8, a.mouse.y-8, 48, 48)
@@ -137,10 +136,10 @@ Studio.Effect.Red = new Studio.Plugin({
 	options: {
 	},
 	init: function(a) {
-		
+		this.active = true
 	},
 	action: function(a) {
-		var myGetImageData = a.ctx.getImageData(0,0,a.canvas.width, a.canvas.height);
+		var myGetImageData = a.ctx.getImageData(0,0,a.bitmap.width, a.bitmap.height);
 		var buffer = myGetImageData.data.buffer;
 		var sourceBuffer8 = new Uint8Array(buffer);
 		var sourceBuffer32 = new Uint32Array(buffer);
@@ -156,43 +155,3 @@ Studio.Effect.Red = new Studio.Plugin({
 		a.ctx.putImageData(myGetImageData, 0, 0);
 	}
 })
-
-
-Studio.Effect.Wave = new Studio.Plugin({
-	action: function(a) {
-		this.cache.buffer.drawImage(a.canvas, 0, 0, a.width, a.height);
-		var max = this.w.length;
-		for (var j = 0; j != max; j+=1) {
-			a.ctx.drawImage(this.cache.image, j*this.width, 0, this.width, a.height, j*this.width, this.w[j], this.width, a.height);
-			this.w[j] += (Math.cos(this.count))*2;
-			this.count+=.02;
-		}
-	},
-	init: function(a) {
-		this.width = 1;
-		this.w = [];
-		var max = Math.ceil(a.width/this.width); 
-		for (var i = 0; i < max; i+=1) {
-			this.w[i] = 0;
-		}
-		this.cache = new Studio.Cache(a.width,a.height);
-		this.count = 0;
-	}
-})
-
-// var BLOOM = new Studio.Plugin({
-// 	init: function(a) {
-// 		this.buffer = document.createElement('canvas');
-// 		this.buffer.height = a.height / 3 ;
-// 		this.buffer.width = a.width / 3 ;
-
-// 		this.bufferCTX = this.buffer.getContext('2d');
-// 	},
-// 	action: function(a) {
-// 		this.bufferCTX.drawImage(a.canvas, 0, 0, this.buffer.width, this.buffer.height);
-// 		a.ctx.globalAlpha = 1;
-// 		a.ctx.globalCompositeOperation = "lighter";
-// 		a.ctx.drawImage(this.buffer, 0, 0, a.width, a.height);
-// 		a.ctx.globalCompositeOperation = "source-over";
-// 	}
-// })
