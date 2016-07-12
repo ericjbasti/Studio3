@@ -47,6 +47,7 @@ Studio.TextBox.prototype.setFont = function(font) {
 Studio.TextBox.prototype.finish = function() {
 	this.reset()
 	this.wrapText()
+	this.image.dirty = true
 }
 
 Studio.TextBox.prototype.reset = function() {
