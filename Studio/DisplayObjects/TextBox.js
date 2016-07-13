@@ -21,6 +21,8 @@ Studio.TextBox = function(width, height, stage) {
 	this.height = height
 	this.width = width
 	this.shadow = 1
+	this.offsetY = 0
+	this._offsetY = this.offsetY;
 	this.shadowColor = 'rgba(0,0,0,0.5)'
 	this.image = new Studio.Cache(width,height, stage.resolution)
 	this.image.ctx.textBaseline = 'top'
@@ -28,13 +30,13 @@ Studio.TextBox = function(width, height, stage) {
 	this.text = ''
 	this.fontColor = '#eee'
 	this._wrap_height = this.lineHeight
-	this.horizontal_align = 1
+	this.horizontal_align = Studio.Left
 	this.vertical_align = Studio.TOP
 	this._vertical_align = 0
 	this.styles = {
 		b: {style: ' bold '+ this.font, color: '#FF6666'},
 		i: {style: ' italic '+ this.font, color: '#FFFF66'},
-		bi: {style: "700 16px BigBreak", color: '#66CCFF'}
+		bi: {style: "700 16px Georgia", color: '#66CCFF', offsetY: -3}
 	}
 	// document.body.appendChild(this.image.bitmap)
 	return this
@@ -77,24 +79,32 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y) {
 	var style = styles.split(' ')
 	var nx = 0 
 	this.image.ctx.font = this._lastfont
+	console.log(this.image.ctx.font)
 	for(var i = 0; i!= style.length ; i++){
 		var word = style[i]
 		if(word[0]==='<' && word[word.length-1]==='>'){
 			if(word=='</>'){
 				this.image.ctx.font = this.font
 				this.image.ctx.fillStyle = this.fontColor;
+				this._lastfont = this.font
+				this._offsetY = this.offsetY
 			}else{
-				var tag = word.slice(1,word.length-1);
-				this.image.ctx.font = this.styles[tag].style
-				this.image.ctx.fillStyle = this.styles[tag].color
+				var tag = this.styles[word.slice(1,word.length-1)];
+				if(tag){
+					this.image.ctx.font = tag.style
+					this.image.ctx.fillStyle = tag.color
+					this._lastfont = tag.style
+					if(tag.offsetY){
+						this._offsetY = tag.offsetY
+					}
+				}
 			}
 			
 		}else{
-			this.image.ctx.fillText(word, nx + x + 1, y)
+			this.image.ctx.fillText(word, nx + x + 1, y + this._offsetY)
 			nx += this.image.ctx.measureText(word+' ').width
 		}
 	}
-	this._lastfont = this.image.ctx.font
 
 	// if (this.shadow) {
 	// 	this.image.ctx.fillStyle = this.shadowColor
@@ -125,7 +135,9 @@ Studio.TextBox.prototype.wrapText = function() {
 					this.image.ctx.font = this.font;
 				}else{
 					var tag = word.slice(1,word.length-1);
-					this.image.ctx.font = this.styles[tag].style
+					if(this.styles[tag]){
+						this.image.ctx.font = this.styles[tag].style
+					}
 				}
 				
 				metrics = 0
