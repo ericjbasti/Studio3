@@ -195,7 +195,7 @@ Studio.apply = function(obj) { // Display Object and a few others share this fun
 	Studio._temp.keys_i = Studio._temp.keys.length
 	while (Studio._temp.keys_i) {
 
-		if (Studio._temp.key === 'color_hex') {
+		if (Studio._temp.key === 'color_hex' && this['color']) {
 			this['color'].setFromHex(obj[Studio._temp.key])
 		}
 		Studio._temp.key = Studio._temp.keys[Studio._temp.keys_i - 1]

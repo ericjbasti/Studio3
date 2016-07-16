@@ -1,23 +1,46 @@
-Studio.Font = function(){
-	this.size = ''
-	this.family = ''
-	this.weight = ''
-	this.style = ''
-	this.varient = ''
+Studio.Font = function(family,size,weight,style,varient){
+	this.size = size || 12
+	this.family = family || 'Arial'
+	this.weight = weight || ''
+	this.style = style || ''
+	this.varient = varient || ''
 }
 
 Studio.Font.prototype = {
 	constructor : Studio.Font,
 	build: function(){
-		return (this.varient + this.style + this.weight + this.size + this.family)
-	}
+		return (this.varient +' '+ this.style +' '+ this.weight +' '+ this.size +'px '+ this.family)
+	},
+	set: Studio.apply,
+	modify: function(attr){
+		if(!attr){
+			return this.build()
+		}
+		var varient = attr.varient || this.varient
+		var style = attr.style || this.style
+		var weight = attr.weight || this.weight
+		var size = attr.size || this.size
+		var family = attr.family || this.family
+		return (varient +' '+ style +' '+ weight +' '+ size +'px '+ family)
+	},
+	// toObj: function(){
+	// 	return: {
+	// 		size= this.size,
+	// 		family= this.family,
+	// 		weight= this.weight,
+	// 		style= this.style,
+	// 		varient= this.varient
+	// 	}
+	// }
 }
 
 
+
+
 Studio.TextBox = function(width, height, stage) {
-	this.font = "12 Arial"
-	this._lastfont = this.font
-	this.lineHeight = 16
+	this.font = new Studio.Font()
+	this._lastfont = this.font.build()
+	this.lineHeight = 18
 	this.height = height
 	this.width = width
 	this.shadow = 1
@@ -33,13 +56,30 @@ Studio.TextBox = function(width, height, stage) {
 	this.horizontal_align = Studio.LEFT
 	this.vertical_align = Studio.TOP
 	this._vertical_align = 0
-	this.columns = 2
+	this.columns = 1
 	this.gutter = 20
+	this.live = false
+	// this._style = []
+	// this._style_count = 0
 	this.styles = {
-		b: {style: 'bold '+ this.font, color: '#FF66FF'},
-		i: {style: 'italic '+ this.font, color: '#FFFF66'},
-		h1:{style: 'bold 20px Arial', lineHeight: 24, color: '#00FFFF'},
-		h2:{style: 'bold 16px Arial', lineHeight: 18, color: '#66FF66'}
+		'b': {
+			weight: 'bold',
+			color: 'red'
+		},
+		'i':{
+			style: 'italic',
+			color: 'green'
+		},
+		'h1': {
+			height: 'bold',
+			size: 24,
+			lineHeight: 30
+		},
+		'h2': {
+			height: 'bold',
+			size: 18,
+			lineHeight: 24
+		}
 	}
 	// document.body.appendChild(this.image.bitmap)
 	return this
@@ -86,16 +126,16 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y) {
 		var word = style[i]
 		if(word[0]==='<' && word[word.length-1]==='>'){
 			if(word=='</>'){
-				this.image.ctx.font = this.font
+				this._lastfont = this.font.build()
+				this.image.ctx.font = this._lastfont
 				this.image.ctx.fillStyle = this.fontColor;
-				this._lastfont = this.font
 				this._offsetY = this.offsetY
 			}else{
 				var tag = this.styles[word.slice(1,word.length-1)];
 				if(tag){
-					this.image.ctx.font = tag.style
+					this._lastfont = this.font.modify(tag)
+					this.image.ctx.font = this._lastfont
 					this.image.ctx.fillStyle = tag.color
-					this._lastfont = tag.style
 					if(tag.offsetY){
 						this._offsetY = tag.offsetY
 					}
@@ -103,6 +143,16 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y) {
 			}
 			
 		}else{
+			if(this.shadow){
+				var front_color = this.image.ctx.fillStyle;
+				this.image.ctx.fillStyle = this.shadowColor
+			 	for(var s = 1; s<= this.shadow; s+=.5){
+			 		this.image.ctx.globalAlpha = this.shadow/s
+			 		this.image.ctx.fillText(word, nx + x + 1 + s, y + s + this._offsetY)
+			 	}
+			 	this.image.ctx.fillStyle=front_color
+			}
+
 			this.image.ctx.fillText(word, nx + x, y + this._offsetY)
 			nx += this.image.ctx.measureText(word+' ').width
 		}
@@ -121,8 +171,8 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y) {
 
 Studio.TextBox.prototype.wrapText = function() {
 	this.image.ctx.fillStyle = this.fontColor;
-	this.image.ctx.font = this.font;
-
+	this._lastfont = this.font.build();
+	this.image.ctx.font = this._lastfont
 	var width = (this.width-(this.gutter*(this.columns-1)))/this.columns
 	var start = 1
 	var paragraphs = this.text.split('\n')
@@ -138,11 +188,13 @@ Studio.TextBox.prototype.wrapText = function() {
 			var word = words[n];
 			if(word[0]==='<' && word[word.length-1]==='>'){
 				if(word=='</>'){
-					this.image.ctx.font = this.font;
+					this.image.ctx.font = this.font.build()
 				}else{
 					var tag = this.styles[word.slice(1,word.length-1)];
 					if(tag){
-						this.image.ctx.font = tag.style
+						// this._style[this._style_count]=tag;
+						// this._style_count++;
+						this.image.ctx.font = this.font.modify(tag)
 						if(tag.lineHeight){
 							lineHeight = tag.lineHeight
 						}
@@ -161,17 +213,21 @@ Studio.TextBox.prototype.wrapText = function() {
 				// testWidth = this.image.ctx.measureText(line).width
 				// We want to avoid any off pixel font rendering so we use | 0 to prevent floats
 				// also offset everything by 1px because it helps with the centering of text
+				if(y+lineHeight>=this.height){
+					y = 0
+					start += width+this.gutter
+				}
 				this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0 , y)
 				styleline = word +' '
 				y += lineHeight
 				testWidth = metrics
-				if(y>=this.height-lineHeight){
-					y = 0
-					start += width+this.gutter
-				}
 			} else {
 				styleline = styleline + word + ' '
 			}
+		}
+		if(y+lineHeight>=this.height){
+			y = 0
+			start += width+this.gutter
 		}
 		this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0, y )
 		
@@ -209,6 +265,9 @@ Studio.TextBox.prototype.update_xy= function() {
 	} else {
 		this._world.x  = ((this.x * this._parent.scaleX) + this._parent.x)
 		this._world.y  = ((this.y * this._parent.scaleY) + this._parent.y) - this._vertical_align 
+	}
+	if(this.live){
+		this.finish()
 	}
 }
 
