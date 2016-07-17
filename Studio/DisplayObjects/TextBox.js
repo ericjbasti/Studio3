@@ -1,9 +1,12 @@
 Studio.Font = function(family,size,weight,style,varient){
-	this.size = size || 12
+	this.size = size || 16
 	this.family = family || 'Arial'
 	this.weight = weight || ''
 	this.style = style || ''
 	this.varient = varient || ''
+	this.lineHeight = 20
+	this.fontColor = '#eee'
+	this.shadow = 0
 }
 
 Studio.Font.prototype = {
@@ -22,45 +25,34 @@ Studio.Font.prototype = {
 		var size = attr.size || this.size
 		var family = attr.family || this.family
 		return (varient +' '+ style +' '+ weight +' '+ size +'px '+ family)
-	},
-	// toObj: function(){
-	// 	return: {
-	// 		size= this.size,
-	// 		family= this.family,
-	// 		weight= this.weight,
-	// 		style= this.style,
-	// 		varient= this.varient
-	// 	}
-	// }
+	}
 }
 
 
 
 
 Studio.TextBox = function(width, height, stage) {
-	this.font = new Studio.Font()
-	this._lastfont = this.font.build()
-	this.lineHeight = 18
 	this.height = height
 	this.width = width
+
+	this.font = new Studio.Font()
+	this._lastfont = this.font.build()
 	this.shadow = 1
 	this.offsetY = 0
 	this._offsetY = this.offsetY;
 	this.shadowColor = 'rgba(0,0,0,0.5)'
 	this.image = new Studio.Cache(width,height, stage.resolution)
 	this.image.ctx.textBaseline = 'top'
-	this.image.ctx.font = this.font
 	this.text = ''
-	this.fontColor = '#eee'
 	this._wrap_height = this.lineHeight
 	this.horizontal_align = Studio.LEFT
+	this.justify = false
 	this.vertical_align = Studio.TOP
 	this._vertical_align = 0
 	this.columns = 1
 	this.gutter = 20
 	this.live = false
-	// this._style = []
-	// this._style_count = 0
+
 	this.styles = {
 		'b': {
 			weight: 'bold',
@@ -72,14 +64,14 @@ Studio.TextBox = function(width, height, stage) {
 		},
 		'h1': {
 			height: 'bold',
-			size: 24,
-			lineHeight: 30
+			size: 32,
+			lineHeight: 40,
 		},
 		'h2': {
 			height: 'bold',
-			size: 18,
-			lineHeight: 24
-		}
+			size: 24,
+			lineHeight: 30,
+		},
 	}
 	// document.body.appendChild(this.image.bitmap)
 	return this
@@ -118,9 +110,10 @@ Studio.TextBox.prototype.reset = function() {
 	this.image.ctx.font = this.font
 }
 
-Studio.TextBox.prototype.writeLine = function(styles, x, y) {
+Studio.TextBox.prototype.writeLine = function(styles, x, y, vx) {
 	var style = styles.split(' ')
 	var nx = 0 
+	var vx = vx || 0
 	this.image.ctx.font = this._lastfont
 	for(var i = 0; i!= style.length ; i++){
 		var word = style[i]
@@ -128,7 +121,7 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y) {
 			if(word=='</>'){
 				this._lastfont = this.font.build()
 				this.image.ctx.font = this._lastfont
-				this.image.ctx.fillStyle = this.fontColor;
+				this.image.ctx.fillStyle = this.font.fontColor;
 				this._offsetY = this.offsetY
 			}else{
 				var tag = this.styles[word.slice(1,word.length-1)];
@@ -148,12 +141,11 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y) {
 				this.image.ctx.fillStyle = this.shadowColor
 			 	for(var s = 1; s<= this.shadow; s+=.5){
 			 		this.image.ctx.globalAlpha = this.shadow/s
-			 		this.image.ctx.fillText(word, nx + x + 1 + s, y + s + this._offsetY)
+			 		this.image.ctx.fillText(word, nx + x + 1 + s + (vx* i), y + s + this._offsetY)
 			 	}
 			 	this.image.ctx.fillStyle=front_color
 			}
-
-			this.image.ctx.fillText(word, nx + x, y + this._offsetY)
+			this.image.ctx.fillText(word, nx + x + (vx* i), y + this._offsetY)
 			nx += this.image.ctx.measureText(word+' ').width
 		}
 	}
@@ -170,7 +162,7 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y) {
 }
 
 Studio.TextBox.prototype.wrapText = function() {
-	this.image.ctx.fillStyle = this.fontColor;
+	this.image.ctx.fillStyle = this.font.fontColor;
 	this._lastfont = this.font.build();
 	this.image.ctx.font = this._lastfont
 	var width = (this.width-(this.gutter*(this.columns-1)))/this.columns
@@ -183,7 +175,8 @@ Studio.TextBox.prototype.wrapText = function() {
 		var styleline = ''
 		var testWidth = 0
 		var metrics = 0
-		var lineHeight = this.lineHeight
+		var lineHeight = this.font.lineHeight
+		var just = 0
 		for (var n = 0; n < words.length; n++) {
 			var word = words[n];
 			if(word[0]==='<' && word[word.length-1]==='>'){
@@ -192,8 +185,6 @@ Studio.TextBox.prototype.wrapText = function() {
 				}else{
 					var tag = this.styles[word.slice(1,word.length-1)];
 					if(tag){
-						// this._style[this._style_count]=tag;
-						// this._style_count++;
 						this.image.ctx.font = this.font.modify(tag)
 						if(tag.lineHeight){
 							lineHeight = tag.lineHeight
@@ -207,7 +198,6 @@ Studio.TextBox.prototype.wrapText = function() {
 			}
 
 			testWidth += metrics
-
 			if (testWidth > width && n > 0) {
 				testWidth -= metrics
 				// testWidth = this.image.ctx.measureText(line).width
@@ -217,19 +207,27 @@ Studio.TextBox.prototype.wrapText = function() {
 					y = 0
 					start += width+this.gutter
 				}
-				this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0 , y)
+				if(this.justify==true){
+					this.writeLine( styleline, start, y , (width - testWidth)/(just))
+				}else{
+					this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0 , y, 0)
+				}
+				just = 0
 				styleline = word +' '
 				y += lineHeight
 				testWidth = metrics
 			} else {
 				styleline = styleline + word + ' '
+				just++
 			}
 		}
 		if(y+lineHeight>=this.height){
 			y = 0
 			start += width+this.gutter
 		}
-		this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0, y )
+
+		this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0, y , .25)
+		
 		
 		this._wrap_height = y + lineHeight
 		if (i !== paragraphs.length - 1) {
