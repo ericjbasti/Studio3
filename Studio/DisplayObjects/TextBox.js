@@ -5,7 +5,7 @@ Studio.Font = function(family,size,weight,style,varient){
 	this.style = style || ''
 	this.varient = varient || ''
 	this.lineHeight = 20
-	this.fontColor = '#eee'
+	this.color = '#fff'
 	this.shadow = 0
 }
 
@@ -90,7 +90,7 @@ Studio.TextBox.prototype.setText = function(text) {
 }
 
 Studio.TextBox.prototype.setColor = function(color) {
-	this.fontColor = color
+	// this.color = color
 	return this
 }
 
@@ -121,7 +121,7 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y, vx) {
 			if(word=='</>'){
 				this._lastfont = this.font.build()
 				this.image.ctx.font = this._lastfont
-				this.image.ctx.fillStyle = this.font.fontColor;
+				this.image.ctx.fillStyle = this.font.color;
 				this._offsetY = this.offsetY
 			}else{
 				var tag = this.styles[word.slice(1,word.length-1)];
@@ -157,12 +157,12 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y, vx) {
 	// 		this.image.ctx.fillText(text, x + 1 + i, y + i)
 	// 	}
 	// }
-	// this.image.ctx.fillStyle = this.fontColor
+	// this.image.ctx.fillStyle = this.color
 	// this.image.ctx.fillText(text, x + 1, y)
 }
 
 Studio.TextBox.prototype.wrapText = function() {
-	this.image.ctx.fillStyle = this.font.fontColor;
+	this.image.ctx.fillStyle = this.font.color;
 	this._lastfont = this.font.build();
 	this.image.ctx.font = this._lastfont
 	var width = (this.width-(this.gutter*(this.columns-1)))/this.columns
