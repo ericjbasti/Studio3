@@ -51,6 +51,7 @@ Studio.Stage.prototype.WEBGL = {
 		gl._rects = new Float32Array(16384 * 32)
 	},
 	init: function(gl) {
+		this._max_textures = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 		this._count = 0
 		this.rect_buffer = new Studio.BufferGL(null,0,gl)
 		gl.clearColor(0,0,0,1)
