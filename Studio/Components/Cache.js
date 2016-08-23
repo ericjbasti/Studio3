@@ -11,6 +11,10 @@ Studio.Cache = function(width, height, resolution) {
 	this.ctx.scale(resolution, resolution)
 	this.slice.Full = {x: 0,y: 0,width: this.bitmap.width,height: this.bitmap.height}
 	this.sliceGL.Full = {x:0,y:0,width:1, height: 1}
+
+	if(Studio.DEBUG){
+		document.body.appendChild(this.bitmap)
+	}
 }
 
 Studio.inherit(Studio.Cache, Studio.Image)

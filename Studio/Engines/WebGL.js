@@ -24,15 +24,6 @@ var VERTEXSHADER = ['attribute vec3 a_position;',
 						'}'].join('\n')
 
 Studio.Stage.prototype.loadShader = function(who, shader) {
-	//var shaderScript = document.getElementById(shader);
-	//var str = '';
-	// var k = shaderScript.firstChild ;
-	// while (k) {
-	// 	if (k.nodeType == 3) {
-	// 		str += k.textContent;
-	// 	}
-	// 	k = k.nextSibling;
-	// }
 	this.ctx.shaderSource(who, shader)
 }
 
