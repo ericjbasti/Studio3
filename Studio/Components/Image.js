@@ -1,5 +1,5 @@
 Studio.Image = function studio_image(path, slices) {
-	this.path = path //+ '_'+ parseInt(Math.random()*999999)
+	this.path = path + '_'+ parseInt(Math.random()*100000).toString(16)
 	this.bitmap = null
 	this.width = 1
 	this.height = 1

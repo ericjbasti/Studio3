@@ -1,6 +1,6 @@
 Studio.Cache = function(width, height, resolution) {
 	this.resolution = resolution || 1
-	this.path = 'cache_'+parseInt(Math.random()*999999999)
+	this.path = 'cache_' + parseInt(Math.random()*100000).toString(16)
 	this.bitmap = document.createElement('canvas')
 	this.bitmap.width = width * this.resolution || 512
 	this.bitmap.height = height * this.resolution || 512
