@@ -42,10 +42,14 @@ Studio.Camera.prototype.update = function(stage, ratio) {
 	}
 }
 
-Studio.Camera.prototype.render = function(stage, ratio) {
+Studio.Camera.prototype.render = function(stage, ratio, webgl) {
 	this.update(stage, ratio)
 	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) {
-		stage.ctx.setTransform(stage.resolution * this.scaleX, 0, 0, stage.resolution * this.scaleY, -this.x * stage.resolution, -this.y * stage.resolution)
+		if(webgl){
+
+		}else{
+			stage.ctx.setTransform(stage.resolution * this.scaleX, 0, 0, stage.resolution * this.scaleY, -this.x * stage.resolution, -this.y * stage.resolution)
+		}
 	}
 }
 

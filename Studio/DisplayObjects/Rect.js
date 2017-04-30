@@ -130,6 +130,9 @@ Studio.Rect.prototype.buildTriangles = function(gl, ratio) {
 }
 
 Studio.Rect.prototype.setStyle = function(ctx) {
+	if (this.color.dirty){
+		this.color._build_style();
+	}
 	if (this.color !== ctx.fillStyle) {
 		ctx.fillStyle = this.color.style
 	}

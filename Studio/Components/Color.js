@@ -55,10 +55,18 @@ Studio.Color.prototype = {
 	},
 	_build_style: function() {
 		this.style = 'rgba(' + parseInt(this.r * 255) + ',' + parseInt(this.g * 255) + ',' + parseInt(this.b * 255) + ',' + this.a + ')'
-	}
+	},
+	dirty: false
 }
 
+
+
 Studio.RED = new Studio.Color(204, 0, 17, 1)
+Studio.ORANGE = new Studio.Color(255, 150, 0)
 Studio.YELLOW = new Studio.Color(255, 221, 34, 1)
+Studio.GREEN = new Studio.Color(0, 200, 0, 1)
 Studio.BLUE = new Studio.Color(51, 170, 255, 1)
+Studio.PURPLE = new Studio.Color(128, 0, 255, 1)
 Studio.WHITE = new Studio.Color(255, 255, 255, 1)
+Studio.BLACK = new Studio.Color(0, 0, 0, 1)
+Studio.TRANSPARENT = Studio.TRANS = new Studio.Color(0, 0, 0, 0)

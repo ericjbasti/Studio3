@@ -232,7 +232,15 @@ Studio.inherit = function(A, B, properties) {
 	A.prototype.constructor = A
 }
 
+Studio.windowResize = function(){
+	for (var m = 0; m !== Studio.stages.length; m++) {
+		if(Studio.stages[m].resize){
+			Studio.stages[m].resize();
+		}
+	}
+}
 
+window.addEventListener('resize', Studio.windowResize);
 
 Studio.TOP = Studio.LEFT = 0
 Studio.MIDDLE = Studio.CENTER = 0.5
