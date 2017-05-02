@@ -14,12 +14,13 @@ var VERTEXSHADER = ['attribute vec3 a_position;',
 						'attribute vec4 a_color;',
 						'attribute vec2 a_texture;',
 						'uniform vec2 u_resolution;',
-						'uniform vec2 u_translation;',
+						'uniform mat3 u_matrix;',
 						'varying vec4 v_color;',
 						'varying vec2 v_texture;',
 						'void main(void) {',
-						'	vec2 canvas_coords = (((vec2(a_position.x,a_position.y)-u_translation)/ u_resolution)*2.0) - 1.0;',
-						'	gl_Position = vec4(canvas_coords * vec2(1.0,-1.0), a_position.z, 1.0);',
+						'   vec2 canvas_coords = (u_matrix * vec3(a_position.xy,1)).xy;',
+						'   vec2 clipSpace = ((canvas_coords / u_resolution)*2.0) - 1.0;',
+						'	gl_Position = vec4(clipSpace * vec2(1, -1), a_position.z, 1);',
 						'	v_color = a_color;',
 						'	v_texture = a_texture;',
 						'}'].join('\n')
@@ -85,8 +86,8 @@ Studio.Stage.prototype.WEBGL = {
 		this.buffers = {}
 
 		gl.resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
-		gl.translationLocation = gl.getUniformLocation(this.program, 'u_translation')
-
+		gl.matrixLocation = gl.getUniformLocation(this.program, 'u_matrix')
+		// gl.scaleLocation = gl.getUniformLocation(this.program, 'u_scale')
 		gl.enableVertexAttribArray(0)
 
 		gl.positionLocation = gl.getAttribLocation(this.program, 'a_position')
@@ -99,7 +100,7 @@ Studio.Stage.prototype.WEBGL = {
 
 		gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
 
-		gl.uniform2f(gl.resolutionLocation, this.width, this.height)
+		gl.uniform2f(gl.resolutionLocation, this.width*this.resolution, this.height*this.resolution)
 
 		this.buffer = gl.createBuffer()
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
@@ -130,9 +131,6 @@ Studio.Stage.prototype.WEBGL = {
 		this._count = 0
 		this.draws = 0
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
-		this.camera.render(this, lag, 1);
-		this.ctx.uniform2f(this.ctx.translationLocation,this.camera.x,this.camera.y);
-		this.ctx.uniform2f(this.ctx.resolutionLocation,this.width/this.camera.scaleX,this.height/this.camera.scaleY)
 		if (this.previousScene) {
 			this.previousScene.buildElement(this, lag, this.interpolate)
 			this.previousScene.vertex_children(this, lag, this.interpolate)
@@ -142,6 +140,7 @@ Studio.Stage.prototype.WEBGL = {
 			this.activeScene.vertex_children(this, lag, this.interpolate)
 		}
 		this.vertex_children(this, lag, this.interpolate)
+		this.camera.render(this, lag, 1);
 		this.rect_buffer.draw(this.ctx)
 		for (var i in this.buffers) {
 			this.buffers[i].draw(this.ctx)
