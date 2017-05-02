@@ -7,7 +7,7 @@ Studio.Stage = function(domID, attr) {
 
 	// a very basic check for webgl support.
 	// this will probably change later.
-	this.webgl = false //!!window.WebGLRenderingContext;
+	this.webgl = !!window.WebGLRenderingContext;
 	this.fullscreen = 0
 	this.color = new Studio.Color(0, 0, 0, 1) // defaults to black
 	this.snap = false

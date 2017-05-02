@@ -48,16 +48,17 @@ Studio.Camera.prototype.update = function(stage, ratio, webgl) {
 
 Studio.Camera.prototype.render = function(stage, ratio, webgl) {
 	this.update(stage,ratio, webgl)
-	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) {
-		this.matrix[0] = stage.resolution * this.scaleX;
-		this.matrix[4] = stage.resolution * this.scaleY;
-		this.matrix[6] = ((stage.width*stage.resolution)/2)-(this.x * this.matrix[0]);
-		this.matrix[7] = ((stage.height*stage.resolution)/2)-(this.y * this.matrix[4]);
-		if(webgl){
-			stage.ctx.uniformMatrix3fv(stage.ctx.matrixLocation,false,this.matrix);
-		}else{
+	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) { // we only need to update this if its different
+		this.matrix[0] = this.scaleX;
+		this.matrix[4] = this.scaleY;
+		this.matrix[6] = (stage.width/2)-(this.x * this.scaleX);
+		this.matrix[7] = (stage.height/2)-(this.y * this.scaleY);
+		if(!webgl){
 			stage.ctx.setTransform(this.matrix[0], 0, 0, this.matrix[4], this.matrix[6], this.matrix[7])
 		}
+	}
+	if(webgl){ // webgl needs up to send this information.
+		stage.ctx.uniformMatrix3fv(stage.ctx.matrixLocation,false,this.matrix);
 	}
 }
 

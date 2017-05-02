@@ -77,7 +77,7 @@ Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 Studio.Rect.prototype.addXYZ = function(buffer,point){
 	buffer.data[buffer.count++] = point.x
 	buffer.data[buffer.count++] = point.y
-	buffer.data[buffer.count++] = stage.draws*-.00001
+	buffer.data[buffer.count++] = Studio.draws*-.00001
 }
 
 Studio.Rect.prototype.addRGBA = function(buffer,color){
@@ -97,7 +97,7 @@ Studio.Rect.prototype.addVert = function(buffer, point, tx,ty) {
 	this.addTX(buffer,tx,ty)
 }
 
-Studio.Rect.prototype.verts = function(box){
+Studio.Rect.prototype.verts = function(box, stage){
 	var buffer = stage.rect_buffer;
 	this.addVert(buffer,box.TL,10,0)
 	this.addVert(buffer,box.TR,10,0)
@@ -107,7 +107,7 @@ Studio.Rect.prototype.verts = function(box){
 
 
 Studio.Rect.prototype.buildElement = function(stage, ratio, interpolate) {
-	stage.draws++
+	Studio.draws++
 	if (interpolate) {
 		this._delta(ratio)
 	} else {
@@ -115,7 +115,7 @@ Studio.Rect.prototype.buildElement = function(stage, ratio, interpolate) {
 	}
 	this._boundingBox.get_bounds(this)
 	
-	this.verts(this._boundingBox)
+	this.verts(this._boundingBox, stage)
 }
 
 Studio.Rect.prototype.buildTriangles = function(gl, ratio) {

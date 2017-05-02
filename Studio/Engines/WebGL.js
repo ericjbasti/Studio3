@@ -100,7 +100,7 @@ Studio.Stage.prototype.WEBGL = {
 
 		gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
 
-		gl.uniform2f(gl.resolutionLocation, this.width*this.resolution, this.height*this.resolution)
+		gl.uniform2f(gl.resolutionLocation, this.width, this.height)
 
 		this.buffer = gl.createBuffer()
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
