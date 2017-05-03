@@ -279,10 +279,10 @@ Studio.TextBox.prototype.draw = function(ctx) {
 	}
 }
 
-Studio.TextBox.prototype.verts = function(box, buffer){
-	this.addVert(buffer,box.TL,0,0)
-	this.addVert(buffer,box.TR,1,0)
-	this.addVert(buffer,box.BL,0,1)
-	this.addVert(buffer,box.BR,1,1)
+Studio.TextBox.prototype.verts = function(box, buffer, texture, stage){
+	this.addVert(buffer,box.TL,0,0,stage)
+	this.addVert(buffer,box.TR,1,0,stage)
+	this.addVert(buffer,box.BL,0,1,stage)
+	this.addVert(buffer,box.BR,1,1,stage)
 }
 

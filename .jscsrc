@@ -110,5 +110,6 @@
     "requireSpaceBeforeObjectValues": true,
     "requireCapitalizedConstructors": true,
     "requireDotNotation": true,
-    "validateParameterSeparator": ", "
+    "validateParameterSeparator": ", ",
+    "requireSpaceBetweenArguments": true
 }

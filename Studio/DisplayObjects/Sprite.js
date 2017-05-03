@@ -30,11 +30,11 @@ Studio.Sprite.prototype.drawAngled = function(ctx) {
 	ctx.restore()
 }
 
-Studio.Sprite.prototype.verts = function(box, buffer, texture){
-	this.addVert(buffer,box.TL,texture.x,texture.y)
-	this.addVert(buffer,box.TR,texture.width,texture.y)
-	this.addVert(buffer,box.BL,texture.x,texture.height)
-	this.addVert(buffer,box.BR,texture.width,texture.height)
+Studio.Sprite.prototype.verts = function(box, buffer, texture, stage) {
+	this.addVert(buffer, box.TL, texture.x, texture.y, stage)
+	this.addVert(buffer, box.TR, texture.width, texture.y, stage)
+	this.addVert(buffer, box.BL, texture.x, texture.height, stage)
+	this.addVert(buffer, box.BR, texture.width, texture.height, stage)
 
 	if (this.borderlap && this.border) {
 		if (this._dx -  (this._dwidth * this.anchorX) < this.border.x) {
@@ -49,16 +49,16 @@ Studio.Sprite.prototype.verts = function(box, buffer, texture){
 			this._boundingBox.BR.x -= this.border.width
 			this._boundingBox.BL.x -= this.border.width
 		}
-		this.addVert(buffer,box.TL,texture.x,texture.y)
-		this.addVert(buffer,box.TR,texture.width,texture.y)
-		this.addVert(buffer,box.BL,texture.x,texture.height)
-		this.addVert(buffer,box.BR,texture.width,texture.height)
+		this.addVert(buffer, box.TL, texture.x, texture.y, stage)
+		this.addVert(buffer, box.TR, texture.width, texture.y, stage)
+		this.addVert(buffer, box.BL, texture.x, texture.height, stage)
+		this.addVert(buffer, box.BR, texture.width, texture.height, stage)
 	}
 }
 
 Studio.Sprite.prototype.buildElement = function(stage, ratio, interpolate) {
-	if(!stage.buffers[this.image.path]){
-		stage.buffers[this.image.path] = new Studio.BufferGL(this.image,0,stage.ctx);
+	if (!stage.buffers[this.image.path]) {
+		stage.buffers[this.image.path] = new Studio.BufferGL(this.image,0,stage.ctx)
 	}
 	stage.draws++
 
@@ -68,8 +68,8 @@ Studio.Sprite.prototype.buildElement = function(stage, ratio, interpolate) {
 		this._dset()
 	}
 	this._boundingBox.get_bounds(this)
-	
-	this.verts(this._boundingBox, stage.buffers[this.image.path], this.image.sliceGL[this.slice])
+
+	this.verts(this._boundingBox, stage.buffers[this.image.path], this.image.sliceGL[this.slice], stage)
 }
 
 Studio.Sprite.prototype.draw = function Studio_Sprite_draw(ctx) {
@@ -198,18 +198,17 @@ Studio.SpriteAnimation.prototype.updateFrame = function() {
 	this.setSlice()
 }
 
-Studio.SpriteAnimation.prototype.verts = function(box, buffer){
-	var width = (this.rect.width/this.image.width)
-	var height = (this.rect.height/this.image.height)
+Studio.SpriteAnimation.prototype.verts = function(box, buffer) {
+	var width = (this.rect.width / this.image.width)
+	var height = (this.rect.height / this.image.height)
 
 	var left = this.sliceX * width
 	var top  = this.sliceY * height
 
-
-	this.addVert(buffer,box.TL,left,top)
-	this.addVert(buffer,box.TR,left+width,top)
-	this.addVert(buffer,box.BL,left,top+height)
-	this.addVert(buffer,box.BR,left+width,top+height)
+	this.addVert(buffer, box.TL, left, top)
+	this.addVert(buffer, box.TR, left + width, top)
+	this.addVert(buffer, box.BL, left, top + height)
+	this.addVert(buffer, box.BR, left + width, top + height)
 
 	if (this.borderlap && this.border) {
 		if (this._dx -  (this._dwidth * this.anchorX) < this.border.x) {
@@ -224,16 +223,14 @@ Studio.SpriteAnimation.prototype.verts = function(box, buffer){
 			this._boundingBox.BR.x -= this.border.width
 			this._boundingBox.BL.x -= this.border.width
 		}
-		this.addVert(buffer,box.TL,left,top)
-		this.addVert(buffer,box.TR,left+width,top)
-		this.addVert(buffer,box.BL,left,top+height)
-		this.addVert(buffer,box.BR,left+width,top+height)
+		this.addVert(buffer, box.TL, left, top)
+		this.addVert(buffer, box.TR, left + width, top)
+		this.addVert(buffer, box.BL, left, top + height)
+		this.addVert(buffer, box.BR, left + width, top + height)
 	}
 
 	if (this.loop.length) {
 		this.updateFrame()
 	}
 }
-
-
 

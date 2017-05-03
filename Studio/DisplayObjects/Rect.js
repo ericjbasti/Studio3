@@ -14,11 +14,15 @@ Studio.Rect = function(attr) {
 Studio.inherit(Studio.Rect, Studio.DisplayObject)
 
 
+Studio.DefaultImage = new Studio.Cache(1,1,1)
+Studio.DefaultImage.ctx.fillStyle = '#fff';
+Studio.DefaultImage.ctx.fillRect(0,0,1,1)
+
 Studio.BufferGL = function(image,size){
 	this.size = size || 3400
 	this.data = new Float32Array(this.size * 36)
 	this.count = 0
-	this.texture = image || null;
+	this.texture = image || Studio.DefaultImage;
 }
 Studio.BufferGL.prototype.constructor = Studio.BufferGL
 
@@ -74,10 +78,12 @@ Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
 	}
 }
 
-Studio.Rect.prototype.addXYZ = function(buffer,point){
+
+
+Studio.Rect.prototype.addXYZ = function(buffer,point,stage){
 	buffer.data[buffer.count++] = point.x
 	buffer.data[buffer.count++] = point.y
-	buffer.data[buffer.count++] = Studio.draws*-.00001
+	buffer.data[buffer.count++] = stage.draws*-.000001
 }
 
 Studio.Rect.prototype.addRGBA = function(buffer,color){
@@ -91,23 +97,23 @@ Studio.Rect.prototype.addTX = function(buffer,x,y){
 	buffer.data[buffer.count++] = y
 }
 
-Studio.Rect.prototype.addVert = function(buffer, point, tx,ty) {
-	this.addXYZ(buffer,point)
+Studio.Rect.prototype.addVert = function(buffer, point, tx,ty,stage) {
+	this.addXYZ(buffer,point,stage)
 	this.addRGBA(buffer,this.color)
 	this.addTX(buffer,tx,ty)
 }
 
 Studio.Rect.prototype.verts = function(box, stage){
 	var buffer = stage.rect_buffer;
-	this.addVert(buffer,box.TL,10,0)
-	this.addVert(buffer,box.TR,10,0)
-	this.addVert(buffer,box.BL,10,0)
-	this.addVert(buffer,box.BR,10,10)
+	this.addVert(buffer,box.TL,0,0,stage)
+	this.addVert(buffer,box.TR,0,0,stage)
+	this.addVert(buffer,box.BL,0,0,stage)
+	this.addVert(buffer,box.BR,0,0,stage)
 }
 
 
 Studio.Rect.prototype.buildElement = function(stage, ratio, interpolate) {
-	Studio.draws++
+	stage.draws++
 	if (interpolate) {
 		this._delta(ratio)
 	} else {

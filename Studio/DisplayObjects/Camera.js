@@ -29,7 +29,6 @@ Studio.Camera.prototype.update = function(stage, ratio, webgl) {
 		if(!webgl) this.tracking._delta(ratio)
 		this.x = (this.tracking._dx)
 		this.y = (this.tracking._dy)
-		// this.angle = this.tracking.angle || 0 ;
 	}
 	if (this.bound) { // are we bound to a DisplayObject? this can be the main stage if you want.
 		this.updateRect()
@@ -54,7 +53,7 @@ Studio.Camera.prototype.render = function(stage, ratio, webgl) {
 		this.matrix[6] = (stage.width/2)-(this.x * this.scaleX);
 		this.matrix[7] = (stage.height/2)-(this.y * this.scaleY);
 		if(!webgl){
-			stage.ctx.setTransform(this.matrix[0], 0, 0, this.matrix[4], this.matrix[6], this.matrix[7])
+			stage.ctx.setTransform(this.matrix[0]*stage.resolution, 0, 0, this.matrix[4]*stage.resolution, this.matrix[6]*stage.resolution, this.matrix[7]*stage.resolution)
 		}
 	}
 	if(webgl){ // webgl needs up to send this information.

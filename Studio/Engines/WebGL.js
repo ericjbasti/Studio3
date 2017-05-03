@@ -3,11 +3,7 @@ var FRAGMENTSHADER = ['precision lowp float;',
 						'varying vec4 v_color;',
 						'varying vec2 v_texture;',
 						'void main(void) {',
-						'   if(v_texture.x==10.0){',
-						'		gl_FragColor = v_color;',
-						'	}else{',
-						'		gl_FragColor = texture2D(u_image, v_texture) * v_color;',
-						'	}',
+						'	gl_FragColor = texture2D(u_image, v_texture) * v_color;',
 						'}'].join('\n')
 
 var VERTEXSHADER = ['attribute vec3 a_position;',
@@ -130,6 +126,7 @@ Studio.Stage.prototype.WEBGL = {
 	render:  function(lag) {
 		this._count = 0
 		this.draws = 0
+		this.ctx.clearColor(this.color.r,this.color.g,this.color.b,this.color.a)
 		this.ctx.clear(this.ctx.COLOR_BUFFER_BIT | this.ctx.DEPTH_BUFFER_BIT)
 		if (this.previousScene) {
 			this.previousScene.buildElement(this, lag, this.interpolate)
