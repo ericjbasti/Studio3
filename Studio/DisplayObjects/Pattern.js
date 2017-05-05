@@ -20,15 +20,14 @@ Studio.Pattern = function(attr) {
 	this.overflowY = 0
 	this.resolution = 1
 	this.image = null
-	this.slice = 'Full'
 	this.offsetX = 0
 	this.offsetY = 0
+	this.stretchY = false
 	// this.pattern = [{0,0,96,96}]
 	if (attr) {
 		this.apply(attr)
 	}
 	this.base_image = this.image;
-
 	this.base_image.addListenerTo('ready','onImageReady', this)
 	this.width = this.width + this.overflowX
 	this.height = this.height + this.overflowY
@@ -48,17 +47,38 @@ Studio.Pattern.prototype.setPattern = function() {
 
 	var width = slice.width * this.scaleX || 0
 	var height = slice.height * this.scaleY  || 0
-	for (var x = 0; x < this.width; x += width) {
-		for (var y = 0; y < this.height; y += height) {
-			if (this.offsetX + width > width) {
-				this.offsetX -= width
+	var x = 0;
+	var y = 0;
+	if(!this.stretchX && !this.stretchY){
+		for ( x = 0; x < this.width; x += width ) {
+			for ( y = 0; y < this.height; y += height ) {
+				if (this.offsetX + width > width) {
+					this.offsetX -= width
+				}
+				if (this.offsetY + height > height) {
+					this.offsetY -= height
+				}
+				this.image.ctx.drawImage(this.base_image.bitmap, slice.x, slice.y, slice.width, slice.height, x + this.offsetX,y + this.offsetY, width, height)
 			}
-			if (this.offsetY + height > height) {
-				this.offsetY -= height
+		}
+	}else{
+		if(this.stretchY){
+			for ( x = 0; x < this.width; x += width ) {
+				if (this.offsetX + width > width) {
+					this.offsetX -= width
+				}
+				this.image.ctx.drawImage(this.base_image.bitmap, slice.x, slice.y, slice.width, slice.height, x + this.offsetX,y + this.offsetY, width, this.height)
 			}
-			this.image.ctx.drawImage(this.base_image.bitmap, slice.x, slice.y, slice.width, slice.height, x + this.offsetX,y + this.offsetY, width, height)
+		}else{
+			for ( y = 0; y < this.height; y += height ) {
+				if (this.offsetY + height > height) {
+					this.offsetY -= height
+				}
+				this.image.ctx.drawImage(this.base_image.bitmap, slice.x, slice.y, slice.width, slice.height, x + this.offsetX,y + this.offsetY, this.width, height)
+			}
 		}
 	}
+	
 	return this
 }
 
@@ -87,6 +107,7 @@ Studio.Pattern.prototype.checkOverflow = function() {
 
 Studio.Pattern.prototype.onImageReady = function(ready) {
 	if (ready) {
+		console.log('patt ready'+ this.slice)
 		this.setPattern()
 	}
 }
@@ -111,9 +132,19 @@ Studio.Pattern.prototype.draw = function(ctx) {
 		ctx.drawImage(this.image.bitmap, 0, 0, this.image.bitmap.width, this.image.bitmap.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
 	}
 }
-Studio.Pattern.prototype.verts = function(box, buffer){
-	this.addVert(buffer,box.TL,0,0)
-	this.addVert(buffer,box.TR,1,0)
-	this.addVert(buffer,box.BL,0,1)
-	this.addVert(buffer,box.BR,1,1)
+
+Studio.Pattern.prototype.buildElement = function(stage, ratio, interpolate) {
+	if (!stage.buffers[this.image.path]) {
+		stage.buffers[this.image.path] = new Studio.BufferGL(this.image,0,stage)
+	}
+	stage.draws++
+
+	if (interpolate) {
+		this._delta(ratio)
+	} else {
+		this._dset()
+	}
+	this._boundingBox.get_bounds(this)
+
+	this.verts(this._boundingBox, stage.buffers[this.image.path], this.base_image.sliceGL['Full'], stage)
 }
