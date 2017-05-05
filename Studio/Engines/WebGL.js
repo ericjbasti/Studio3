@@ -51,7 +51,7 @@ Studio.Stage.prototype.WEBGL = {
 	init: function(gl) {
 		this._max_textures = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 		this._count = 0
-		this.rect_buffer = new Studio.BufferGL(null,0,gl)
+		this.rect_buffer = new Studio.BufferGL(null,0,this)
 		gl.clearColor(0,0,0,1)
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 		this.vertexShader = gl.createShader(gl.VERTEX_SHADER)
@@ -142,6 +142,8 @@ Studio.Stage.prototype.WEBGL = {
 		for (var i in this.buffers) {
 			this.buffers[i].draw(this.ctx)
 		}
-
+		if (this._effects) {
+			this.runEffects();
+		}
 	}
 }
