@@ -6,7 +6,7 @@
 Studio.Camera = function(stage) {
 	this.stage 		= {width: stage.width, height: stage.height}
 	this.tracking 	= null
-
+	this.focus		= {x:0,y:0}
 	this.bound 		= null
 	this.active		= true
 
@@ -47,11 +47,11 @@ Studio.Camera.prototype.update = function(stage, ratio, webgl) {
 
 Studio.Camera.prototype.render = function(stage, ratio, webgl) {
 	this.update(stage,ratio, webgl)
-	if (this.x || this.y || this.scaleX !== 1 || this.scaleY !== 1) { // we only need to update this if its different
+	if (this.x || this.y || this.scaleX !== this.matrix[0] || this.scaleY !== this.matrix[4]) { // we only need to update this if its different
 		this.matrix[0] = this.scaleX;
 		this.matrix[4] = this.scaleY;
-		this.matrix[6] = (stage.width/2)-(this.x * this.scaleX);
-		this.matrix[7] = (stage.height/2)-(this.y * this.scaleY);
+		this.matrix[6] = this.focus.x-(this.x * this.scaleX);
+		this.matrix[7] = this.focus.y-(this.y * this.scaleY);
 		if(!webgl){
 			stage.ctx.setTransform(this.matrix[0]*stage.resolution, 0, 0, this.matrix[4]*stage.resolution, this.matrix[6]*stage.resolution, this.matrix[7]*stage.resolution)
 		}
@@ -63,6 +63,8 @@ Studio.Camera.prototype.render = function(stage, ratio, webgl) {
 
 Studio.Camera.prototype.track = function(who) {
 	this.tracking = who
+	this.focus.x = stage.width/2
+	this.focus.y = stage.height/2
 }
 
 Studio.Camera.prototype.bindTo = function(who) {
@@ -75,4 +77,8 @@ Studio.Camera.prototype.unBind = function() {
 
 Studio.Camera.prototype.stopTracking = function() {
 	this.track(null)
+	this.focus.x = 0
+	this.focus.y = 0
+	this.matrix[6] = this.focus.x-(this.x * this.scaleX);
+	this.matrix[7] = this.focus.y-(this.y * this.scaleY);
 }

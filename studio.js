@@ -39,7 +39,8 @@
 // @codekit-append "Studio/Input/Touch.js"
 
 // @codekit-append "Studio/Components/Sound.js"
-
+// @codekit-append "Studio/Input/Gamepad.js"
+// @codekit-append "Studio/DisplayObjects/DOMElement.js"
 
 var getWebGLContextType = function(){
 	var canvas = document.createElement('canvas');
