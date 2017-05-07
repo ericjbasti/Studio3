@@ -15,7 +15,7 @@ Studio.DisplayObject = function(attr) {
 	this.anchorX  = 0.5
 	this.anchorY  = 0.5
 	this.rotation = 0
-
+	this.skews 	  = 1
 	// Display Settings:
 	this.alpha   = 1 // sets the opacity/alpha of an object
 	this.visible = 1 // invisible items are ignored when rendering
@@ -28,6 +28,7 @@ Studio.DisplayObject = function(attr) {
 	this.orbits = true
 	this.orbit = 0
 	this.inheritRotation = true
+	this.inheritScale = true
 	this.orbitSpeed = 1
 
 	// set attributes if provided.
@@ -270,8 +271,13 @@ Studio.DisplayObject.prototype = {
 		}
 	},
 	update_scale: function() {
-		this._world.scaleX  = this._parent.scaleX * this.scaleX
-		this._world.scaleY  = this._parent.scaleY * this.scaleY
+		if (this.inheritScale) {
+			this._world.scaleX  = this._parent.scaleX * this.scaleX
+			this._world.scaleY  = this._parent.scaleY * this.scaleY
+		}else{
+			this._world.scaleX  = this.scaleX
+			this._world.scaleY  = this.scaleY
+		}
 	},
 	update_dimensions: function() {
 		this._world.width = this.width * this._world.scaleX
