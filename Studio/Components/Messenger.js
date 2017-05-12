@@ -11,6 +11,7 @@ Studio.Messenger.prototype.addListener = function(type,callback) {
 }
 
 Studio.Messenger.prototype.addListenerTo = function(type,callback, who) {
+	console.log(type,callback)
 	if(!this.listeners[type]){
 		this.listeners[type]=[];
 	}
@@ -20,6 +21,7 @@ Studio.Messenger.prototype.addListenerTo = function(type,callback, who) {
 Studio.Messenger.prototype.sendMessage = function(type, message) {
 	this.message = message
 	// now lets tell everyone that listens.
+	
 	var who = null
 
 	if(!this.listeners[type]){

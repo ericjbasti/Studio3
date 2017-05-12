@@ -15,7 +15,7 @@ Studio.DisplayObject = function(attr) {
 	this.anchorX  = 0.5
 	this.anchorY  = 0.5
 	this.rotation = 0
-	this.skews 	  = 1
+	this.skews 	  = 0
 	// Display Settings:
 	this.alpha   = 1 // sets the opacity/alpha of an object
 	this.visible = 1 // invisible items are ignored when rendering
@@ -85,6 +85,7 @@ Studio.DisplayObject.prototype = {
 			child._world = new Studio.DisplayProperty()
 		}
 		child._parent = this._world
+		child._parent_box = this._boundingBox
 		this.children[this._hasChildren] = child
 		this._hasChildren++
 		// child.z = child._world.z = -this._hasChildren*.000001;

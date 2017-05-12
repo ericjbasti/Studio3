@@ -137,8 +137,8 @@ Studio.Stage.prototype.WEBGL = {
 			this.activeScene.vertex_children(this, lag, this.interpolate)
 		}
 		this.vertex_children(this, lag, this.interpolate)
-		this.camera.render(this, lag, 1);
 		this.rect_buffer.draw(this.ctx)
+		this.camera.render(this, lag, 1);
 		for (var i in this.buffers) {
 			this.buffers[i].draw(this.ctx)
 		}

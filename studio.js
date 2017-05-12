@@ -84,6 +84,15 @@ Studio.updateProgress = function() {
 	this.progress = this.queue / this.assets.length
 }
 
+Studio._continue = function(time_stamp){
+	if (Studio.stages.length > 1) {
+		Studio.RAF = requestAnimationFrame(Studio.loopAll)
+	} else {
+		Studio._current_stage = Studio.stages[0]
+		Studio.RAF = requestAnimationFrame(Studio.loop)
+	}
+}
+
 
 // this function starts the entire engine. It also checks to see if it will be drawing multiple stages.
 // if stages.length > 1 it will loop through all the stages, otherwise it just renders the one it has.
@@ -95,19 +104,10 @@ Studio.start = function(time_stamp) {
 	if (time_stamp) {
 		Studio.now = time_stamp
 		Studio.time = time_stamp
-		Studio.continue()
+		Studio._continue()
 
 	} else {
 		Studio.RAF = requestAnimationFrame(Studio.start)
-	}
-}
-
-Studio.continue = function(time_stamp){
-	if (Studio.stages.length > 1) {
-		Studio.RAF = requestAnimationFrame(Studio.loopAll)
-	} else {
-		Studio._current_stage = Studio.stages[0]
-		Studio.RAF = requestAnimationFrame(Studio.loop)
 	}
 }
 
@@ -168,7 +168,7 @@ Studio.handleVisibilityChange = function() {
 		cancelAnimationFrame(Studio.RAF)
 	} else {
 		console.log('%cStudio Play (visibilitychange)', Studio.statStyle)
-		Studio.RAF = requestAnimationFrame(Studio.continue)
+		Studio.RAF = requestAnimationFrame(Studio._continue)
 	}
 }
 

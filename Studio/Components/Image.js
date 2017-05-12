@@ -15,7 +15,7 @@ Studio.Image = function studio_image(path, slices) {
 
 	this.sliceGL = {}
 
-	this.status = new Studio.Messenger()
+	// this.status = new Studio.Messenger()
 	if (slices) {
 		this.addSlice(slices)
 	}

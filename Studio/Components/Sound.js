@@ -50,7 +50,7 @@ Studio.Sounds = {
 		mute.ontouchend = function() {
 			song.play()
 		}
-		document.body.appendChild(mute)
+		// document.body.appendChild(mute)
 	}
 }
 

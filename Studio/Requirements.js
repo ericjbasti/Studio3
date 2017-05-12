@@ -11,6 +11,12 @@ if (!window.console) {
 	}
 }
 
+if ('Float32Array' in window ) {
+}else{
+	console.log('no float32')
+	window.Float32Array = window.Array;
+}
+
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 if (!Object.keys) {
 	console.warn('This browser does not support Object.keys() . Using polyfill instead.')
@@ -82,7 +88,7 @@ if (typeof Object.create !== 'function') {
 		console.warn('This browser does not support requestAnimationFrame() . Using setTimeout() instead.')
 		window.requestAnimationFrame = function(callback) {
 			var id = window.setTimeout(function() {
-				callback(performance.now())
+				callback(Date.now())
 			}, 1000 / 60)
 			return id
 		}

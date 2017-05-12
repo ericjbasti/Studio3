@@ -9,21 +9,25 @@ Studio.Camera = function(stage) {
 	this.focus		= {x:0,y:0}
 	this.bound 		= null
 	this.active		= true
-
-	this.matrix 	= 	new Float32Array([1,0,0,
-						 0,1,0,
-						 0,0,1]);
+	this.visibleArea = new Studio.Rect({x:0,y:0,width:stage.width,height:stage.height, color: new Studio.Color(200,0,255,.4)})
+	stage.addChild(this.visibleArea);
+	this.matrix 	= 	new Float32Array([1,0,0,0,1,0,0,0,1]);
 }
 
 Studio.inherit(Studio.Camera, Studio.DisplayObject)
 
 Studio.Camera.prototype.updateRect = function() {
-	this.left	= -this.bound._world.x * this.scaleX
-	this.top	= -this.bound._world.y * this.scaleY
-	this.right	= this.left + (this.bound._world.width * this.scaleX - this.stage.width)
-	this.bottom	= this.top + (this.bound._world.height * this.scaleY - this.stage.height)
+	this.left	= (this.bound._dx * this.scaleX) + this.focus.x
+	this.top	= (this.bound._dy * this.scaleY) + this.focus.y
+	this.right	= (this.bound._dwidth * this.scaleX) - this.focus.x
+	this.bottom	= (this.bound._dheight * this.scaleY) - this.focus.y
 }
-
+Studio.Camera.prototype.update_visbile_area = function(){
+	this.visibleArea.x = this.x;
+	this.visibleArea.y = this.y;
+	this.visibleArea.width = (this.stage.width/this.scaleX) -10;
+	this.visibleArea.height = (this.stage.height/this.scaleY) -10;
+}
 Studio.Camera.prototype.update = function(stage, ratio, webgl) {
 	if (this.tracking) { // are we following a DisplayObject?
 		if(!webgl) this.tracking._delta(ratio)
@@ -43,11 +47,12 @@ Studio.Camera.prototype.update = function(stage, ratio, webgl) {
 			this.y = this.bottom
 		}
 	}
+	this.update_visbile_area();
 }
 
 Studio.Camera.prototype.render = function(stage, ratio, webgl) {
 	this.update(stage,ratio, webgl)
-	if (this.x || this.y || this.scaleX !== this.matrix[0] || this.scaleY !== this.matrix[4]) { // we only need to update this if its different
+	// if (this.x || this.y || this.scaleX !== this.matrix[0] || this.scaleY !== this.matrix[4]) { // we only need to update this if its different
 		this.matrix[0] = this.scaleX;
 		this.matrix[4] = this.scaleY;
 		this.matrix[6] = this.focus.x-(this.x * this.scaleX);
@@ -55,7 +60,7 @@ Studio.Camera.prototype.render = function(stage, ratio, webgl) {
 		if(!webgl){
 			stage.ctx.setTransform(this.matrix[0]*stage.resolution, 0, 0, this.matrix[4]*stage.resolution, this.matrix[6]*stage.resolution, this.matrix[7]*stage.resolution)
 		}
-	}
+	// }
 	if(webgl){ // webgl needs up to send this information.
 		stage.ctx.uniformMatrix3fv(stage.ctx.matrixLocation,false,this.matrix);
 	}

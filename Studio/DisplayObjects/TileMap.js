@@ -12,7 +12,6 @@ Studio.load = function(path, type, callback, who) {
 			}
 			if (callback) {
 				if (who) {
-					console.log(callback, who)
 					callback.call(who,data)
 				} else {
 					callback(data)
@@ -37,6 +36,7 @@ Studio.TileMap = function(width, height, resolution, attr) {
 	this.offsetY = 0
 	this.maxWidth = 0
 	this.resolution = resolution || 1
+	this.repeat =
 	this.data = null
 	if (attr) {
 		this.apply(attr)
@@ -57,18 +57,19 @@ Studio.TileMap.prototype = {
 		var mX = mx || this.maxWidth
 		var mY = my || map.height - sy
 
-		for (var y = 0; y != mY; y++) {
-			for (var x = 0; x != mX; x++) {
-				var i = (map.data[((y + sy) * map.width) + (x + sx)]) - set.firstgid
-				var _y = i / set.across | 0
-				var _x = i - (_y * set.across)
-				buffer.drawImage(set.set.image, _x * set.tileWidth, _y * set.tileHeight, set.tileWidth, set.tileHeight, x * set.tileWidth, y * set.tileHeight, set.tileWidth, set.tileHeight)
+		if(map.data){
+			for (var y = 0; y != mY; y++) {
+				for (var x = 0; x != mX; x++) {
+					var i = (map.data[((y + sy) * map.width) + (x + sx)]) - set.firstgid
+					var _y = i / set.across | 0
+					var _x = i - (_y * set.across)
+					buffer.drawImage(set.set.bitmap, _x * set.tileWidth, _y * set.tileHeight, set.tileWidth, set.tileHeight, x * set.tileWidth, y * set.tileHeight, set.tileWidth, set.tileHeight)
+				}
 			}
 		}
 
 		this.buffer.ctx.clearRect(0,0,this.cache.width,this.cache.height)
-		this.buffer.ctx.drawImage(this.cache.image,0,0)
-		document.body.appendChild(this.buffer.image)
+		this.buffer.ctx.drawImage(this.cache.bitmap,0,0)
 		this.cache.ready = true
 	},
 	offsetMap: function(x, y) {
@@ -104,7 +105,7 @@ Studio.TileMap.prototype = {
 		var setimage = new Studio.Image('assets/' + this.set.image)
 		this.tileset =  new Studio.TileSet(setimage, this.set.tilewidth, this.set.tileheight, this.set.imagewidth)
 		// change to addListenerFunction( function ) ... this explains what the variable needs to be.
-		setimage.status.addListenerTo('ready','_onLoad', this)
+		setimage.addListenerTo('ready','_onLoad', this)
 	},
 	load: function(asset, type) {
 		Studio.load(asset, type, this.onMapLoad, this)
