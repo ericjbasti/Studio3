@@ -89,6 +89,6 @@ Studio.Camera.prototype.stopTracking = function() {
 	this.track(null)
 	this.focus.x = 0
 	this.focus.y = 0
-	this.matrix[6] = this.focus.x - (this.x * this.scaleX);
-	this.matrix[7] = this.focus.y - (this.y * this.scaleY);
+	this.matrix[6] = this.x * this.scaleX
+	this.matrix[7] = this.y * this.scaleY
 }
