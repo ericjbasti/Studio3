@@ -56,13 +56,23 @@ Studio.TileMap.prototype = {
 		var sy = sy || 0
 		var mX = mx || this.maxWidth
 		var mY = my || map.height - sy
-
 		if(map.data){
 			for (var y = 0; y != mY; y++) {
 				for (var x = 0; x != mX; x++) {
-					var i = (map.data[((y + sy) * map.width) + (x + sx)]) - set.firstgid
-					var _y = i / set.across | 0
+					var i = (map.data[parseInt((y + sy) * map.width) + (x + sx)]) - set.firstgid
+					if(i> 0x80000000){
+						i-=0x80000000;
+					}
+					if(i>0x40000000){
+						i-=0x40000000
+					}
+					if(i>0x20000000){
+						i-=0x20000000
+					}
+
+					var _y = parseInt(i / set.across)
 					var _x = i - (_y * set.across)
+
 					buffer.drawImage(set.set.bitmap, _x * set.tileWidth, _y * set.tileHeight, set.tileWidth, set.tileHeight, x * set.tileWidth, y * set.tileHeight, set.tileWidth, set.tileHeight)
 				}
 			}
