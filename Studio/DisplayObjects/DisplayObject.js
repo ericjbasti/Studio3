@@ -213,10 +213,12 @@ Studio.DisplayObject.prototype = {
 				if(!this.children[i].buildElement){
 					console.log('no build', this.children[i])
 					return
+				}else{
+					this.children[i].buildElement(stage, ratio, interpolate)
+					if(this.children[i]) {
+						this.children[i].vertex_children(stage, ratio, interpolate)
+					}
 				}
-				this.children[i].buildElement(stage, ratio, interpolate)
-				
-				this.children[i].vertex_children(stage, ratio, interpolate)
 			}
 		}
 	},

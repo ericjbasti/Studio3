@@ -19,8 +19,9 @@ Studio.DefaultImage.ctx.fillStyle = '#fff';
 Studio.DefaultImage.ctx.fillRect(0,0,1,1)
 
 Studio.BufferGL = function(image,size,stage){
+	this.bytes = 36;
 	this.size = size || stage._maxCount;
-	this.data = new Float32Array(this.size * 36)
+	this.data = new Float32Array(this.size * this.bytes)
 	this.count = 0
 	this.texture = image || Studio.DefaultImage;
 }
@@ -57,9 +58,9 @@ Studio.BufferGL.prototype.prepTexture = function GL_prepTexture(gl) {
 
 	this.buffer = gl.createBuffer()
 	gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
-	gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, gl.FALSE, 36, 0)
-	gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, gl.FALSE, 36, (3)*4)
-	gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, gl.FALSE, 36, (3+4)*4)
+	gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, gl.FALSE, this.bytes, 0)
+	gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, gl.FALSE, this.bytes, (3)*4)
+	gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, gl.FALSE, this.bytes, (3+4)*4)
 	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
 }
 

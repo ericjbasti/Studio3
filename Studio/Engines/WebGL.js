@@ -46,7 +46,7 @@ Studio.Stage.prototype.WEBGL = {
 		})
 	},
 	newBatch: function(gl, name) {
-		gl._rects = new Float32Array(16384 * 32)
+		// gl._rects = new Float32Array(this._maxCount)
 	},
 	init: function(gl) {
 		this._max_textures = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
@@ -110,9 +110,9 @@ Studio.Stage.prototype.WEBGL = {
 		gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 36, (3 + 4) * 4)
 
 		this._rect_index_buffer = gl.createBuffer()
-		this._rect_index = new Uint16Array(this._maxCount * 7)
+		this._rect_index = new Uint16Array(this._maxCount*7)
 
-		for (var i = 0, j = 0; i < this._maxCount * 7; i += 6, j += 4) {
+		for (var i = 0, j = 0; i < this._maxCount*7; i += 6, j += 4) {
 			this._rect_index[i + 0] = j + 0
 			this._rect_index[i + 1] = j + 1
 			this._rect_index[i + 2] = j + 2

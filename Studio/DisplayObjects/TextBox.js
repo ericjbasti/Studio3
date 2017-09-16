@@ -31,7 +31,7 @@ Studio.Font.prototype = {
 
 
 
-Studio.TextBox = function(width, height, stage) {
+Studio.TextBox = function(width, height, stage, image) {
 	this.height = height
 	this.width = width
 
@@ -41,7 +41,11 @@ Studio.TextBox = function(width, height, stage) {
 	this.offsetY = 0
 	this._offsetY = this.offsetY;
 	this.shadowColor = 'rgba(0,0,0,0.5)'
-	this.image = new Studio.Cache(width,height, stage.resolution)
+	if(!image){
+		this.image = new Studio.Cache(width,height, stage.resolution)
+	}else{
+		this.image = image;
+	}
 	this.image.ctx.textBaseline = 'top'
 	this.text = ''
 	this._wrap_height = this.lineHeight
@@ -55,8 +59,8 @@ Studio.TextBox = function(width, height, stage) {
 
 	this.styles = {
 		'b': {
+			color: "#FFD000",
 			weight: 'bold',
-			color: 'red'
 		},
 		'i':{
 			style: 'italic',
@@ -78,6 +82,7 @@ Studio.TextBox = function(width, height, stage) {
 }
 
 Studio.inherit(Studio.TextBox, Studio.Sprite)
+
 
 Studio.TextBox.prototype.setFont = function(font) {
 	this.font = font
@@ -102,11 +107,13 @@ Studio.TextBox.prototype.setFont = function(font) {
 Studio.TextBox.prototype.finish = function() {
 	this.reset()
 	this.wrapText()
+	this.image.ready = true
 	this.image.dirty = true
 }
 
 Studio.TextBox.prototype.reset = function() {
-	this.image.ctx.clearRect(0, 0, this.width, this.height)
+	var slice = this.image.slice[this.slice];
+	this.image.ctx.clearRect(slice.x, slice.y, slice.width, slice.height)
 	this.image.ctx.font = this.font
 }
 
@@ -115,6 +122,7 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y, vx) {
 	var nx = 0 
 	var vx = vx || 0
 	this.image.ctx.font = this._lastfont
+
 	for(var i = 0; i!= style.length ; i++){
 		var word = style[i]
 		if(word[0]==='<' && word[word.length-1]==='>'){
@@ -165,10 +173,12 @@ Studio.TextBox.prototype.wrapText = function() {
 	this.image.ctx.fillStyle = this.font.color;
 	this._lastfont = this.font.build();
 	this.image.ctx.font = this._lastfont
-	var width = (this.width-(this.gutter*(this.columns-1)))/this.columns
-	var start = 1
+	var slice = this.image.slice[this.slice];
+
+	var width = ((this.width)-(this.gutter*(this.columns-1)))/this.columns
+	var start = slice.x+1
 	var paragraphs = this.text.split('\n')
-	var y = 0
+	var y = slice.y
 	for (var i = 0; i !== paragraphs.length; i++) {
 		var words = paragraphs[i].split(' ')
 		var line = ''
@@ -176,7 +186,7 @@ Studio.TextBox.prototype.wrapText = function() {
 		var testWidth = 0
 		var metrics = 0
 		var lineHeight = this.font.lineHeight
-		var just = 0
+		var just = slice.x
 		for (var n = 0; n < words.length; n++) {
 			var word = words[n];
 			if(word[0]==='<' && word[word.length-1]==='>'){
@@ -203,16 +213,17 @@ Studio.TextBox.prototype.wrapText = function() {
 				// testWidth = this.image.ctx.measureText(line).width
 				// We want to avoid any off pixel font rendering so we use | 0 to prevent floats
 				// also offset everything by 1px because it helps with the centering of text
-				if(y+lineHeight>=this.height){
-					y = 0
+				if(y+lineHeight>=slice.height/this.image.resolution){
+					y = slice.y
 					start += width+this.gutter
+					if(start>=slice.width) return
 				}
 				if(this.justify==true){
 					this.writeLine( styleline, start, y , (width - testWidth)/(just))
 				}else{
 					this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0 , y, 0)
 				}
-				just = 0
+				just = slice.x
 				styleline = word +' '
 				y += lineHeight
 				testWidth = metrics
@@ -221,9 +232,10 @@ Studio.TextBox.prototype.wrapText = function() {
 				just++
 			}
 		}
-		if(y+lineHeight>=this.height){
-			y = 0
+		if(y+lineHeight>=slice.height/this.image.resolution){
+			y = slice.y
 			start += width+this.gutter
+			console.log('move me over outside')
 		}
 
 		this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0, y , .25)
@@ -245,18 +257,6 @@ Studio.TextBox.prototype.fit = function() {
 	this.image.height = this._wrap_height
 	this.wrapText()
 }
-
-Studio.TextBox.prototype.debugDraw = function(ctx) {
-	ctx.strokeRect(this._dx - (this._world.width * this.anchorX), this._dy - (this._world.height * this.anchorY) - this._vertical_align, this._world.width, this._wrap_height)
-}
-
-Studio.TextBox.prototype.drawAngled = function(ctx) {
-	ctx.save()
-	this.prepAngled(ctx)
-	ctx.drawImage(this.image.bitmap, 0, 0, this.image.bitmap.width, this.image.bitmap.height, -(this.width * this.anchorX), -(this.height * this.anchorY) - this._vertical_align, this.width, this.height)
-	ctx.restore()
-}
-
 Studio.TextBox.prototype.update_xy= function() {
 	if (this.orbits && this._parent.angle) {
 		this.update_orbit_xy()
@@ -267,22 +267,5 @@ Studio.TextBox.prototype.update_xy= function() {
 	if(this.live){
 		this.finish()
 	}
-}
-
-Studio.TextBox.prototype.draw = function(ctx) {
-	this.setAlpha(ctx)
-	// since we don't resize the ctx, we need to compensate based on the differences of the ctx height and text height
-	if (this.angle) {
-		this.drawAngled(ctx)
-	} else {
-		ctx.drawImage(this.image.bitmap, 0, 0, this.image.bitmap.width, this.image.bitmap.height, this._dx - (this._dwidth * this.anchorX), this._dy - (this._dheight * this.anchorY), this._dwidth, this._dheight)
-	}
-}
-
-Studio.TextBox.prototype.verts = function(box, buffer, texture, stage){
-	this.addVert(buffer,box.TL,0,0,stage)
-	this.addVert(buffer,box.TR,1,0,stage)
-	this.addVert(buffer,box.BL,0,1,stage)
-	this.addVert(buffer,box.BR,1,1,stage)
 }
 

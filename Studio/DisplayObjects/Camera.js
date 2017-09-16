@@ -9,8 +9,8 @@ Studio.Camera = function(stage) {
 	this.focus		= {x: 0, y: 0}
 	this.bound 		= null
 	this.active		= true
-	this.visibleArea = new Studio.Rect({x: 0, y: 0, width: stage.width, height: stage.height, color: new Studio.Color(200, 0, 255, .4)})
-	stage.addChild(this.visibleArea);
+	// this.visibleArea = new Studio.Rect({x: 0, y: 0, width: stage.width, height: stage.height, color: new Studio.Color(200, 0, 255, .4)})
+	// stage.addChild(this.visibleArea);
 	this.matrix 	= 	new Float32Array([1, 0, 0, 0, 1, 0, 0, 0, 1]);
 }
 
@@ -52,7 +52,7 @@ Studio.Camera.prototype.update = function(stage, ratio, webgl) {
 			this.y = this.bottom
 		}
 	}
-	this.update_visbile_area();
+	if(this.visibleArea) this.update_visbile_area();
 }
 
 Studio.Camera.prototype.render = function(stage, ratio, webgl) {

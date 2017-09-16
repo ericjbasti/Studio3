@@ -59,21 +59,48 @@ Studio.TileMap.prototype = {
 		if(map.data){
 			for (var y = 0; y != mY; y++) {
 				for (var x = 0; x != mX; x++) {
+					var flip_X = 0
+					var flip_Y = 0
+
 					var i = (map.data[parseInt((y + sy) * map.width) + (x + sx)]) - set.firstgid
+					var width = set.tileWidth
+					var height = set.tileHeight
+
 					if(i> 0x80000000){
 						i-=0x80000000;
+						flip_X = -1
+						// width *=-1
 					}
 					if(i>0x40000000){
 						i-=0x40000000
+						flip_Y = -1
+						// height *=-1
 					}
 					if(i>0x20000000){
 						i-=0x20000000
+						// flip_X = 1
 					}
 
 					var _y = parseInt(i / set.across)
 					var _x = i - (_y * set.across)
 
-					buffer.drawImage(set.set.bitmap, _x * set.tileWidth, _y * set.tileHeight, set.tileWidth, set.tileHeight, x * set.tileWidth, y * set.tileHeight, set.tileWidth, set.tileHeight)
+					
+					// if(flip_X || flip_Y){
+						buffer.drawImage(
+							set.set.bitmap, 
+							_x * set.tileWidth + (set.tileWidth * flip_X), 
+							_y * set.tileHeight + (set.tileHeight * flip_Y), 
+							width, 
+							height, 
+							x * set.tileWidth, 
+							y * set.tileHeight, 
+							set.tileWidth , 
+							set.tileHeight
+						)
+					// }else{
+					// 	buffer.drawImage(set.set.bitmap, _x * set.tileWidth, _y * set.tileHeight, set.tileWidth, set.tileHeight, x * set.tileWidth, y * set.tileHeight, set.tileWidth, set.tileHeight)
+					// }
+					
 				}
 			}
 		}
@@ -99,6 +126,7 @@ Studio.TileMap.prototype = {
 
 	},
 	_onLoad: function test(result) {
+		console.log(result)
 		if (!result) {
 			console.log('The image isn\'t ready so we need to wait.')
 			return

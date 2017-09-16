@@ -107,7 +107,6 @@ Studio.Pattern.prototype.checkOverflow = function() {
 
 Studio.Pattern.prototype.onImageReady = function(ready) {
 	if (ready) {
-		console.log('patt ready'+ this.slice)
 		this.setPattern()
 	}
 }

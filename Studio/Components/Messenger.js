@@ -11,10 +11,11 @@ Studio.Messenger.prototype.addListener = function(type,callback) {
 }
 
 Studio.Messenger.prototype.addListenerTo = function(type,callback, who) {
-	console.log(type,callback)
+
 	if(!this.listeners[type]){
 		this.listeners[type]=[];
 	}
+	
 	this.listeners[type].push({callback: callback,who: who})
 }
 

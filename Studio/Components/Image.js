@@ -68,7 +68,7 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 		Studio.assets[who].addEventListener("load", function(e){
 			image._onImageLoad(e.target)
 		} )
-
+		
 		Studio.assets[who].src = who
 		this.bitmap = Studio.assets[who]
 	}
