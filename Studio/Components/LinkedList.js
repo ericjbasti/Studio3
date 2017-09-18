@@ -112,6 +112,16 @@ LinkedList.prototype = {
 			listItem = listItem.next || this.next
 		}
 	},
+	each: function(what){
+		var listItem = this.first
+		var count = 0
+		while (listItem) {
+			this.next = listItem.next
+			what(listItem,count)
+			count++;
+			listItem = listItem.next || this.next
+		}
+	},
 	removeAll: function(exception) {
 		var listItem = this.first
 		while (listItem) {
