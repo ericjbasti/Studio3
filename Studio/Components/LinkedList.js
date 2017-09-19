@@ -1,12 +1,13 @@
-var LinkedList = function() {
+var LinkedList = function(duplicatesAddToEnd) {
 	this.first 	= 	null
 	this.last	= 	null
 	this.length = 	0
+	this._duplicatesAddToEnd = duplicatesAddToEnd || false
 }
 
 LinkedList.prototype = {
 	add: function(who) {
-		// who._parent = this._parent;
+		if(this.isInList(who)) return
 
 		this.length++ // add to our length so we can easily tell how big our list is.
 		if (this.length <= 1 && this.first === null && this.last === null) {
@@ -27,7 +28,24 @@ LinkedList.prototype = {
 			this.add(arguments[i])
 		}
 	},
+	isInList: function(a){
+		var listItem = this.first
+		while (listItem) {
+			if(listItem==a) {
+				if(this._duplicatesAddToEnd){
+					console.warn(a+' is already in this list. Swapped to end of list.')
+					this.remove(a)
+					return false
+				}
+				console.warn(a+' is already in this list. Duplicate was not added.')
+				return true
+			}
+			listItem = listItem.next || this.next
+		}
+		return false
+	},
 	insert: function(a, b) {
+		if(this.isInList(a)) return
 		this.length++
 		a.prev = b
 		if (b !== this.last) {

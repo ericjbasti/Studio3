@@ -236,7 +236,8 @@ Studio.inherit = function(A, B, properties) {
 Studio.windowResize = function(){
 	for (var m = 0; m !== Studio.stages.length; m++) {
 		if(Studio.stages[m].resize){
-			Studio.stages[m].resize();
+			Studio.stages[m].resize()
+			Studio.stages[m].render(0)
 		}
 	}
 }
