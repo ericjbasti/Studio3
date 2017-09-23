@@ -348,6 +348,38 @@ Studio.Stage.prototype.activeloop = function(delta) {
 	}
 }
 
+Studio.Stage.prototype.compileShader = function(source, type){
+	var gl = this.ctx
+	var shader = gl.createShader(type)
+	
+	gl.shaderSource(shader, source)
+	gl.compileShader(shader)
+
+	var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
+	if (!success) {
+	    throw "Failed to compile shader:" + gl.getShaderInfoLog(shader)
+	}
+	console.log('Shader compiled')
+	return shader
+}
+
+Studio.Stage.prototype.createProgram = function(vertexShader, fragmentShader){
+	var gl = this.ctx
+	var program = gl.createProgram()
+
+	gl.attachShader(program, vertexShader)
+	gl.attachShader(program, fragmentShader)
+
+	gl.linkProgram(program)
+
+	var success = gl.getProgramParameter(program, gl.LINK_STATUS)
+	if (!success) {
+	    throw "Failed to compile shader:" + gl.gl.getProgramInfoLog(program)
+	}
+
+	return program
+}
+
 Studio.Stage.prototype.loop = Studio.Stage.prototype.loading
 
 Studio.Scene.prototype.drawProgress = function(ctx) {

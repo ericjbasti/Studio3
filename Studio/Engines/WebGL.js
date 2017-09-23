@@ -54,27 +54,20 @@ Studio.Stage.prototype.WEBGL = {
 		this.rect_buffer = new Studio.BufferGL(null,0,this)
 		gl.clearColor(0,0,0,1)
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-		this.vertexShader = gl.createShader(gl.VERTEX_SHADER)
-		this.loadShader(this.vertexShader , VERTEXSHADER)
-
-		this.fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
-		this.loadShader(this.fragmentShader , FRAGMENTSHADER)
 
 		gl.enable(gl.DEPTH_TEST)
 		gl.depthFunc(gl.LESS)
+
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 		gl.enable(gl.BLEND)
 		// gl.disable(gl.DEPTH_TEST);
 
-		this.program = gl.createProgram()
-		gl.attachShader(this.program, this.vertexShader)
-		gl.attachShader(this.program, this.fragmentShader)
-
-		gl.compileShader(this.vertexShader)
-		gl.compileShader(this.fragmentShader)
+		this.program = this.createProgram(
+			this.compileShader(VERTEXSHADER, gl.VERTEX_SHADER),
+			this.compileShader(FRAGMENTSHADER, gl.FRAGMENT_SHADER)
+		)
 
 		gl.linkProgram(this.program)
-
 		gl.useProgram(this.program)
 	},
 

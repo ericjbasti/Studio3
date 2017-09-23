@@ -28,15 +28,16 @@ Studio.BufferGL = function(image,size,stage){
 Studio.BufferGL.prototype.constructor = Studio.BufferGL
 
 Studio.BufferGL.prototype.draw = function(gl){
-	if(!this.count){
+	if(!this.count){ // if we have nothing to draw, exit this function
 		return;
 	}
-	if(!this._texture && this.texture){
-		this.setTexture(gl, 1)
+	if(!this._texture && this.texture){ // if we don't have a gl.TEXTURE_2D for our buffer, and we have a texture assigned
+		this.setTexture(gl, 1) // create a new gl.TEXTURE_2D and assign our texture
 	}
 	if(this.texture){
+		// bind the texture
 		gl.bindTexture(gl.TEXTURE_2D, this._texture)
-		if(this.texture.dirty){
+		if(this.texture.dirty){ // if the texture is marked as dirty (its changed) we need to update our texture with the new image
 			gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, this.texture.bitmap);
 			this.texture.dirty = false
 		}
