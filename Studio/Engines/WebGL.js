@@ -1,10 +1,17 @@
-var FRAGMENTSHADER = ['precision lowp float;',
+var ImageSHADER		 = ['precision lowp float;',
 						'uniform sampler2D u_image;',
 						'varying vec4 v_color;',
 						'varying vec2 v_texture;',
 						'void main(void) {',
 						'	gl_FragColor = texture2D(u_image, v_texture) * v_color;',
 						'}'].join('\n')
+
+var RectSHADER	 	= ['precision lowp float;',
+						'varying vec4 v_color;',
+						'void main(void) {',
+						'	gl_FragColor = v_color;',
+						'}'].join('\n')
+
 
 var VERTEXSHADER = ['attribute vec3 a_position;',
 						'attribute vec4 a_color;',
@@ -49,6 +56,8 @@ Studio.Stage.prototype.WEBGL = {
 		// gl._rects = new Float32Array(this._maxCount)
 	},
 	init: function(gl) {
+		this.programs = {}
+
 		this._max_textures = gl.getParameter(gl.MAX_TEXTURE_IMAGE_UNITS);
 		this._count = 0
 		this.rect_buffer = new Studio.BufferGL(null,0,this)
@@ -62,45 +71,86 @@ Studio.Stage.prototype.WEBGL = {
 		gl.enable(gl.BLEND)
 		// gl.disable(gl.DEPTH_TEST);
 
-		this.program = this.createProgram(
+		this.createProgram(
+			'DefaultProgram',
 			this.compileShader(VERTEXSHADER, gl.VERTEX_SHADER),
-			this.compileShader(FRAGMENTSHADER, gl.FRAGMENT_SHADER)
-		)
+			this.compileShader(ImageSHADER, gl.FRAGMENT_SHADER)
+		).prep = function(stage, program){
+			var gl = stage.ctx
+			var resolutionLocation = gl.getUniformLocation( program, 'u_resolution')
+			gl.matrixLocation = gl.getUniformLocation( program, 'u_matrix')
 
-		gl.linkProgram(this.program)
-		gl.useProgram(this.program)
+			gl.enableVertexAttribArray(0)
+
+			gl.positionLocation = gl.getAttribLocation( program, 'a_position')
+			gl.bindAttribLocation( program, 0, 'a_position')
+
+			gl.colorLocation = gl.getAttribLocation( program, 'a_color')
+
+			gl.textureLocation = gl.getAttribLocation( program, 'a_texture')
+
+			gl.uniform2f(resolutionLocation, stage.width, stage.height)
+
+			gl.enableVertexAttribArray(gl.positionLocation)
+			gl.enableVertexAttribArray(gl.colorLocation)
+			gl.enableVertexAttribArray(gl.textureLocation)
+		}
+
+		this.createProgram(
+			'RectProgram',
+			this.compileShader(VERTEXSHADER, gl.VERTEX_SHADER),
+			this.compileShader(RectSHADER, gl.FRAGMENT_SHADER)
+		).prep = function(stage, program){
+			var gl = stage.ctx
+			var resolutionLocation = gl.getUniformLocation( program, 'u_resolution')
+			gl.matrixLocation = gl.getUniformLocation( program, 'u_matrix')
+
+			gl.enableVertexAttribArray(0)
+
+			gl.positionLocation = gl.getAttribLocation( program, 'a_position')
+			gl.bindAttribLocation( program, 0, 'a_position')
+
+			gl.colorLocation = gl.getAttribLocation( program, 'a_color')
+
+			gl.uniform2f(resolutionLocation, stage.width, stage.height)
+
+			gl.enableVertexAttribArray(gl.positionLocation)
+			gl.enableVertexAttribArray(gl.colorLocation)
+		}
+
+		this.useProgram('RectProgram')
 	},
 
 	prep: function(gl) {
 		this.buffers = {}
 
-		gl.resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
-		gl.matrixLocation = gl.getUniformLocation(this.program, 'u_matrix')
-		// gl.scaleLocation = gl.getUniformLocation(this.program, 'u_scale')
-		gl.enableVertexAttribArray(0)
+		// var resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
+		// gl.matrixLocation = gl.getUniformLocation(this.program, 'u_matrix')
+		// // gl.scaleLocation = gl.getUniformLocation(this.program, 'u_scale')
+		// gl.enableVertexAttribArray(0)
 
-		gl.positionLocation = gl.getAttribLocation(this.program, 'a_position')
+		// gl.positionLocation = gl.getAttribLocation(this.program, 'a_position')
 
-		gl.bindAttribLocation(this.program, 0, 'a_position')
+		// gl.bindAttribLocation(this.program, 0, 'a_position')
 
 
 
-		gl.colorLocation = gl.getAttribLocation(this.program, 'a_color')
+		// gl.colorLocation = gl.getAttribLocation(this.program, 'a_color')
 
-		gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
+		// gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
 
-		gl.uniform2f(gl.resolutionLocation, this.width, this.height)
+		// gl.uniform2f(resolutionLocation, this.width, this.height)
 
-		this.buffer = gl.createBuffer()
-		gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
+		// this.buffer = gl.createBuffer()
+		// gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
 
-		gl.enableVertexAttribArray(gl.positionLocation)
-		gl.enableVertexAttribArray(gl.colorLocation)
-		gl.enableVertexAttribArray(gl.textureLocation)
+		// gl.enableVertexAttribArray(gl.positionLocation)
+		// gl.enableVertexAttribArray(gl.colorLocation)
+		// gl.enableVertexAttribArray(gl.textureLocation)
 
-		gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, false, 36, 0)
-		gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, false, 36, (3) * 4)
-		gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 36, (3 + 4) * 4)
+		// gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, false, 36, 0)
+		// gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, false, 36, (3) * 4)
+		// gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 36, (3 + 4) * 4)
 
 		this._rect_index_buffer = gl.createBuffer()
 		this._rect_index = new Uint16Array(this._maxCount*7)

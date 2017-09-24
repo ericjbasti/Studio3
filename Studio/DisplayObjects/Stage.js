@@ -359,11 +359,18 @@ Studio.Stage.prototype.compileShader = function(source, type){
 	if (!success) {
 	    throw "Failed to compile shader:" + gl.getShaderInfoLog(shader)
 	}
-	console.log('Shader compiled')
 	return shader
 }
+Studio.Stage.prototype.useProgram = function(id){
+	this.ctx.useProgram(this.programs[id].prog)
+	this.programs[id].prep(this, this.programs[id].prog)
+}
 
-Studio.Stage.prototype.createProgram = function(vertexShader, fragmentShader){
+Studio.Stage.prototype.createProgram = function(id, vertexShader, fragmentShader){
+	if(this.programs[id]){
+		console.warn('WebGL Program already exists: '+id)
+		return this.programs[id]
+	}
 	var gl = this.ctx
 	var program = gl.createProgram()
 
@@ -377,8 +384,13 @@ Studio.Stage.prototype.createProgram = function(vertexShader, fragmentShader){
 	    throw "Failed to compile shader:" + gl.gl.getProgramInfoLog(program)
 	}
 
-	return program
+	this.programs[id] = {prog: program, prep: function(gl,program){}}
+
+	return this.programs[id]
 }
+
+Studio.Stage.prototype.createProgram
+
 
 Studio.Stage.prototype.loop = Studio.Stage.prototype.loading
 
