@@ -124,38 +124,10 @@ Studio.Stage.prototype.WEBGL = {
 	prep: function(gl) {
 		this.buffers = {}
 
-		// var resolutionLocation = gl.getUniformLocation(this.program, 'u_resolution')
-		// gl.matrixLocation = gl.getUniformLocation(this.program, 'u_matrix')
-		// // gl.scaleLocation = gl.getUniformLocation(this.program, 'u_scale')
-		// gl.enableVertexAttribArray(0)
-
-		// gl.positionLocation = gl.getAttribLocation(this.program, 'a_position')
-
-		// gl.bindAttribLocation(this.program, 0, 'a_position')
-
-
-
-		// gl.colorLocation = gl.getAttribLocation(this.program, 'a_color')
-
-		// gl.textureLocation = gl.getAttribLocation(this.program, 'a_texture')
-
-		// gl.uniform2f(resolutionLocation, this.width, this.height)
-
-		// this.buffer = gl.createBuffer()
-		// gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer)
-
-		// gl.enableVertexAttribArray(gl.positionLocation)
-		// gl.enableVertexAttribArray(gl.colorLocation)
-		// gl.enableVertexAttribArray(gl.textureLocation)
-
-		// gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, false, 36, 0)
-		// gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, false, 36, (3) * 4)
-		// gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, false, 36, (3 + 4) * 4)
-
 		this._rect_index_buffer = gl.createBuffer()
-		this._rect_index = new Uint16Array(this._maxCount*7)
+		this._rect_index = new Uint16Array(this._maxCount*6)
 
-		for (var i = 0, j = 0; i < this._maxCount*7; i += 6, j += 4) {
+		for (var i = 0, j = 0; i < this._maxCount*6; i += 6, j += 4) {
 			this._rect_index[i + 0] = j + 0
 			this._rect_index[i + 1] = j + 1
 			this._rect_index[i + 2] = j + 2
