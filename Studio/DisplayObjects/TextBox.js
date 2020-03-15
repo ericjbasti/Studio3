@@ -77,7 +77,7 @@ Studio.TextBox = function(width, height, stage, image) {
 			lineHeight: 30,
 		},
 	}
-	// document.body.appendChild(this.image.bitmap)
+	document.body.appendChild(this.image.bitmap)
 	return this
 }
 
@@ -107,19 +107,23 @@ Studio.TextBox.prototype.setFont = function(font) {
 Studio.TextBox.prototype.finish = function() {
 	this.reset()
 	this.wrapText()
+	var slice = this.image.slice[this.slice];
 	this.image.ready = true
 	this.image.dirty = true
+	this.image._rebuildGLSlices()
 }
 
 Studio.TextBox.prototype.reset = function() {
 	var slice = this.image.slice[this.slice];
-	this.image.ctx.clearRect(slice.x, slice.y, slice.width, slice.height)
+	this.image.ctx.strokeStyle = '#0f0'
+	this.image.ctx.clearRect(slice.x, slice.y, slice.width/this.image.resolution, slice.height/this.image.resolution)
+	this.image.ctx.strokeRect(slice.x, slice.y, slice.width/this.image.resolution, slice.height/this.image.resolution)
 	this.image.ctx.font = this.font
 }
 
 Studio.TextBox.prototype.writeLine = function(styles, x, y, vx) {
 	var style = styles.split(' ')
-	var nx = 0 
+	var nx = 0
 	var vx = vx || 0
 	this.image.ctx.font = this._lastfont
 
@@ -142,7 +146,7 @@ Studio.TextBox.prototype.writeLine = function(styles, x, y, vx) {
 					}
 				}
 			}
-			
+
 		}else{
 			if(this.shadow){
 				var front_color = this.image.ctx.fillStyle;
@@ -175,7 +179,11 @@ Studio.TextBox.prototype.wrapText = function() {
 	this.image.ctx.font = this._lastfont
 	var slice = this.image.slice[this.slice];
 
-	var width = ((this.width)-(this.gutter*(this.columns-1)))/this.columns
+	var sliceWidth = slice.width 
+	if(this.slice=='Full') sliceWidth = this.width
+	
+	var width = ((sliceWidth)-(this.gutter*(this.columns-1)))/this.columns
+
 	var start = slice.x+1
 	var paragraphs = this.text.split('\n')
 	var y = slice.y
@@ -201,7 +209,7 @@ Studio.TextBox.prototype.wrapText = function() {
 						}
 					}
 				}
-				
+
 				metrics = 0
 			}else{
 				metrics = this.image.ctx.measureText(word +' ').width
@@ -235,12 +243,12 @@ Studio.TextBox.prototype.wrapText = function() {
 		if(y+lineHeight>=slice.height/this.image.resolution){
 			y = slice.y
 			start += width+this.gutter
-			console.log('move me over outside')
+			// console.log('move me over outside')
 		}
 
 		this.writeLine( styleline, start + ((width - testWidth) * this.horizontal_align) | 0, y , .25)
-		
-		
+
+
 		this._wrap_height = y + lineHeight
 		if (i !== paragraphs.length - 1) {
 			y += lineHeight
@@ -262,10 +270,9 @@ Studio.TextBox.prototype.update_xy= function() {
 		this.update_orbit_xy()
 	} else {
 		this._world.x  = ((this.x * this._parent.scaleX) + this._parent.x)
-		this._world.y  = ((this.y * this._parent.scaleY) + this._parent.y) - this._vertical_align 
+		this._world.y  = ((this.y * this._parent.scaleY) + this._parent.y) - this._vertical_align
 	}
 	if(this.live){
 		this.finish()
 	}
 }
-

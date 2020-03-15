@@ -54,6 +54,10 @@ Studio.Stage = function(domID, attr) {
 	this.engine.prep.call(this, this.ctx)
 	Studio.stages.push(this)
 	this.render = this.engine.render
+
+	if(this.dur>1000/50){
+		this.timeStep = Studio.timeStep.static_fixed
+	}
 	// This is a universal init. These are items that need to be attached to the stage
 	// regardless of engine type. These include items like buttons, cameras, scenes etc...
 	this._init()
@@ -144,6 +148,11 @@ Studio.Stage.prototype._sizeCanvas = function(fullscreen) {
 		this._scaleRatio = innerWidth / this.width
 		if (fullscreen == 3) {
 			this.bitmap.style.height = window.innerHeight + 'px'
+
+		}
+		if (fullscreen == 4) {
+			this.bitmap.style.width = 'auto'
+			this.bitmap.style.height = '100vh'
 		}
 	}
 
@@ -336,7 +345,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 			if (this.onReady) {
 				this.onReady(delta)
 			}
-			
+
 			Studio.progress = 2 // we set this to 2 so we can fire this event once.
 			if (!this.activeScene) {
 				return // lets check to see if we have a scene to draw. otherwise lets just draw the stage.
@@ -351,7 +360,7 @@ Studio.Stage.prototype.activeloop = function(delta) {
 Studio.Stage.prototype.compileShader = function(source, type){
 	var gl = this.ctx
 	var shader = gl.createShader(type)
-	
+
 	gl.shaderSource(shader, source)
 	gl.compileShader(shader)
 
@@ -406,4 +415,3 @@ Studio.Scene.prototype.progressBar = function(ctx, progress) {
 	ctx.fillStyle = 'rgba(0,0,0,1)'
 	ctx.fillRect(2 + (this.width - 202) / 2, 2 + (this.height - 22) / 2, progress * 198, 18)
 }
-

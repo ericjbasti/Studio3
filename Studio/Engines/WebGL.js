@@ -118,7 +118,7 @@ Studio.Stage.prototype.WEBGL = {
 			gl.enableVertexAttribArray(gl.colorLocation)
 		}
 
-		this.useProgram('RectProgram')
+		this.useProgram('DefaultProgram')
 	},
 
 	prep: function(gl) {

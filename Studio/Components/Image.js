@@ -46,6 +46,7 @@ Studio.Image.prototype._setWidthHeights = function(image){
 	this.addSlice(this.slice)
 	this.ready = true
 	this.sendMessage('ready',this.ready)
+	console.log(this.slice,image)
 }
 
 Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
@@ -76,6 +77,7 @@ Studio.Image.prototype.loadImage = function studio_image_loadImage(who) {
 Studio.Image.prototype.buildSliceForGL = function studio_buildSliceForGL(slice) {
 	var x = slice.x / this.width
 	var y = slice.y / this.height
+
 	return {
 		x: x,
 		y: y,

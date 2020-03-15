@@ -4,8 +4,8 @@ Studio.Cache = function(width, height, resolution) {
 	this.bitmap = document.createElement('canvas')
 	this.bitmap.width = width * this.resolution || 512
 	this.bitmap.height = height * this.resolution || 512
-	this.width = width
-	this.height = height
+	this.width = this.bitmap.width
+	this.height = this.bitmap.height
 	this.ready = false
 	this.ctx = this.bitmap.getContext('2d')
 	this.ctx.scale(resolution, resolution)

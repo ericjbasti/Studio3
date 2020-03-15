@@ -244,6 +244,9 @@ Studio.windowResize = function(){
 
 window.addEventListener('resize', Studio.windowResize);
 
+
+
+
 Studio.TOP = Studio.LEFT = 0
 Studio.MIDDLE = Studio.CENTER = 0.5
 Studio.BOTTOM = Studio.RIGHT = 1
@@ -253,4 +256,3 @@ Studio.errorStyle = 'background-color: #c01; padding: 2px 4px;'
 Studio.warningStyle = 'background-color: #fd2; padding: 2px 4px;'
 Studio.statStyle = 'background-color: #eee; padding: 2px 4px; color: #555; font-size: 10px'
 Studio.engineStyle = 'background-color: #eee; color: #3af; padding: 1px 4px; border: 1px solid #3af'
-

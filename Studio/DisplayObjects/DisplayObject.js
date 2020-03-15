@@ -16,6 +16,7 @@ Studio.DisplayObject = function(attr) {
 	this.anchorY  = 0.5
 	this.rotation = 0
 	this.skews 	  = 0
+
 	// Display Settings:
 	this.alpha   = 1 // sets the opacity/alpha of an object
 	this.visible = 1 // invisible items are ignored when rendering

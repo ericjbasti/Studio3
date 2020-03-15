@@ -62,7 +62,6 @@ Studio.BufferGL.prototype.prepTexture = function GL_prepTexture(gl) {
 	gl.vertexAttribPointer(gl.positionLocation, 3, gl.FLOAT, gl.FALSE, this.bytes, 0)
 	gl.vertexAttribPointer(gl.colorLocation, 4, gl.FLOAT, gl.FALSE, this.bytes, (3)*4)
 	gl.vertexAttribPointer(gl.textureLocation, 2, gl.FLOAT, gl.FALSE, this.bytes, (3+4)*4)
-	gl.bufferData(gl.ARRAY_BUFFER, this.data, gl.DYNAMIC_DRAW)
 }
 
 Studio.BufferGL.prototype.setTexture = function GL_setTexture(gl, mipmap) {
